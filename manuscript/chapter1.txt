@@ -1,7 +1,156 @@
-# Chapter One
+# An Introduction to Angular.js
 
-This is an example chapter of a Leanpub book.  To start your book, simply replace the content of this file with your writing, and then go to your book page on Leanpub and click on the Preview tab to make a preview of your book.
+## Including angular.js in a web page
 
-Briefly, to write a Leanpub book, you write a bunch of plain text files, all in the same folder as this file.  These text files are written in a format called Markdown, which is a simple way of doing formatting that lets you focus on your writing.
+### Problem
+You want to include Angular.js in a web page.
 
-To learn more about how to write a Leanpub book, see our helpful [help page](http://leanpub.com/help).  This page has lots of examples, as well as links to sample books and videos.
+### Solution
+In order to get your first Angular.js app up and running you need to include the angular javascript file via script tag and make use of the `ng-app` directive.
+
+    <html>
+      <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.js"></script>
+      </head>
+      <body ng-app>
+        <p>This is your first angular expression: {{ 1 + 2 }}</p>
+      </body>
+    </html>
+
+T> Tip: You can checkout a complete example on [github](http://github.com/fdietz/recipes-with-angular.js/chapter1/recipe1).
+
+### Discussion
+Adding the `ng-app` directive tells Angular to kick in its magic. The expression `{{ 1 + 2 }}` is evaluated by Angular and the result 3 is rendered. Note, that removing `ng-app` will result in the browser to render the expression as is instead of evaluating it. Play around with the expression! You can use numbers as in the example or concatenate Strings, etc. 
+
+For brevity reasons we skip the boilerplate code in the following recipes.
+
+## Binding a text input to an expression
+
+### Problem
+You want user input to be used in another part of your html page.
+
+### Solution
+Use Angulars `ng-model` directive to bind the text input to the expression
+
+    Enter your name: <input type="text" ng-model="name"></input>
+    <p>Hello {{name}}!</p>
+
+### Discussion
+Assigning "name" to the `ng-model` attribute and using the name variable in an expression will keep both in sync automatically. Typing in the text input will automatically reflect these changes in the paragraph below.
+
+Consider how you would implement this traditionally using jQuery:
+
+    <html>
+      <head>
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+      </head>
+      <body>
+        Enter your name: <input type="text"></input>
+        <p id="name"></p>
+
+        <script>
+          $(document).ready(function() {
+            $("input").keypress(function() {
+              $("#name").text($(this).val());
+            });  
+          });
+        </script>
+
+      </body>
+    </html>
+
+On document ready we bind to the keypress event in the text input and replace the text in the paragraph in the callback function. Using jQuery you need to deal with document ready callbacks, element selection, event binding and the context of this. Quite a lot of concepts to swallow and lines of code to maintain!
+
+## Convert expression output with Filters
+
+### Problem
+When presenting data to the user, you might need to convert the data to a more user-friendly format. In our case we want to uppercase the "name" value from the previous recipe in the expression.
+
+### Solution
+Use the `uppercase` Angular filter.
+
+    Enter your name: <input type="text" ng-model="name"></input>
+    <p>Hello {{name | uppercase }}!</p>
+
+### Discussion
+Angular uses the `|` (pipe) character to combine filters with variables in expressions. When evaluating the expression, the name variable is passed to the uppercase filter. This is similar to working with the Unix bash pipe symbol where an input can be transformed by another program. Also try the `lowercase` filter!
+
+## Use Controllers for your business logic
+
+### Problem
+You want to hide an html element on button click.
+
+### Solution
+Use the `ng-hide` directive in conjunction with a controller to change the visibility status on button click.
+
+
+    <html>
+      <head>
+        <script src="js/angular.js"></script>
+        <script src="js/app.js"></script>
+        <link rel="stylesheet" href="css/bootstrap.css">
+      </head>
+      <body ng-app>
+        <div ng-controller="MyCtrl">
+          <button ng-click="toggle()">Toggle</button>
+          <p ng-show="isVisible()">Hello World!</p>
+          <p>Debug Scope: visible = {{visible}}</p>
+        </div>
+      </body>
+    </html>
+
+
+And the controller in `js/app.js`:
+
+    function MyCtrl($scope) {
+      $scope.visible = true;
+
+      $scope.toggle = function() {
+        $scope.visible = !$scope.visible;
+      };
+
+      $scope.isVisible = function() {
+        return $scope.visible === true;
+      };
+    }
+
+### Discussion
+Using the `ng-controller` directive we bind the div element including its children to the context of the `MyCtrl` Controller. The `ng-click` directive will call the `toggle()` function of the `MyCtrl` Controller on button click. The controller implementation defaults the `visible` attribute to true and toggles its boolean state in the toggle function. The `ng-show` directive calls the `isVisible()` function to retrieve the boolean state. Note, that you could use the `visible` attribute instead if `isVisible()`. Using a function encapsulates the logic and allows more complex logic.
+
+## Create your own directive
+
+### Problem
+You want to render a Hello World snippet in several places.
+
+### Solution
+Create a custom directive which renders your Hello World snippet.
+
+    <body ng-app="MyApp">
+      <hello-world/>
+    </body>
+
+The directive implementation:
+
+    var app = angular.module("MyApp", []);
+
+    app.directive("helloWorld", function() {
+      return {
+        restrict: "E",
+        template: '<span>Hello World</span>'
+      };
+    });
+    
+### Discussion
+We ignore the module creation for a later recipe for now. The browser will render the `span` element as defined in the directive. Note, that it did not replace the `hello-world` element, but instead inserted the `span`. If you want to replace the content completely you need to return an addditional attribute replace set to the true:
+
+    app.directive("helloWorld", function() {
+      return {
+        restrict: "E",
+        replace: true,
+        template: '<span>Hello World</span>'
+      };
+    });
+
+Now the `hello-world` element is not rendered at all and replaced with the `span` element. 
+
+Also note the `restrict` attribute is set to `E` which means the directive can be used only as an html element. A full discussion will follow in later chapters.
