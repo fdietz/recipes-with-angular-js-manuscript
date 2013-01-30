@@ -102,8 +102,8 @@ The first argument `name` of the `$watch` function is actually an Angular expres
 
     $scope.$watch(function() {
       return $scope.name;
-    }, function() {
-      console.log("change detected")
+    }, function(newValue, oldValue) {
+      console.log("change detected: " + newValue)
     });
 
 Note, that you need to return a String in the watcher function. The second function will only be called if the returned String changed compared to the previous execution. Internally this uses `angular.equals` to determine equality.
@@ -114,7 +114,7 @@ Note, that you need to return a String in the watcher function. The second funct
 You want to unit test your business logic.
 
 ### Solution
-Implement a unit testing using [Jasmine](http://pivotal.github.com/jasmine/) and the [angular-seed](https://github.com/angular/angular-seed) bootstrap. Following the case for our $watch use case spec.
+Implement a unit test using [Jasmine](http://pivotal.github.com/jasmine/) and the [angular-seed](https://github.com/angular/angular-seed) bootstrap. Following our previous `$watch` recipe this is how our spec would look like.
 
     describe('MyCtrl', function(){
       var scope, ctrl;
@@ -135,5 +135,7 @@ Implement a unit testing using [Jasmine](http://pivotal.github.com/jasmine/) and
 ### Discussion
 Jasmine specs use `describe` and `it` functions to group specs and `beforeEach` and `afterEach` to setup and teardown code. The actual expectation compares the greeting from the scope with our expectation `Greetings Frederik`.
 
-The scope and controller initialization is a bit more involved. We use `inject` to initialize the scope and controller as close as possible to how our code would behave at runtime too. We can't just initialize scope as an javascript object `{}` since then we would not be able to call `$watch` on it. Note, the `$digest` call which is required in order for another watch execution.
+The scope and controller initialization is a bit more involved. We use `inject` to initialize the scope and controller as closely as possible to how our code would behave at runtime too. We can't just initialize the scope as an javascript object `{}` since then we would not be able to call `$watch` on it. 
+
+The `$digest` call is required in order for another watch execution. We need to call `$digest` manually in our spec whereas at runtime Angular will do this for us automatically.
 
