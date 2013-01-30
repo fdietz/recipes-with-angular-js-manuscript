@@ -1,0 +1,13 @@
+# Services
+
+## Reuse code between Controllers using Services
+
+## Use $http to do low-level http requests
+
+## Change http request headers
+
+## Use $resource for RESTful APIs calls (Using mongolab as example service)
+
+## Doing JSONP calls
+
+## Testing Services

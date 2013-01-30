@@ -1,0 +1,17 @@
+# Directives
+
+## Show/Hide DOM nodes
+
+## Disable/Enable DOM nodes
+
+## Implement DOM changes in response to user behaviour
+
+## Use different types of directives in template
+
+## Replace whole directive children content
+
+## Use directive child content in directive output
+
+## Use compile and link function and why distinguish between them
+
+## Testing directives

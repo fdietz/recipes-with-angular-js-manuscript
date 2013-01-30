@@ -1,0 +1,19 @@
+# Filters
+
+## Transform String to lowercase/uppercase before rendering
+
+## Implement filter to reverse string output
+
+## Combine multiple filters in a filter chain
+
+## Format string with a currency filter
+
+## Format numeric input with decimal marks
+
+## create format date/time filter using moment.js
+
+## filter with argument
+
+## test filter implementation
+
+## Testing Filters
