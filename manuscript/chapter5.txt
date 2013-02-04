@@ -8,11 +8,11 @@ You want to do an AJAX request to fetch JSON data and render it.
 
 ### Solution
 Implement a controller using `$http` to fetch the data and store it in the scope.
-  
+
     <body ng-app="MyApp">
       <div ng-controller="PostsCtrl">
         <ul ng-repeat="post in posts">
-          <li>{{post.title}}</li>      
+          <li>{{post.title}}</li>
         </ul>
       </div>
     </body>
@@ -82,10 +82,10 @@ Note, that the Angular `ngResource` module needs to be separately loaded since i
 ### Discussion
 Following some conventions simplifies our code quite a bit. We define the `$resource` by passing the URL schema only. This gives us a handful of nice methods including query, get, save and remove to work with our resource. In the example above we implement several controllers to cover the various typical use cases.
 
-It is generally a good practice to encapsulate your model and `$resource$` usage in an Angular `service` module and inject that in your controller. 
+It is generally a good practice to encapsulate your model and `$resource$` usage in an Angular `service` module and inject that in your controller.
 
-What if your response of posts is not an array but a more complex json? This typically results in the following error: 
-    
+What if your response of posts is not an array but a more complex json? This typically results in the following error:
+
     TypeError: Object #<Resource> has no method 'push'
 
 Have a look at the following JSON example:
@@ -100,7 +100,7 @@ Have a look at the following JSON example:
           "id": 2,
           "title" : "title 2"
         }
-      ] 
+      ]
     }
 
 In this case you have to change the `$resource$ definition accordingly.
@@ -136,7 +136,7 @@ Use the `$resource` and configure it to use JSONP. As an example we will call th
         <ul ng-repeat="tweet in searchResult.results">
           <li>{{tweet.text}}</li>
         </ul>
-      </div>  
+      </div>
     </body>
 
     var app = angular.module("MyApp", ["ngResource"]);
@@ -155,5 +155,62 @@ Use the `$resource` and configure it to use JSONP. As an example we will call th
 The `$resource` definition sets the `callback` attribute to `JSON_CALLBACK`, a requirement from Angular. Additionally we overwrite the get method to use `JSONP`. Now, when calling the API we use the `q` param to pass the entered `searchTerm`.
 
 ## Deferred and Promise
+TODO: Write me!
 
 ## Testing Services
+
+### Problem
+You want to unit test your controller and service consuming a JSONP API.
+
+Lets have a look again at our example we want to test:
+
+    var app = angular.module("MyApp", ["ngResource"]);
+
+    app.factory("TwitterAPI", function($resource) {
+      return $resource("http://search.twitter.com/search.json",
+        { callback: "JSON_CALLBACK" },
+        { get: { method: "JSONP" }});
+    });
+
+    app.controller("MyCtrl", function($scope, TwitterAPI) {
+      $scope.search = function() {
+        $scope.searchResult = TwitterAPI.get({ q: $scope.searchTerm });
+      };
+    });
+
+Note, that it slightly changed from the previous recipe as the `TwitterAPI` is pulled out of the controller and resides in its own service now.
+
+### Solution
+Use the angular-seed project and the $http_backend mocking service.
+
+    describe('MyCtrl', function(){
+      var scope, ctrl, httpBackend;
+
+      beforeEach(module("MyApp"));
+
+      beforeEach(inject(function($controller, $rootScope, TwitterAPI, $httpBackend) {
+        httpBackend = $httpBackend;
+        scope = $rootScope.$new();
+        ctrl = $controller("MyCtrl", { $scope: scope, TwitterAPI: TwitterAPI });
+
+        var mockData = { key: "test" };
+        var url = "http://search.twitter.com/search.json?callback=JSON_CALLBACK&q=angularjs";
+        httpBackend.whenJSONP(url).respond(mockData);
+      }));
+
+      it('should set searchResult on successful search', function() {
+        scope.searchTerm = "angularjs";
+        scope.search();
+        httpBackend.flush();
+
+        expect(scope.searchResult.key).toBe("test");
+      });
+
+    });
+
+### Discussion
+Since we now have a clear separation between the service and the controller, we can simply inject the `TwitterAPI` in our `beforeEach` function.
+
+Mocking with the `$httpBackend` is done as a last step in `beforeEach`. When a JSONP request happens we respond with `mockData`. After the `search()` is triggered we `flush()` the `httpBackend` in order to return our `mockData`.
+
+Have a look at the [ngMock.$httpBackend](http://docs.angularjs.org/api/ngMock.$httpBackend) module for more details.
