@@ -75,6 +75,9 @@ And delete a specific post:
       }
     });
 
+Note, that the Angular `ngResource` module needs to be separately loaded since it is not included in the base angular.js file:
+
+    <script src="angular-resource.js">
 
 ### Discussion
 Following some conventions simplifies our code quite a bit. We define the `$resource` by passing the URL schema only. This gives us a handful of nice methods including query, get, save and remove to work with our resource. In the example above we implement several controllers to cover the various typical use cases.
@@ -84,7 +87,7 @@ It is generally a good practice to encapsulate your model and `$resource$` usage
 What if your response of posts is not an array but a more complex json? This typically results in the following error: 
     
     TypeError: Object #<Resource> has no method 'push'
-    
+
 Have a look at the following JSON example:
 
     {
@@ -118,7 +121,38 @@ Note, that we only change the configuration of the `query` action to not expecti
 
 The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
 
-## Doing JSONP calls
+## Consuming JSONP APIs
+
+### Problem
+You want to call a JSONP API.
+
+### Solution
+Use the `$resource` and configure it to use JSONP. As an example we will call the Twitter search API here.
+
+    <body ng-app="MyApp">
+      <div ng-controller="MyCtrl">
+        <input type="text" ng-model="searchTerm" placeholder="Search term">
+        <button ng-click="search()">Search</button>
+        <ul ng-repeat="tweet in searchResult.results">
+          <li>{{tweet.text}}</li>
+        </ul>
+      </div>  
+    </body>
+
+    var app = angular.module("MyApp", ["ngResource"]);
+
+    function MyCtrl($scope, $resource) {
+      $scope.twitterAPI = $resource("http://search.twitter.com/search.json",
+        { callback: "JSON_CALLBACK" },
+        { get: { method: "JSONP" }});
+
+      $scope.search = function() {
+        $scope.searchResult = $scope.twitterAPI.get({ q: $scope.searchTerm });
+      };
+    }
+
+### Discussion
+The `$resource` definition sets the `callback` attribute to `JSON_CALLBACK`, a requirement from Angular. Additionally we overwrite the get method to use `JSONP`. Now, when calling the API we use the `q` param to pass the entered `searchTerm`.
 
 ## Deferred and Promise
 
