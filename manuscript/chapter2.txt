@@ -108,6 +108,9 @@ The first argument `name` of the `$watch` function is actually an Angular expres
 
 Note, that you need to return a String in the watcher function. The second function will only be called if the returned String changed compared to the previous execution. Internally this uses `angular.equals` to determine equality.
 
+## Reuse code between Controllers using Services
+TODO
+
 ## Testing Controllers
 
 ### Problem

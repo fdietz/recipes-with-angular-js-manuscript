@@ -3,3 +3,5 @@
 ## Rails
 
 ## Node.js
+
+The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.

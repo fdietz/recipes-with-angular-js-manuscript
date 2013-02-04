@@ -1,13 +1,125 @@
-# Services
+# Externals Services
+Angular has built-in support for doing AJAX requests with low- and high-level APIs.
 
-## Reuse code between Controllers using Services
+## AJAX request to fetch JSON data
 
-## Use $http to do low-level http requests
+### Problem
+You want to do an AJAX request to fetch JSON data and render it.
 
-## Change http request headers
+### Solution
+Implement a controller using `$http` to fetch the data and store it in the scope.
+  
+    <body ng-app="MyApp">
+      <div ng-controller="PostsCtrl">
+        <ul ng-repeat="post in posts">
+          <li>{{post.title}}</li>      
+        </ul>
+      </div>
+    </body>
 
-## Use $resource for RESTful APIs calls (Using mongolab as example service)
+    var app = angular.module("MyApp", []);
+
+    app.controller("PostsCtrl", function($scope, $http) {
+      $http.get('data/posts.json').
+        success(function(data, status, headers, config) {
+          $scope.posts = data;
+        });
+    });
+
+### Discussion
+The controller defines a dependency to the `$scope` and the `$http` module. An HTTP get call to the `data/posts.json` URL is done and on success the JSON data is put in `$scope.posts`.
+
+You can set custom HTTP headers by using the `$http.defaults` function:
+
+    $http.defaults.headers.common["X-Custom-Header"] = "Angular.js"
+
+The complete example uses the angular-seed project again.
+
+## Consuming RESTful APIs
+
+### Problem
+You want to consume a RESTful API.
+
+### Solution
+Use Angular's high-level `$resource` module to use RESTful APIs.
+
+Let us start with defining the application module and our `Post` model:
+
+    var app = angular.module('myApp', ['ngResource']);
+
+    app.factory("Post", function($resource) {
+      return $resource("/api/posts/:id");
+    });
+
+Now we can use the `$resource$ to retrieve a list of posts:
+
+    app.controller("PostIndexCtrl", function($scope, Post) {
+      Post.query(function(data) {
+        $scope.posts = data;
+      });
+    });
+
+Or a specific post by `id`:
+
+    app.controller("PostShowCtrl", function($scope, Post) {
+      Post.get({ id: 1 }, function(data) {
+        $scope.post = data;
+      });
+    });
+
+And delete a specific post:
+
+    app.controller("PostDestroyCtrl", function($scope, Post) {
+      $scope.destroy = function(id) {
+        Post.delete({ id: id });
+      }
+    });
+
+
+### Discussion
+Following some conventions simplifies our code quite a bit. We define the `$resource` by passing the URL schema only. This gives us a handful of nice methods including query, get, save and remove to work with our resource. In the example above we implement several controllers to cover the various typical use cases.
+
+It is generally a good practice to encapsulate your model and `$resource$` usage in an Angular `service` module and inject that in your controller. 
+
+What if your response of posts is not an array but a more complex json? This typically results in the following error: 
+    
+    TypeError: Object #<Resource> has no method 'push'
+    
+Have a look at the following JSON example:
+
+    {
+      "posts": [
+        {
+          "id"    : 1,
+          "title" : "title 1"
+        },
+        {
+          "id": 2,
+          "title" : "title 2"
+        }
+      ] 
+    }
+
+In this case you have to change the `$resource$ definition accordingly.
+
+    app.factory("Post", function($resource) {
+      return $resource("/api/posts/:id", {}, {
+        query: { method: "GET", isArray: false }
+      });
+    });
+
+    app.controller("PostIndexCtrl", function($scope, Post) {
+      Post.query(function(data) {
+        $scope.posts = data.posts;
+      });
+    });
+
+Note, that we only change the configuration of the `query` action to not expecting an array. Then in our controller we can directly access the `data.posts`.
+
+The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
 
 ## Doing JSONP calls
+
+## Deferred and Promise
 
 ## Testing Services
