@@ -2,11 +2,9 @@
 # Preface
 
 ## Introduction
-Angular.js 1.0 has been released only half a year ago but is already changing the development status quo of client-side web apps. With its focus on CRUD based applications it achieves a very high productivity unmatched by other frameworks. If you are using Angular.js, or considering it, this cookbook provides easy to follow recipes for issues you are likely to face.
+Angular.js is an open-source Javascript MVC (Model-View-Controller) framework developed by Google. It gives Javascript developers a highly structured approach to developing rich browser-based applications which leads to very high productivity.
 
-Each recipe solves a specific problem and provides a solution and in-depth discussion of it.
-
-## Why Angular.js?
+If you are using Angular.js, or considering it, this cookbook provides easy to follow recipes for issues you are likely to face. Each recipe solves a specific problem and provides a solution and in-depth discussion of it.
 
 ## Code Examples
 All code examples in this book can be found on [Github](http://github.com/fdietz/recipes-with-angular-js-examples).
