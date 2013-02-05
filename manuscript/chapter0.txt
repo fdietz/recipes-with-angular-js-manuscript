@@ -6,17 +6,19 @@ Angular.js 1.0 has been released only half a year ago but is already changing th
 
 Each recipe solves a specific problem and provides a solution and in-depth discussion of it.
 
-## Code Examples
-All code examples in this book can be found on http://github.com/fdietz/recipes-with-angular.js
+## Why Angular.js?
 
-## How to contact us
+## Code Examples
+All code examples in this book can be found on [Github](http://github.com/fdietz/recipes-with-angular-js-examples).
+
+## How to contact me
 If you have questions or comments please get in touch with:
 
-Frederik Dietz
-
-fdietz@gmail.com
+Frederik Dietz (fdietz@gmail.com)
 
 ## Acknowledgements
-Thanks go to bla for reviewing the book!
+Thanks go to John Lindquist for his excellent [Angular.js screencasts](http://www.youtube.com/user/johnlindquist/videos?query=angular) and his project [Egghead IO](http://egghead.io/), Lukas Ruebbelke for his awesome [videos](http://www.youtube.com/user/simpulton/videos?flow=grid&view=0)
+
+TODO: Thanks for reviewing the book!
 
 {{mainmatter}}

@@ -1,7 +1,7 @@
-# Externals Services
+# Consuming Externals Services
 Angular has built-in support for doing AJAX requests with low- and high-level APIs.
 
-## AJAX request to fetch JSON data
+## Requesting JSON Data with AJAX
 
 ### Problem
 You want to do an AJAX request to fetch JSON data and render it.

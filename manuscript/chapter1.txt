@@ -1,9 +1,9 @@
 # An Introduction to Angular.js
 
-## Including angular.js in a web page
+## Including the Angular.js library Code in an HTML page
 
 ### Problem
-You want to include Angular.js in a web page.
+You want to use Angular.js on a web page.
 
 ### Solution
 In order to get your first Angular.js app up and running you need to include the angular javascript file via script tag and make use of the `ng-app` directive.
@@ -20,17 +20,17 @@ In order to get your first Angular.js app up and running you need to include the
 T> Tip: You can checkout a complete example on [github](http://github.com/fdietz/recipes-with-angular.js/chapter1/recipe1).
 
 ### Discussion
-Adding the `ng-app` directive tells Angular to kick in its magic. The expression `{{ 1 + 2 }}` is evaluated by Angular and the result 3 is rendered. Note, that removing `ng-app` will result in the browser to render the expression as is instead of evaluating it. Play around with the expression! You can use numbers as in the example or concatenate Strings, etc. 
+Adding the `ng-app` directive tells Angular to kick in its magic. The expression `{{ 1 + 2 }}` is evaluated by Angular and the result `3` is rendered. Note, that removing `ng-app` will result in the browser to render the expression as is instead of evaluating it. Play around with the expression! You can use numbers as in the example or concatenate Strings, etc.
 
 For brevity reasons we skip the boilerplate code in the following recipes.
 
-## Binding a text input to an expression
+## Binding a Text Input to an Expression
 
 ### Problem
 You want user input to be used in another part of your html page.
 
 ### Solution
-Use Angulars `ng-model` directive to bind the text input to the expression
+Use Angulars `ng-model` directive to bind the text input to the expression.
 
     Enter your name: <input type="text" ng-model="name"></input>
     <p>Hello {{name}}!</p>
@@ -52,7 +52,7 @@ Consider how you would implement this traditionally using jQuery:
           $(document).ready(function() {
             $("input").keypress(function() {
               $("#name").text($(this).val());
-            });  
+            });
           });
         </script>
 
@@ -61,7 +61,7 @@ Consider how you would implement this traditionally using jQuery:
 
 On document ready we bind to the keypress event in the text input and replace the text in the paragraph in the callback function. Using jQuery you need to deal with document ready callbacks, element selection, event binding and the context of this. Quite a lot of concepts to swallow and lines of code to maintain!
 
-## Convert expression output with Filters
+## Converting Expression Output with Filters
 
 ### Problem
 When presenting data to the user, you might need to convert the data to a more user-friendly format. In our case we want to uppercase the "name" value from the previous recipe in the expression.
@@ -75,10 +75,10 @@ Use the `uppercase` Angular filter.
 ### Discussion
 Angular uses the `|` (pipe) character to combine filters with variables in expressions. When evaluating the expression, the name variable is passed to the uppercase filter. This is similar to working with the Unix bash pipe symbol where an input can be transformed by another program. Also try the `lowercase` filter!
 
-## Use Controllers for your business logic
+## Responding to Click Events using Controllers
 
 ### Problem
-You want to hide an html element on button click.
+You want to hide an HTML element on button click.
 
 ### Solution
 Use the `ng-hide` directive in conjunction with a controller to change the visibility status on button click.
@@ -117,10 +117,10 @@ And the controller in `js/app.js`:
 ### Discussion
 Using the `ng-controller` directive we bind the div element including its children to the context of the `MyCtrl` Controller. The `ng-click` directive will call the `toggle()` function of the `MyCtrl` Controller on button click. The controller implementation defaults the `visible` attribute to true and toggles its boolean state in the toggle function. The `ng-show` directive calls the `isVisible()` function to retrieve the boolean state. Note, that you could use the `visible` attribute instead if `isVisible()`. Using a function encapsulates the logic and allows more complex logic.
 
-## Create your own directive
+## Creating Custom HTML elements with Directives
 
 ### Problem
-You want to render a Hello World snippet in several places.
+You want to render an HTML snippet as a reusable custom HTML element.
 
 ### Solution
 Create a custom directive which renders your Hello World snippet.
@@ -139,7 +139,7 @@ The directive implementation:
         template: '<span>Hello World</span>'
       };
     });
-    
+
 ### Discussion
 We ignore the module creation for a later recipe for now. The browser will render the `span` element as defined in the directive. Note, that it did not replace the `hello-world` element, but instead inserted the `span`. If you want to replace the content completely you need to return an addditional attribute replace set to the true:
 
@@ -151,6 +151,6 @@ We ignore the module creation for a later recipe for now. The browser will rende
       };
     });
 
-Now the `hello-world` element is not rendered at all and replaced with the `span` element. 
+Now the `hello-world` element is not rendered at all and replaced with the `span` element.
 
 Also note the `restrict` attribute is set to `E` which means the directive can be used only as an html element. A full discussion will follow in later chapters.

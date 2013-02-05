@@ -1,7 +1,7 @@
 # Directives
-Directives are one of the most powerful concepts in Angular since they let you invent new html syntax specific to your application. This allows you to create reusable components which encapsulate complex DOM structures, stylesheets and even behaviour. 
+Directives are one of the most powerful concepts in Angular since they let you invent new html syntax specific to your application. This allows you to create reusable components which encapsulate complex DOM structures, stylesheets and even behaviour.
 
-## Enable/Disable DOM element conditionally
+## Enabling/Disabling DOM Elements Conditionally
 
 ### Problem
 You want to disable a button depending on a checkbox state.
@@ -17,17 +17,17 @@ Use the `ng-disabled` directive and bind its condition to the checkbox state.
 ### Discussion
 The `ng-disabled` directive is a direct translation from the disabled HTML attribute, without you needing to worry about browser incompatibilities. It is bound to the `checked` model using an attribute value as is the checkbox using the `ng-model` directive. In fact the `checked` attribute value is again an Angular expression. You could for example invert the logic and use `!checked` instead.
 
-This is just one example of a directive shipped with Angular. There are many others as for example `ng-hide`, `ng-checked` or `ng-mouseenter` and I encourage you go through the [API Reference](http://docs.angularjs.org/api) and explore all the directives Angular has to offer. 
+This is just one example of a directive shipped with Angular. There are many others as for example `ng-hide`, `ng-checked` or `ng-mouseenter` and I encourage you go through the [API Reference](http://docs.angularjs.org/api) and explore all the directives Angular has to offer.
 
 In the next recipes we will focus on implementing directives.
 
-## Implement DOM changes in response to user behaviour
+## Changing the DOM in Response to User Actions
 
 ### Problem
-You want to change the css of an HTML element on a mouse click and encapsulate this behaviour in a reusable component.
+You want to change the CSS of an HTML element on a mouse click and encapsulate this behaviour in a reusable component.
 
 ### Solution
-Implement a directive with defines a link function.
+Implement a directive which defines a link function.
 
     <body ng-app="MyApp">
       <my-widget>
@@ -55,7 +55,7 @@ Implement a directive with defines a link function.
 When clicking on the paragraph the background color changes to red.
 
 ### Discussion
-In the HTML document we use the new directive as an HTML element `my-widget`, which can be found in the javascript code as `myWidget` again. The directive function returns a restriction and a link function. 
+In the HTML document we use the new directive as an HTML element `my-widget`, which can be found in the javascript code as `myWidget` again. The directive function returns a restriction and a link function.
 
 The restriction means that this directive can only be used as an HTML element and not for example an HTML attribute. If you want to use it as an HTML attribute, change the `restrict` to return `A` instead. The usage would then have to be adapted to:
 
@@ -63,7 +63,7 @@ The restriction means that this directive can only be used as an HTML element an
       <p>Hello World</p>
     </div>
 
-Wether you use the attribute or element mechanism depends on your use case. Generally speaking one would use the element mechanism to define a custom reusable component. The attribute mechanism would be used whenever you want to "configure" some element or enhance it with more behaviour. Other options are using the directive as a class attribute or a comment. 
+Wether you use the attribute or element mechanism depends on your use case. Generally speaking one would use the element mechanism to define a custom reusable component. The attribute mechanism would be used whenever you want to "configure" some element or enhance it with more behaviour. Other options are using the directive as a class attribute or a comment.
 
 The link function is much more interesting since it defines the actual behaviour. The scope, the actual HTML element `my-widget` and the html attributes are passed as params. Note, that this has nothing to do with Angulars dependency injection mechanism. Ordering of the parameters is important!
 
@@ -83,10 +83,10 @@ The `directive` method expects a function which can be used for initialization a
       // ...
     }
 
-## Render an html snippet
+## Rendering an HTML Snippet in a Directive
 
 ### Problem
-You want to render a html snippet in multiple places
+You want to render an HTML snippet as a reusable component.
 
 ### Solution
 Implement a directive and use the template attribute to define the HTML.
@@ -116,7 +116,7 @@ This will render the Hello World paragraph as a child node of your `my-widget` e
     });
 
 Another option would be to use a file for the HTML snippet. In this case you need to use the templateUrl attribute, as for example:
-  
+
     app.directive("myWidget", function() {
       return {
         restrict: "E",
@@ -127,7 +127,7 @@ Another option would be to use a file for the HTML snippet. In this case you nee
 
 The `widget.html` should reside in the same directory as the `index.html` file. This will only work if you use a web server to host the file. The example on Github uses angular-seed as bootstrap again.
 
-## Use directives child nodes in directive output
+## Rendering a Directive's DOM Node Children
 
 ### Problem
 Your widget uses the child nodes of the directive element to create a combined rendering.
@@ -151,10 +151,10 @@ Use the `transclude` attribute together with the `ng-transclude` directive.
 
 This will render a `div` element containing a `h3` element and append the directives child node with the paragraph element below.
 
-### Discussion 
+### Discussion
 In this context transclusion refers to the inclusion of a part of a document into another document by reference. The `ng-transclude` attribute should be placed depending on where you want your child nodes to be appended to.
 
-## Pass configuration params using HTML attributes
+## Passing Configuration Params Using HTML Attributes
 
 ### Problem
 You want to pass a configuration param to change the rendered output.
@@ -240,14 +240,14 @@ Another possibility would be to pass an expression as a function to the directiv
 
 We pass the attribute `fn` to the directive and since the local scope defines `fn` accordingly we can call the function in the linkFunction and pass in the expression arguments as a hash.
 
-## Render an HTML snippet repeatedly
+## Repeatedly Rendering Directive's DOM Node Children
 
 ### Problem
 You want to render an html snippet repeatedly using the directives child nodes as the "stamp" content.
 
 ### Solution
 Implement a compile function in your directive.
-    
+
     <repeat-ntimes repeat="10">
       <h1>Header 1</h1>
       <p>This is the paragraph.</p>
@@ -292,7 +292,7 @@ Note, that you can use both compile and link function combined. In this case the
     }
 
 
-## Directive to directive communication
+## Directive to Directive Communication
 
 ### Problem
 You want a directive to communicate with another directive and augment each other's behaviour using a well defined interface (API).
@@ -349,13 +349,13 @@ Implement a directive with a controller function and a second directive which "r
 If you hover with the mouse over the rendered text the console should print and the basket's content.
 
 ### Discussion
-`Basket` is the example directive which demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `Basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The link function then gets `basketCtrl` injected. 
+`Basket` is the example directive which demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `Basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The link function then gets `basketCtrl` injected.
 
-Note, how the `basket` directive is defined as an HTML element and the `apple` and `orange` directives are defined as HTML attributes (the default for directives). This demonstrates the typical use case of a reusable component augmented by other directives. 
+Note, how the `basket` directive is defined as an HTML element and the `apple` and `orange` directives are defined as HTML attributes (the default for directives). This demonstrates the typical use case of a reusable component augmented by other directives.
 
-Now there might be other ways of passing data back and forth between directives - we have seen the different semantics of using the (isolated) context in directives in previous recipes - but what's especially great about the controller is the clear API contract it lets you define. 
+Now there might be other ways of passing data back and forth between directives - we have seen the different semantics of using the (isolated) context in directives in previous recipes - but what's especially great about the controller is the clear API contract it lets you define.
 
-## Testing directives
+## Testing Directives
 
 ### Problem
 You want to test your directive with a unit test. As an example we use a tab component directive implementation which can be easily used in your HTML document.
@@ -401,7 +401,7 @@ The directive implementation is split into the tabs and the pane directive. Let 
       };
     });
 
-It manages a list of `panes` and the selected state of the `panes`. The template definition makes use of the selection to change the class and responds on the click event to change the selection. 
+It manages a list of `panes` and the selected state of the `panes`. The template definition makes use of the selection to change the class and responds on the click event to change the selection.
 
 The `pane` directive depends on the `tabs` directive to add itself to it.
 
@@ -478,7 +478,7 @@ Using the angular-seed in combination with jasmine and jasmine-jquery you can im
     });
 
 ### Discussion
-Combining jasmine with jasmine-jquery gives you useful assertions like `toHaveClass` and actions like `click` which are used extensively in the example above. 
+Combining jasmine with jasmine-jquery gives you useful assertions like `toHaveClass` and actions like `click` which are used extensively in the example above.
 
 To prepare the template we use `$compile` and `$digest` in the `beforeEach` function and then access the resulting Angular element in our tests.
 

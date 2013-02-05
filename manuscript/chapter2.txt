@@ -1,7 +1,7 @@
 # Controllers
 Controllers in Angular handle view behaviour. The user clicking a button or entering some text in a form - what should happen next is implemented in a controller. As a general rule a controller should not reference the DOM directly. This dramatically simplifies unit testing controllers.
 
-## Assign default value to model
+## Assigning a Default Value to a Model
 
 ### Problem
 You want to assign a default value to the scope in the controllers context.
@@ -18,21 +18,21 @@ You want to assign a default value to the scope in the controllers context.
 
 ### Discussion
 Depending on where you use the ng-controller directive, you define its assigned scope. The scope is hierachical and follows the DOM nodes hierarchy. In our example the value expression is correctly evaluated to `some value`, since value is set in the `MyCtrl` controller. Note, that this would not work if the value expression is moved outside the controllers scope:
-  
+
     <p>{{value}}</p>
 
-    <div ng-controller="MyCtrl">  
+    <div ng-controller="MyCtrl">
     </div>
 
 In this case `{{value}}` will simply be not rendered at all.
 
-## Change model value with a function
+## Changing a Model Value with a Controller Function
 
 ### Problem
-You want to increment the model value by 1.
+You want to increment a model value by 1.
 
 ### Solution
-Define a increment function which changes the scope.
+Implement an increment function which changes the scope.
 
     <div ng-controller="MyCtrl">
       <p ng-init="incrementValue(5)">{{value}}</p>
@@ -49,7 +49,7 @@ Define a increment function which changes the scope.
 ### Discussion
 The `ng-init` directive is executed on page load and calls the function defined in `MyCtrl`.
 
-## Expose model value with a function
+## Encapsulating a Model Value with a Controller Function
 
 ### Problem
 You want to retrieve a model via function (instead of directly accessing the scope from the template) which further changes the model value.
@@ -72,19 +72,19 @@ Define a getter function which returns the model value.
 ### Discussion
 `MyCtrl` defines the `getIncrementedValue` function which uses the current value and returns it incremented by one. One could argue that depending on the use case it would make more sense to use a filter. But, there are use cases specific to the controllers behaviour which you might not want to use a generic directive.
 
-## Respond to scope changes
+## Responding to Scope Changes
 
 ### Problem
 You want to react on a model change to trigger some further actions. In our example we simple want to set another model value depending on the value we are listing on.
 
 ### Solution
-Use the $watch function in your controller.
+Use the `$watch` function in your controller.
 
     <div ng-controller="MyCtrl">
       <input type="text" ng-model="name" placeholder="Enter your name">
       <p>{{greeting}}</p>
     </div>
-  
+
     function MyCtrl($scope) {
       $scope.name = "";
 
@@ -95,7 +95,7 @@ Use the $watch function in your controller.
       });
     }
 
-The value `greeting` will be changed whenever there's a change on the `name` model and the value is not blank.   
+The value `greeting` will be changed whenever there's a change on the `name` model and the value is not blank.
 
 ### Discussion
 The first argument `name` of the `$watch` function is actually an Angular expression, so you can use more complicated expressions (for example: `[value1, value2] | json`). Alternatively, you can also use a javascript function:
@@ -108,7 +108,7 @@ The first argument `name` of the `$watch` function is actually an Angular expres
 
 Note, that you need to return a String in the watcher function. The second function will only be called if the returned String changed compared to the previous execution. Internally this uses `angular.equals` to determine equality.
 
-## Reuse code between Controllers using Services
+## Sharing Code Between Controllers using Services
 TODO
 
 ## Testing Controllers
@@ -117,12 +117,12 @@ TODO
 You want to unit test your business logic.
 
 ### Solution
-Implement a unit test using [Jasmine](http://pivotal.github.com/jasmine/) and the [angular-seed](https://github.com/angular/angular-seed) bootstrap. Following our previous `$watch` recipe this is how our spec would look like.
+Implement a unit test using [Jasmine](http://pivotal.github.com/jasmine/) and the [angular-seed](https://github.com/angular/angular-seed) project. Following our previous `$watch` recipe this is how our spec would look like.
 
     describe('MyCtrl', function(){
       var scope, ctrl;
 
-      beforeEach(inject(function($injector, $controller, $rootScope) {  
+      beforeEach(inject(function($injector, $controller, $rootScope) {
         scope = $rootScope.$new();
         ctrl = $controller(MyCtrl, { $scope: scope });
       }));
@@ -138,7 +138,7 @@ Implement a unit test using [Jasmine](http://pivotal.github.com/jasmine/) and th
 ### Discussion
 Jasmine specs use `describe` and `it` functions to group specs and `beforeEach` and `afterEach` to setup and teardown code. The actual expectation compares the greeting from the scope with our expectation `Greetings Frederik`.
 
-The scope and controller initialization is a bit more involved. We use `inject` to initialize the scope and controller as closely as possible to how our code would behave at runtime too. We can't just initialize the scope as an javascript object `{}` since then we would not be able to call `$watch` on it. 
+The scope and controller initialization is a bit more involved. We use `inject` to initialize the scope and controller as closely as possible to how our code would behave at runtime too. We can't just initialize the scope as an javascript object `{}` since then we would not be able to call `$watch` on it.
 
 The `$digest` call is required in order for another watch execution. We need to call `$digest` manually in our spec whereas at runtime Angular will do this for us automatically.
 

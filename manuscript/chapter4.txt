@@ -1,7 +1,7 @@
 # Filters
-Angular Filters are typically used to format expressions in bindings in your template. They transform the input data to a new formatted data type. 
+Angular Filters are typically used to format expressions in bindings in your template. They transform the input data to a new formatted data type.
 
-## Format string with a currency filter
+## Formatting a String With a Currency Filter
 
 ### Problem
 You want to format the amount with a localized currency label.
@@ -21,13 +21,13 @@ Use the built-in `currency` filter and make sure you load the corresponding loca
         <p>Custom Currency: {{ amount | currency: "Euro €" }}</p>
       </body>
     </html>
-    
+
 Enter an amount and it will be displayed using Angular's default locale.
 
 ### Discussion
 In our example we explicitly load the German locale settings and therefore the default formatting will be in German. The english locale is shipped by default, so there's no need to include the angular-locale_en.js file. If you remove the script tag, you will see the formatting change to English instead. This means in order for a localized application to work correctly you need to load the corresponding locale file. All available locale files can be seen on [github](https://github.com/angular/angular.js/tree/master/src/ngLocale).
 
-## Implement filter to reverse string output
+## Implementing a Custom Filter to Reverse an Input String
 
 ### Problem
 You want to reverse users text input.
@@ -57,7 +57,7 @@ Implement a custom filter which reverses the input.
 ### Discussion
 Angular's filter function expects a filter name and a function as params. The function must return the actual filter function, where you must implement your business logic. In this example it will only have an `input` param. The result will be returned after the for loop reversed the input completely.
 
-## Pass configuration params to filters
+## Passing Configuration Params to Filters
 
 ### Problem
 You want to make your filter customizable by introducing config params.
@@ -78,7 +78,7 @@ Angular filters can be passed a hash of params which can be directly accessed in
         input = input || "";
         var result = "";
         var suffix = options["suffix"] || "";
-        
+
         for (var i=0; i<input.length; i++) {
           result = input.charAt(i) + result;
         }
@@ -92,7 +92,7 @@ Angular filters can be passed a hash of params which can be directly accessed in
 ### Discussion
 The suffix `!` is passed as an option to the filter function and is appended to the output.
 
-## Filtering a List
+## Filtering a List of DOM Nodes
 
 ### Problem
 You want to filter a list of names.
@@ -123,12 +123,12 @@ Angular filters not only work with Strings as input but also with Arrays.
       };
     });
 
-We pass `Peter` as the single param to the exclude filter. 
+We pass `Peter` as the single param to the exclude filter.
 
 ### Discussion
 The filter implemention loops through all names and creates a result array excluding 'Peter'. Note, that the actual syntax of the filter function didn't change at all from our previous example with the String input.
 
-## Filter Chaining
+## Chaining Filters together
 
 ### Problem
 You want to combine several filters to a single result
@@ -180,6 +180,6 @@ Use the angular-seed project as a bootstrap again.
          }));
        });
     });
-    
+
 ### Discussion
 The `beforeEach` loads the module and the `it` methods injects the filter function for us. Note, that it has to be called `checkmarkFilter`, otherwise Angular can't inject our filter function correctly.

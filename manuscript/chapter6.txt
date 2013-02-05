@@ -1,1 +1,7 @@
-# Routing and Partials
+# URLs, Routing and Partials
+
+## Changing the Browser's Current URL
+
+## Client-Side Routing with Hashbang URLs
+
+## Using Regular URLs with the HTML5 History API

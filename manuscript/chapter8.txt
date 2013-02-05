@@ -1,1 +1,19 @@
 # Common User Interface Patterns
+
+## Filtering and Sorting a List
+
+## Paginating Through Client-Side Data
+
+## Paginating Through Server-Side Data
+
+## Pagination using Infinite Results
+
+## Selectable List Items
+
+## Displaying a Flash Notice/Failure Message
+
+## Editing Text In-Place using HTML5 ContentEditable
+
+## Displaying a Modal Dialog
+
+## Displaying a Loading Spinner

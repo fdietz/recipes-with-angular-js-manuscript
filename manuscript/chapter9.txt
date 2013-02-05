@@ -1,1 +1,7 @@
-# Debugging and Profiling
+# Debugging and Tooling
+
+## Inspecting the Scope Using the Chrome Console
+
+## Debugging and Profiling with the Batarang Chrome Extension
+
+## Enhancing Developer Workflow with Yeoman
