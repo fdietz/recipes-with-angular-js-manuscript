@@ -1,5 +1,5 @@
 # Controllers
-Controllers in Angular handle view behaviour. The user clicking a button or entering some text in a form - what should happen next is implemented in a controller. As a general rule a controller should not reference the DOM directly. This dramatically simplifies unit testing controllers.
+Controllers in Angular handle view behaviour, for example the user clicking a button or entering some text in a form. What should happen next is implemented in a Controller. As a general rule a Controller should not reference the DOM directly. This dramatically simplifies unit testing Controllers.
 
 ## Assigning a Default Value to a Model
 
