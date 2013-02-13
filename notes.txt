@@ -1,0 +1,5 @@
+$resource:
+* usage of { id: "@id"} simplifies code
+
+* user interface pattern with first-/second level navigation
+* usage of $templateCache, script tag templates, etc.
