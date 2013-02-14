@@ -1,26 +1,27 @@
 # URLs, Routing and Partials
-The `$location` [service](http://docs.angularjs.org/guide/dev_guide.services.$location) in Angular.js parses the current browser URL and makes it available to your application.
+The [$location service](http://docs.angularjs.org/guide/dev_guide.services.$location) in Angular.js parses the current browser URL and makes it available to your application. Changes in either the browser address bar or the `$location` service will be kept in sync.
 
-Depending on the configuration the `$location` service behaves differently and has different requirements for your application. We will first look into client-side routing with hashbang URLs since it is the default mode and later in using the new HTML5 based routing.
+Depending on the configuration the `$location` service behaves differently and has different requirements for your application. We will first look into client-side routing with hashbang URLs since it is the default mode and later into the new HTML5 based routing.
 
 ## Client-Side Routing with Hashbang URLs
 
 ### Problem
-You want to the browser address bar reflect your apps page flow consistently.
+You want the browser address bar reflect your apps page flow consistently.
 
 ### Solution
-Use the `$routeProvider` and `$locationProvider` services to define your routes.
+Use the `$routeProvider` and `$locationProvider` services to define your routes and the `ng-view` Directive as the placeholder for the partials which should be shown for a particular route definition.
 
-The basic HTML uses the `ng-view` directive;
+The basic HTML uses the `ng-view` directive:
 
     <body>
       <h1>Routing Example</h1>
       <ng-view></ng-view>
+
       <script src="lib/angular/angular.js"></script>
       <script src="js/app.js"></script>
     </body>
 
-Next we need to define the route configuration in `app.js`;
+The route configuration is implemented in `app.js` using the `config` method:
 
     var app = angular.module("MyApp", []).
       config(function($routeProvider, $locationProvider) {
@@ -59,16 +60,16 @@ And the partial `show.html`;
 
     <a href="#!persons">Go back</a>
 
-It is configured to render either the `index.html` or the `show.html` partial depending on the URL. The `index.html` shows a list of `persons` and the `show.html` shows more detailed information for a specific `person`.
+Our app is configured to render either the `index.html` or the `show.html` partial depending on the URL. The `index.html` shows a list of `persons` and the `show.html` shows more detailed information for a specific `person`.
 
 This example is based on the Angular Seed Bootstrap again and will not work without starting the development server. The complete project is available on Github.
 
 ### Discussion
-Let's give our app a try and open the `index.html`. Note, how the `otherwise` defined route redirects us from `index.html` to `index.html#!/persons`. This is the fallback in case other `when` conditions don't apply. Note, how the hashbang (#!) separates the `index.html` from the dynamic client-side part `/persons`.
+Let's give our app a try and open the `index.html`. The `otherwise` defined route redirects us from `index.html` to `index.html#!/persons`. This is the fallback in case other `when` conditions don't apply. Note, how the hashbang (#!) separates the `index.html` from the dynamic client-side part `/persons`.
 
 The `/persons` route loads the `index.html` partial via HTTP Request (that is also the reason why it won't work without a development server). It shows a list of persons and therefore defines a `ng-controller` directive inside the template. Let us assume for now that the Controller implementation defines a `$scope.persons` somewhere. Now for each person we also render a link to show the details via `#!persons/{{person.id}}`.
 
-The route definition for the details uses a placeholder `/persons/:id` which will be in our case resolves to for example `/persons/1`. The `show.html` partial and additionally a Controller are defined for this URL. The Controller will be scoped to the partial, which basically resembles our `index.html` template where we defined our own `ng-controller` Directive to achieve the same effect.
+The route definition for the person's details uses a placeholder `/persons/:id` which in our case resolves to for example `/persons/1`. The `show.html` partial and additionally a Controller are defined for this URL. The Controller will be scoped to the partial, which basically resembles our `index.html` template where we defined our own `ng-controller` Directive to achieve the same effect.
 
 The `show.html` has a back link to `#!persons` which leads back to the `index.html` page.
 
@@ -106,7 +107,7 @@ We have to take care of the partial loading. Our `Express` app will have to serv
 
 The `Express` route definition loads the partial with given name from the `partials` directory and renders its content.
 
-When supporting HTML5 routing our server has to redirect all other URLs to the entry point of our application, the `index` page. First the rendering of the `index` page, which contains the `ng-view` Directive.
+When supporting HTML5 routing our server has to redirect all other URLs to the entry point of our application, the `index` page. First the rendering of the `index` page, which contains the `ng-view` Directive:
 
     app.get('/', function(req, res) {
       res.render('index');
