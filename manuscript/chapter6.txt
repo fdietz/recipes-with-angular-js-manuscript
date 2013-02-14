@@ -72,7 +72,7 @@ The route definition for the details uses a placeholder `/persons/:id` which wil
 
 The `show.html` has a back link to `#!persons` which leads back to the `index.html` page.
 
-Let us come back to the `ng-view` directive. It is automatically bound to the router definition. Therefore you can currently use only a single `ng-view` on your page. For example, you cannot use nested `ng-view`s to achieve user interaction patterns with a first- and second level navigation. We will look into this particular problem in a later recipe.
+Let us come back to the `ng-view` directive. It is automatically bound to the router definition. Therefore you can currently use only a single `ng-view` on your page. For example, you cannot use nested `ng-view`s to achieve user interaction patterns with a first- and second level navigation.
 
 And lastly the HTTP request for the partials happens only once and is then cached via `$templateCache` service.
 
@@ -81,7 +81,50 @@ The hashbang based routing is client-side only and doesn't require server-side c
 ## Using Regular URLs with the HTML5 History API
 
 ### Problem
-You only support more recent browsers
+You want nice looking URLs and can provide server-side support.
 
 ### Solution
+We use the same example but use the [Express](http://expressjs.com/) framework to serve all content and do the URL rewriting. Let us start with the route configuration:
+
+    app.config(function($routeProvider, $locationProvider) {
+      $locationProvider.html5Mode(true);
+
+      $routeProvider.
+        when("/persons", { templateUrl: "/partials/index.jade", controller: "PersonIndexCtrl" }).
+        when("/persons/:id", { templateUrl: "/partials/show.jade", controller: "PersonShowCtrl" }).
+        otherwise( { redirectTo: "/persons" });
+    });
+
+There are no changes except the `html5Mode` method which enables our new routing mechanism. The Controller implementation does not change at all.
+
+We have to take care of the partial loading. Our `Express` app will have to serve the partials for us:
+
+    app.get('/partials/:name', function (req, res) {
+      var name = req.params.name;
+      res.render('partials/' + name);
+    });
+
+The `Express` route definition loads the partial with given name from the `partials` directory and renders its content.
+
+When supporting HTML5 routing our server has to redirect all other URLs to the entry point of our application, the `index` page. First the rendering of the `index` page, which contains the `ng-view` Directive.
+
+    app.get('/', function(req, res) {
+      res.render('index');
+    });
+
+Then the catch all route which redirects to the same page:
+
+    app.get('*', function(req, res) {
+      res.redirect('/');
+    });
+
+The person details link `/persons/{{person.id}}` and the back link `/persons` are both now much cleaner.
+
+Have a look at the complete example on Github and start the `Express` app with `node app.js`.
+
 ### Discussion
+If we wouldn't redirect all requests to the root, what would happen if you navigate to the persons list at `http://localhost:3000/persons`? The `Express` framework would show us an error because there is no route defined for `persons`, we only defined routes for our root `/` and the partials URL `/partials/:name`. The redirect ensures that we actually end up at our root URL which then kicks in our Angular app. When the client-side routing takes over we actually then redirect back to the `/persons` URL.
+
+Also note how navigating to a Person's detail page will load only the `show.jade` partial and navigating back to the `persons` list won't do any server requests. Everything our app needs is loaded from the server and cached client-side.
+
+If you have a hard time understanding the server implementation I suggest to read the excellent [Express Guide](http://expressjs.com/guide.html). Additionally, there is going to be an extra chapter which goes into more details on how to integrate Angular.js with server-side frameworks.
