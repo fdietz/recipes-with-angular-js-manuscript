@@ -78,6 +78,8 @@ Since we defined the `name` attribute on the form HTML element we can now access
 
 Angular's Form Controller exposes `$valid`, `$invalid`, `$error`, `$pristine` and `$dirty` variables.
 
+Angular.js provides built-in Directives for validation including `required`, `pattern`, `minlength`, `maxlength`, `min` and `max`.
+
 Let us use Angular's form integration to actually show validation errors.
 
 ## Displaying Form Validation Errors
@@ -111,12 +113,45 @@ The CSS classes ensure that we initially show the fresh form without any colors.
 We use the same logic in the `ng-show directive to only show the error message when the user started typing for the first time.
 
 ## Only Enabling the Submit button if the Form is Valid
-### Problem
-### Solution
-### Discussion
 
-## Resetting a Form Model
 ### Problem
-### Solution
-### Discussion
+You want to disable the Submit button as long as the form contains invalid data.
 
+### Solution
+Use the `$form.invalid` state in combination with a `ng-disabled` Directive.
+
+Here the changed submit button:
+
+    <button ng-disabled="form.$invalid" class="btn">Submit</button>
+
+### Discussion
+The Form Controller attributes `form.$invalid` and friends are very useful to cover all kinds of use cases which focus on the form as a whole instead of individual fields.
+
+## Implementing Custom Validations
+
+### Problem
+You want to validate user input by comparing it to a blacklist of words.
+
+### Solution
+The [angular-ui](http://angular-ui.github.com/) project offers a nice custom validation directive which lets you pass in options via expression.
+
+Let us have a look at the template first with the usage of the `ui-validate` Directive:
+
+    <input name="firstname" type="text" ng-model="user.firstname" required ui-validate=" { blacklisted: 'notBlacklisted($value)' } "/>
+
+    <p ng-show='form.firstname.$error.blackListed'>This firstname is blacklisted.</p>
+
+And the controller with the `notBlackListed` implementation:
+
+    $scope.blacklist = ['idiot','looser'];
+
+    $scope.notBlackListed = function(value) {
+      return $scope.blacklist.indexOf(value) === -1;
+    };
+
+Our blacklist contains the firstnames we do not want to accept as user input and the `notBlackListed` function checks if the user input matches.
+
+### Discussion
+The `ui-validate` Directive is pretty powerful since it lets you define your custom validations easily by just implementing the business logic in a controller function.
+
+If you want even more, have a look at how to implement custom directives yourself in Angular's excellent [guide](http://docs.angularjs.org/guide/forms).
