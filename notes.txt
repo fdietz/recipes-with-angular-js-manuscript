@@ -3,3 +3,6 @@ $resource:
 
 * user interface pattern with first-/second level navigation
 * usage of $templateCache, script tag templates, etc.
+
+* listening on url changes
+* set url path via $location service
