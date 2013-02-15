@@ -164,7 +164,7 @@ The error function gets the input name attribute passed as a string and checks f
 ### Discussion
 Again we check both the invalid and dirty flags, because we only show the error message in case the user actually changed the form. Note, that this `ng-class` function usage is pretty typical in Angular since expressions do not support ternary checks.
 
-## Only Enabling the Submit button if the Form is Valid
+## Only Enabling the Submit Button if the Form is Valid
 
 ### Problem
 You want to disable the Submit button as long as the form contains invalid data.
