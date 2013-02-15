@@ -1,7 +1,3 @@
-# chapter 2: controllers
-* add nested controller scope example (by value/reference changes)
-* Sharing Code Between Controllers using Services
-
 #chapter 4: $resource
 * usage of { id: "@id" } simplifies code
 
@@ -11,10 +7,10 @@
   (http://www.espeo.pl/2012/02/26/authentication-in-angularjs-application)
   *http://vyazici.blogspot.com.es/2012/09/angularjs-authentication-service.html?showComment=1348551416821#c2541101503950624710
 
-* usage of $templateCache, script tag templates, etc.
+# chapter 10: backend integration
+* rails backend: usage of $templateCache, script tag templates, etc.
 
 # chapter 6: routing
-* listening on url changes for a nav menu
 * set url path via $location service (explain separate query part and url encoding)
 http://stackoverflow.com/questions/11541695/angular-js-redirecting-to-a-certain-route-based-on-condition
 http://amitgharat.wordpress.com/2012/09/19/page-navigation-bar-in-angular-js/
