@@ -10,11 +10,6 @@
 # chapter 10: backend integration
 * rails backend: usage of $templateCache, script tag templates, etc.
 
-# chapter 6: routing
-* set url path via $location service (explain separate query part and url encoding)
-http://stackoverflow.com/questions/11541695/angular-js-redirecting-to-a-certain-route-based-on-condition
-http://amitgharat.wordpress.com/2012/09/19/page-navigation-bar-in-angular-js/
-
 # chapter 7: forms
 * form novalidate attribute disables HTML5 validation
 * servers-side validation
