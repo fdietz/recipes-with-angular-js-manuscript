@@ -7,12 +7,17 @@
 
 # chapter 8: user interface pattern
 * user interface pattern with first-/second level navigation
+* handling login/authentication
+  (http://www.espeo.pl/2012/02/26/authentication-in-angularjs-application)
+  *http://vyazici.blogspot.com.es/2012/09/angularjs-authentication-service.html?showComment=1348551416821#c2541101503950624710
 
 * usage of $templateCache, script tag templates, etc.
 
 # chapter 6: routing
 * listening on url changes for a nav menu
 * set url path via $location service (explain separate query part and url encoding)
+http://stackoverflow.com/questions/11541695/angular-js-redirecting-to-a-certain-route-based-on-condition
+http://amitgharat.wordpress.com/2012/09/19/page-navigation-bar-in-angular-js/
 
 # chapter 7: forms
 * form novalidate attribute disables HTML5 validation
@@ -20,3 +25,4 @@
   (http://jsfiddle.net/rommsen/kyxrF/1/)
 * twitter bootstrap form styling tip:
     form.ng-invalid-required .control-group{background-color: red; color:#fff}
+
