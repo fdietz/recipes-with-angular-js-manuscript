@@ -11,9 +11,6 @@
 * rails backend: usage of $templateCache, script tag templates, etc.
 
 # chapter 7: forms
-* form novalidate attribute disables HTML5 validation
 * servers-side validation
   (http://jsfiddle.net/rommsen/kyxrF/1/)
-* twitter bootstrap form styling tip:
-    form.ng-invalid-required .control-group{background-color: red; color:#fff}
 
