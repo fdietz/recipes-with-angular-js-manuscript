@@ -7,10 +7,13 @@ Controllers in Angular handle view behaviour, for example the user clicking a bu
 You want to assign a default value to the scope in the controllers context.
 
 ### Solution
+Use the `ng-controller` Directive in your template:
 
     <div ng-controller="MyCtrl">
       <p>{{value}}</p>
     </div>
+
+And define the scope variable in your controller function:
 
     var MyCtrl = function($scope) {
       $scope.value = "some value";
@@ -114,9 +117,9 @@ Note, that you need to return a String in the watcher function. The second funct
 You want to share a model between a nested hierarchy of controllers.
 
 ### Solution
-Use javascript objects instead of primitives or direct `$parent` references.
+Use javascript objects instead of primitives or direct `$parent` scope references.
 
-The example template uses a controller and a nested controller `MyNestedCtrl`:
+The example template uses a controller `MyCtrl` and a nested controller `MyNestedCtrl`:
 
     <body ng-app="MyApp">
       <div ng-controller="MyCtrl">

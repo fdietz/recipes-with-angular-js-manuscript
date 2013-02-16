@@ -38,15 +38,15 @@ The `novalidate` attribute disables the HTML5 validation. So, only the Angluar.j
 ### Discussion
 The initial idea when using forms would be to implement them the traditional way by serializing the form data and submit it to the server. Instead we use `ng-model` to bind the form to our model, something we have been doing a lot already in previous recipes. The submit button state is reflected in our `wasSubmitted` scope variable, but no submit to the server was actually done. The default behaviour in Angular.js forms is to prevent the default action since we do not want to reload the whole page. We want to handle the submission in an application specific way. In fact there is even more going on in the background and we are going to look into the behaviour of the `form` or `ng-form` Directive in the next recipe.
 
-## Validating a Form Model client-side
+## Validating a Form Model Client-Side
 
 ### Problem
-You want to validate the form client-side using HTML5 form attributes.
+You want to validate the form client-ide using HTML5 form attributes.
 
 ### Solution
 Angular.js works in tandem with HTML5 form attributes. Let us start with the same form but let us add some HTML5 attributes to make the input required:
 
-    <form name="form" ng-submit="submit()" class="form-horizontal">
+    <form name="form" ng-submit="submit()">
       <label>Firstname</label>
       <input name="firstname" type="text" ng-model="user.firstname" required/>
       <label>Lastname</label>
@@ -70,22 +70,22 @@ Let us add some more debug output:
     Form validation error: {{form.$error}}
 
 ### Discussion
-When starting with a fresh empty form, you notice that Angular adds the css class `ng-pristine` and `ng-valid` to the form tag and each input tag. When editing the form the `ng-pristine` class will be removed from the changed input and also from the form tag. Instead it will be replaced by the `ng-dirty` class. Very useful because you can easily add new features to your app depending on these states.
+When starting with a fresh empty form, you notice that Angular adds the css class `ng-pristine` and `ng-valid` to the form tag and each input tag. When editing the form the `ng-pristine` class will be removed from the changed input field and also from the form tag. Instead it will be replaced by the `ng-dirty` class. Very useful because you can easily add new features to your app depending on these states.
 
-In addition to these two css classes there are two more to look into. The `ng-valid` class will be added whenever an input is valid, otherwise the css class `ng-invalid` is added. Note, that the form tag also gets either a valid or invalid class depending on the inputs. To demonstrate this I've added the `required` HTML5 attribute. Initially, the firstname and lastname input fields are empty and therefore have the `ng-invalid` css class, whereas the age input field has the `ng-valid` class. Additionally, there's `ng-invalid-required` class alongside the `ng-invalid` for even more specificity.
+In addition to these two css classes there are two more to look into. The `ng-valid` class will be added whenever an input is valid, otherwise the css class `ng-invalid` is added. Note, that the form tag also gets either a valid or invalid class depending on the input fields. To demonstrate this I've added the `required` HTML5 attribute. Initially, the firstname and lastname input fields are empty and therefore have the `ng-invalid` css class, whereas the age input field has the `ng-valid` class. Additionally, there's `ng-invalid-required` class alongside the `ng-invalid` for even more specificity.
 
-Since we defined the `name` attribute on the form HTML element we can now access Angular's form controller via scope variables. In the debug output we can check the validity and specific error for each named form input and the form itself. Note, that this only works on the level of the form name attributes and not on the model scope. If you output the following expression `{{user.firstname.$error}}` it will not work.
+Since we defined the `name` attribute on the form HTML element we can now access Angular's form controller via scope variables. In the debug output we can check the validity and specific error for each named form input and the form itself. Note, that this only works on the level of the form's name attributes and not on the model scope. If you output the following expression `{{user.firstname.$error}}` it will not work.
 
 Angular's Form Controller exposes `$valid`, `$invalid`, `$error`, `$pristine` and `$dirty` variables.
 
-Angular.js provides built-in Directives for validation including `required`, `pattern`, `minlength`, `maxlength`, `min` and `max`.
+For validation Angular provides built-in Directives including `required`, `pattern`, `minlength`, `maxlength`, `min` and `max`.
 
-Let us use Angular's form integration to actually show validation errors.
+Let us use Angular's form integration to actually show validation errors in the next recipe.
 
 ## Displaying Form Validation Errors
 
 ### Problem
-You want to show valiation errors to the user by marking the input field red and displaying an error message.
+You want to show validation errors to the user by marking the input field red and displaying an error message.
 
 ### Solution
 We can use the `ng-show` Directive to show an error message if a form input is invalid and css classes to change the input background color depending on its state.
@@ -101,16 +101,16 @@ Let us start with the styling changes:
       }
     </style>
 
-And here is a small part of the form with a error message for the input field:
+And here is a small part of the form with an error message for the input field:
 
     <label>Firstname</label>
     <input name="firstname" type="text" ng-model="user.firstname" required/>
     <p ng-show="form.firstname.$invalid && form.firstname.$dirty">Firstname is required</p>
 
 ### Discussion
-The CSS classes ensure that we initially show the fresh form without any colors. When the user starts typing in a input for the first time, we change it to either green or red. That is a good example usage of the `ng-dirty` and `ng-invalid` css classes.
+The CSS classes ensure that we initially show the fresh form without any classes. When the user starts typing in some input for the first time, we change it to either green or red. That is a good example usage of the `ng-dirty` and `ng-invalid` CSS classes.
 
-We use the same logic in the `ng-show directive to only show the error message when the user started typing for the first time.
+We use the same logic in the `ng-show` directive to only show the error message when the user starts typing for the first time.
 
 ## Displaying Form Validation Errors with the Twitter Bootstrap framework
 
@@ -149,7 +149,7 @@ Let us start with the form:
       </form>
     </div>
 
-Note, that we use the `ng-class` directive on the `control-group` div. So, lets look at the controller implementation:
+Note, that we use the `ng-class` directive on the `control-group` div. So, lets look at the controller implementation of the `error` function:
 
     app.controller("User", function($scope) {
       // ...
@@ -172,7 +172,7 @@ You want to disable the Submit button as long as the form contains invalid data.
 ### Solution
 Use the `$form.invalid` state in combination with a `ng-disabled` Directive.
 
-Here the changed submit button:
+Here is the changed submit button:
 
     <button ng-disabled="form.$invalid" class="btn">Submit</button>
 
@@ -195,15 +195,21 @@ Let us have a look at the template first with the usage of the `ui-validate` Dir
 
 And the controller with the `notBlackListed` implementation:
 
-    $scope.blacklist = ['idiot','looser'];
+    var app = angular.module("MyApp", ["ui", "ui.directives"]);
 
-    $scope.notBlackListed = function(value) {
-      return $scope.blacklist.indexOf(value) === -1;
-    };
+    app.controller("User", function($scope) {
+      $scope.blacklist = ['idiot','loser'];
 
-Our blacklist contains the firstnames we do not want to accept as user input and the `notBlackListed` function checks if the user input matches.
+      $scope.notBlackListed = function(value) {
+        return $scope.blacklist.indexOf(value) === -1;
+      };
+    });
+
+First we need to explicitly list our module dependency to the Angular UI directives module. Make sure you actually download the javascript file and load it via script tag.
+
+Our blacklist contains the words we do not want to accept as user input and the `notBlackListed` function checks if the user input matches any of the words defined in the blacklist.
 
 ### Discussion
 The `ui-validate` Directive is pretty powerful since it lets you define your custom validations easily by just implementing the business logic in a controller function.
 
-If you want even more, have a look at how to implement custom directives yourself in Angular's excellent [guide](http://docs.angularjs.org/guide/forms).
+If you want to know even more, have a look at how to implement custom directives for yourself in Angular's excellent [guide](http://docs.angularjs.org/guide/forms).

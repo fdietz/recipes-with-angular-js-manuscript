@@ -11,14 +11,11 @@ You want the browser address bar reflect your apps page flow consistently.
 ### Solution
 Use the `$routeProvider` and `$locationProvider` services to define your routes and the `ng-view` Directive as the placeholder for the partials which should be shown for a particular route definition.
 
-The basic HTML uses the `ng-view` directive:
+The main template uses the `ng-view` directive:
 
     <body>
       <h1>Routing Example</h1>
       <ng-view></ng-view>
-
-      <script src="lib/angular/angular.js"></script>
-      <script src="js/app.js"></script>
     </body>
 
 The route configuration is implemented in `app.js` using the `config` method:
@@ -85,7 +82,9 @@ The hashbang based routing is client-side only and doesn't require server-side c
 You want nice looking URLs and can provide server-side support.
 
 ### Solution
-We use the same example but use the [Express](http://expressjs.com/) framework to serve all content and do the URL rewriting. Let us start with the route configuration:
+We use the same example but use the [Express](http://expressjs.com/) framework to serve all content and handle the URL rewriting.
+
+Let us start with the route configuration:
 
     app.config(function($routeProvider, $locationProvider) {
       $locationProvider.html5Mode(true);
@@ -98,7 +97,12 @@ We use the same example but use the [Express](http://expressjs.com/) framework t
 
 There are no changes except the `html5Mode` method which enables our new routing mechanism. The Controller implementation does not change at all.
 
-We have to take care of the partial loading. Our `Express` app will have to serve the partials for us:
+We have to take care of the partial loading. Our `Express` app will have to serve the partials for us. The initial typical boilerplate for an `Express` app loads the module and creates a server:
+
+    var express = require('express');
+    var app     = module.exports = express.createServer();
+
+We skip the configuration here and jump directly to the server-side route definition:
 
     app.get('/partials/:name', function (req, res) {
       var name = req.params.name;
@@ -119,14 +123,28 @@ Then the catch all route which redirects to the same page:
       res.redirect('/');
     });
 
-The person details link `/persons/{{person.id}}` and the back link `/persons` are both now much cleaner.
+Let us quickly check the partials again. Note, that they use the [Jade](http://jade-lang.com/) template engine, why relies on indentation to define the HTML document:
+
+    p This is the index partial
+    ul(ng-repeat="person in persons")
+      li
+        a(href="/persons/{{person.id}}"){{person.name}}
+
+The index page creates a list of persons and the show page some more details:
+
+    h3 Person Details {{person.name}}
+    p Age: {{person.age}}
+    a(href="/persons") Back
+
+
+The person details link `/persons/{{person.id}}` and the back link `/persons` are both now much cleaner in my opinion.
 
 Have a look at the complete example on Github and start the `Express` app with `node app.js`.
 
 ### Discussion
-If we wouldn't redirect all requests to the root, what would happen if you navigate to the persons list at `http://localhost:3000/persons`? The `Express` framework would show us an error because there is no route defined for `persons`, we only defined routes for our root `/` and the partials URL `/partials/:name`. The redirect ensures that we actually end up at our root URL which then kicks in our Angular app. When the client-side routing takes over we actually then redirect back to the `/persons` URL.
+If we wouldn't redirect all requests to the root, what would happen if you navigate to the persons list at `http://localhost:3000/persons`? The `Express` framework would show us an error because there is no route defined for `persons`, we only defined routes for our root URL (`/`) and the partials URL `/partials/:name`. The redirect ensures that we actually end up at our root URL which then kicks in our Angular app. When the client-side routing takes over we then redirect back to the `/persons` URL.
 
-Also note how navigating to a Person's detail page will load only the `show.jade` partial and navigating back to the `persons` list won't do any server requests. Everything our app needs is loaded from the server and cached client-side.
+Also note how navigating to a Person's detail page will load only the `show.jade` partial and navigating back to the `persons` list won't do any server requests. Everything our app needs is loaded once from the server and cached client-side.
 
 If you have a hard time understanding the server implementation I suggest to read the excellent [Express Guide](http://expressjs.com/guide.html). Additionally, there is going to be an extra chapter which goes into more details on how to integrate Angular.js with server-side frameworks.
 
@@ -148,7 +166,6 @@ The navigation menu is the classic ul/li menu using a class attribute to mark on
       ...
     </body>
 
-
 The controller implements the `menuClass` function:
 
     app.controller("MainCtrl", function($scope, $location) {
@@ -159,9 +176,9 @@ The controller implements the `menuClass` function:
     });
 
 ### Discussion
-When the user selects a menu item the client-side navigation will kick in as expected. The `menuClass` function is a bind using the `ngClass` directive and updates the CSS class automatically for us depending on the current route.
+When the user selects a menu item the client-side navigation will kick in as expected. The `menuClass` function is bound using the `ngClass` directive and updates the CSS class automatically for us depending on the current route.
 
-Using `$location.path()` we get the current route. The `substring` operation removes the leading `/` and converts `/persons` to `persons` only.
+Using `$location.path()` we get the current route. The `substring` operation removes the leading slash (`/`) and converts `/persons` to `persons`.
 
 ## Listening on Route Changes to Implement a Login Mechanism
 
@@ -169,9 +186,9 @@ Using `$location.path()` we get the current route. The `substring` operation rem
 You want to ensure that a user first has to login before navigating to protected pages.
 
 ### Solution
-Implement a listener on `$routeChangeStart` events to track the next route navigation. Redirect to a login page if the user is not logged in yet.
+Implement a listener on the `$routeChangeStart` event to track the next route navigation. Redirect to a login page if the user is not logged in yet.
 
-The most interesting part is the listener:
+The most interesting part is the implementation of the route change listener:
 
     var app = angular.module("MyApp", []).
       config(function($routeProvider, $locationProvider) {
@@ -194,7 +211,15 @@ The most interesting part is the listener:
         });
       });
 
-Next we need the login controller which sets the logged in user and redirects.
+Next we need the login form:
+
+    <form ng-submit="login()">
+      <label>Username</label>
+      <input type="text" ng-model="username">
+      <button>Login</button>
+    </form>
+
+and lastly the login controller which sets the logged in user and redirects to the persons URL:
 
     app.controller("LoginCtrl", function($scope, $location, $rootScope) {
       $scope.login = function() {
@@ -203,17 +228,9 @@ Next we need the login controller which sets the logged in user and redirects.
       };
     });
 
-and lastly the login form:
-
-    <form ng-submit="login()">
-      <label>Username</label>
-      <input type="text" ng-model="username">
-      <button>Login</button>
-    </form>
-
 ### Discussion
 This is of course not a full fletched login system, so please don't use it in any production system. But, it exemplifies how to generally handle access to specific areas of your web app. When you open the app in your browser you will be redirected to the login app in all cases. Only after you entered a user you can access the other areas.
 
 The `run` method is defined in [Module](http://docs.angularjs.org/api/angular.Module) and is a good place for such a route change listener since it runs only once on initialization after the injector is done loading all the modules. We check the `loggedInUser` in the `$rootScope` and if it is not set we redirect the user to the login page. Note, that in order to skip this behaviour when already navigating to the login page, we have to explicitly check the next `templateUrl`.
 
-The login controller sets the `$rootScope` to the username and redirects. Note, that we can easily access the `$rootScope` by injecting it.
+The login controller sets the `$rootScope` to the username and redirects. We can access the `$rootScope` in the controller by injecting it.
