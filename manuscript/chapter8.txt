@@ -2,11 +2,308 @@
 
 ## Filtering and Sorting a List
 
+### Problem
+You want to filter and sort a relatively small list of items all available on client-side.
+
+### Solution
+Use the built-in `filter` and `orderBy` Filters.
+
+Using a simple text input for the filter query and the `ng-repeat` directive to render a list of friends:
+
+    <body ng-app="MyApp">
+      <div ng-controller="MyCtrl">
+        <form class="form-inline">
+          <input ng-model="query" type="text" placeholder="Filter by" autofocus>
+        </form>
+        <ul ng-repeat="friend in friends | filter:query | orderBy: 'name' ">
+          <li>{{friend.name}}</li>
+        </ul>
+      </div>
+    </body>
+
+The controller defines the default friends array:
+
+    app.controller("MyCtrl", function($scope) {
+      $scope.friends = [
+        { name: "Peter" },
+        { name: "Pablo" },
+        { name: "Linda" },
+        { name: "Marta" },
+        { name: "Othello" },
+        { name: "Markus" }
+      ];
+    });
+
+### Discussion
+Chaining filters is a fantastic way to implement such a use case as long as you have all the data available on the client.
+
+The [filter](http://docs.angularjs.org/api/ng.filter:filter) Angular.js Filter works on an array and returns a subset of items as a new array. It supports a String, Object or Function param. In this example we only use the String param, but given that the `$scope.friends` is an array of objects we could think of more complex examples where we use the Object param, as for example:
+
+    <ul ng-repeat="friend in friends | filter: { name: query, age: '20' } | orderBy: 'name' ">
+      <li>{{friend.name}} ({{friend.age}})</li>
+    </ul>
+
+And lastly you could call a function defined in the controller which does the filtering for you:
+
+    <ul ng-repeat="friend in friends | filter: filterFunction | orderBy: 'name' ">
+      <li>{{friend.name}} ({{friend.age}})</li>
+    </ul>
+
+    $scope.filterFunction = function(element) {
+      return element.name.match(/^Ma/) ? true : false;
+    };
+
 ## Paginating Through Client-Side Data
+
+### Problem
+You have a table of data completely client-side and want to paginate through the data.
+
+### Solution
+Use a HTML table element with the `ng-repeat` Directive to render only the items for the current page. All the pagination logic should be handled in a custom filter and controller implementation.
+
+Let us start with the template using Twitter Bootstrap for the table and pagination elements:
+
+    <div ng-controller="PaginationCtrl">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in items | offset: currentPage*itemsPerPage | limitTo: itemsPerPage">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.description}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <td colspan="3">
+            <div class="pagination">
+              <ul>
+                <li ng-class="prevPageDisabled()">
+                  <a href ng-click="prevPage()">« Prev</a>
+                </li>
+                <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                  <a href="#">{{n+1}}</a>
+                </li>
+                <li ng-class="nextPageDisabled()">
+                  <a href ng-click="nextPage()">Next »</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tfoot>
+      </table>
+    </div>
+
+The `offset` Filter is responsible for selecting the subset of items for the current page. It uses the `slice` function on the Array given the start param as the index.
+
+    app.filter('offset', function() {
+      return function(input, start) {
+        start = parseInt(start, 10);
+        return input.slice(start);
+      };
+    });
+
+The controller manages the actual `$scope.items` array and handles the logic for enabling/disabling the pagination buttons.
+
+    app.controller("PaginationCtrl", function($scope) {
+
+      $scope.itemsPerPage = 5;
+      $scope.currentPage = 0;
+      $scope.items = [];
+
+      for (var i=0; i<50; i++) {
+        $scope.items.push({ id: i, name: "name "+ i, description: "description " + i });
+      }
+
+      $scope.prevPage = function() {
+        if ($scope.currentPage > 0) {
+          $scope.currentPage--;
+        }
+      };
+
+      $scope.prevPageDisabled = function() {
+        return $scope.currentPage === 0 ? "disabled" : "";
+      };
+
+      $scope.pageCount = function() {
+        return Math.ceil($scope.items.length/$scope.itemsPerPage)-1;
+      };
+
+      $scope.nextPage = function() {
+        if ($scope.currentPage < $scope.pageCount()) {
+          $scope.currentPage++;
+        }
+      };
+
+      $scope.nextPageDisabled = function() {
+        return $scope.currentPage === $scope.pageCount() ? "disabled" : "";
+      };
+
+    });
+
+### Discussion
+The initial idea of this pagination solution can be best explained by looking into the usage of `ng-repeat` to render the table rows for each item:
+
+    <tr ng-repeat="item in items | offset: currentPage*itemsPerPage | limitTo: itemsPerPage">
+      <td>{{item.id}}</td>
+      <td>{{item.name}}</td>
+      <td>{{item.description}}</td>
+    </tr>
+
+The `offset` filter uses the `currentPage*itemsPerPage` to calculate the offset for the array slice operation. This will generate an array from the offset to the end of the array. Then we use the built-in `limitTo` filter to subset the array to the number of `itemsPerPage`. All this is done on the client side with filters only.
+
+The controller is responsible for supporting a `nextPage` and `prevPage` action and the accompanying functions to check the disabled state of these actions via `ng-class` directive: `nextPageDisabled` and `prevPageDisabled`. The `prevPage` function first checks if it has not reached the first page yet before decrementing the `currentPage` and the `nextPage` does the same for the last page and the same logic is applied for the disabled checks.
+
+This example is already quite involved and I intentionally left out to explain the rendering of links between the previous and next buttons. The full implementation is online though for you to investigate.
 
 ## Paginating Through Server-Side Data
 
-## Pagination using Infinite Results
+### Problem
+You want to paginate through a large server-side result set.
+
+### Solution
+You cannot use the previous method with a Filter since that would require for all data to be available on the client. Instead we use an implementation with a controller only instead.
+
+The template has not changed much, only the `ng-repeat` directive looks simpler now:
+
+    <tr ng-repeat="item in pagedItems">
+      <td>{{item.id}}</td>
+      <td>{{item.name}}</td>
+      <td>{{item.description}}</td>
+    </tr>
+
+Now how to handle the server side data? We gonna fake a service in this example by providing an Angular service implementation for the items.
+
+    app.factory("Item", function() {
+
+      var items = [];
+      for (var i=0; i<50; i++) {
+        items.push({ id: i, name: "name "+ i, description: "description " + i });
+      }
+
+      return {
+        get: function(offset, limit) {
+          return items.slice(offset, offset+limit);
+        },
+        total: function() {
+          return items.length;
+        }
+      };
+    });
+
+The service manages a list of items and has methods for retrieving a subset of items for a given offset and limit and the total number of items.
+
+The controller uses dependency injection to access the `Item` service and contains almost the same methods as our previous recipe.
+
+    app.controller("PaginationCtrl", function($scope, Item) {
+
+      $scope.itemsPerPage = 5;
+      $scope.currentPage = 0;
+
+      $scope.prevPage = function() {
+        if ($scope.currentPage > 0) {
+          $scope.currentPage--;
+        }
+      };
+
+      $scope.prevPageDisabled = function() {
+        return $scope.currentPage === 0 ? "disabled" : "";
+      };
+
+      $scope.nextPage = function() {
+        if ($scope.currentPage < $scope.pageCount() - 1) {
+          $scope.currentPage++;
+        }
+      };
+
+      $scope.nextPageDisabled = function() {
+        return $scope.currentPage === $scope.pageCount() - 1 ? "disabled" : "";
+      };
+
+      $scope.pageCount = function() {
+        return Math.ceil($scope.total/$scope.itemsPerPage);
+      };
+
+      $scope.$watch("currentPage", function(newValue, oldValue) {
+        $scope.pagedItems = Item.get(newValue*$scope.itemsPerPage, $scope.itemsPerPage);
+        $scope.total = Item.total();
+      });
+
+    });
+
+### Discussion
+When you select the next/previous page you will change the `$scope.currentPage` value and the `$watch` function is triggered. It fetches fresh items for the current page and the total number of items. So, on the client side we only have 5 items available as defined in `itemsPerPage` and when paginating we throw away the items of the previous page and fetch the new items.
+
+If you want to try this with a real backend you only have to swap out the `Item` service implementation.
+
+## Paginating Using Infinite Results
+
+### Problem
+You want to paginate through server-side data with a "Load More" button which just keeps appending more data until no more data is available.
+
+### Solution
+Lets first look at how the item table is rendered with the `ng-repeat` Directive.
+
+    <div ng-controller="PaginationCtrl">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in pagedItems">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.description}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <td colspan="3">
+            <button class="btn" href="#" ng-class="nextPageDisabledClass()" ng-click="loadMore()">Load More</button>
+          </td>
+        </tfoot>
+      </table>
+    </div>
+
+The controller uses the same `Item` Service as used for the previous recipe and handles the logic for the "Load More" button.
+
+    app.controller("PaginationCtrl", function($scope, Item) {
+
+      $scope.itemsPerPage = 5;
+      $scope.currentPage = 0;
+      $scope.total = Item.total();
+      $scope.pagedItems = Item.get($scope.currentPage*$scope.itemsPerPage, $scope.itemsPerPage);
+
+      $scope.loadMore = function() {
+        $scope.currentPage++;
+        var newItems = Item.get($scope.currentPage*$scope.itemsPerPage, $scope.itemsPerPage);
+        $scope.pagedItems = $scope.pagedItems.concat(newItems);
+      };
+
+      $scope.nextPageDisabledClass = function() {
+        return $scope.currentPage === $scope.pageCount()-1 ? "disabled" : "";
+      };
+
+      $scope.pageCount = function() {
+        return Math.ceil($scope.total/$scope.itemsPerPage);
+      };
+
+    });
+
+### Discussion
+The solution is actually pretty similar to the previous recipe and uses a controller only again. The `$scope.pagedItems` is retrieved initially to render the first five items.
+
+When pressing the "Load More" button we fetch another set of items incrementing the `currentPage` to change the `offset of the `Item.get` function call. The new items will be concatenated with the existing items using the Array `concat` function. The changes to `pagedItems` will be automatically rendered by the `ng-repeat` directive.
+
+The `nextPageDisabledClass` checks if there is more data available by calculating the total number of pages in `pageCount` and comparing that to the current page.
 
 ## Selectable List Items
 
