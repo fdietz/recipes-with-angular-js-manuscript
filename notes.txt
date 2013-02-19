@@ -1,6 +1,13 @@
 #chapter 4: $resource
 * usage of { id: "@id" } simplifies code
 
+# chapter 7:
+* example of all validation types
+* bootstrap form directive
+* server-side validation:
+  $scope.form.source.$setValidity("maxlength", false);
+  $scope.form.source.$dirty = true;
+
 # chapter 8: user interface pattern
 * user interface pattern with first-/second level navigation
 * handling login/authentication
