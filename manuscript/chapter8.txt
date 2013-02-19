@@ -25,12 +25,12 @@ The controller defines the default friends array:
 
     app.controller("MyCtrl", function($scope) {
       $scope.friends = [
-        { name: "Peter" },
-        { name: "Pablo" },
-        { name: "Linda" },
-        { name: "Marta" },
-        { name: "Othello" },
-        { name: "Markus" }
+        { name: "Peter",   age: 20 },
+        { name: "Pablo",   age: 55 },
+        { name: "Linda",   age: 20 },
+        { name: "Marta",   age: 37 },
+        { name: "Othello", age: 20 },
+        { name: "Markus",  age: 32 }
       ];
     });
 
@@ -305,9 +305,9 @@ When pressing the "Load More" button we fetch another set of items incrementing 
 
 The `nextPageDisabledClass` checks if there is more data available by calculating the total number of pages in `pageCount` and comparing that to the current page.
 
-## Selectable List Items
-
 ## Displaying a Flash Notice/Failure Message
+
+
 
 ## Editing Text In-Place using HTML5 ContentEditable
 
