@@ -3,21 +3,21 @@
 
 # chapter 7:
 * example of all validation types
-* bootstrap form directive
-* server-side validation:
-  $scope.form.source.$setValidity("maxlength", false);
-  $scope.form.source.$dirty = true;
 
 # chapter 8: user interface pattern
 * user interface pattern with first-/second level navigation
-* handling login/authentication
-  (http://www.espeo.pl/2012/02/26/authentication-in-angularjs-application)
-  *http://vyazici.blogspot.com.es/2012/09/angularjs-authentication-service.html?showComment=1348551416821#c2541101503950624710
 
 # chapter 10: backend integration
 * rails backend: usage of $templateCache, script tag templates, etc.
 
 # chapter 7: forms
-* servers-side validation
+* see team dashboard implementation of server-side validation
   (http://jsfiddle.net/rommsen/kyxrF/1/)
+    $scope.form.source.$setValidity("maxlength", false);
+    $scope.form.source.$dirty = true;
 
+
+# structure:
+* add more links to discussions on mailinglist and stackoverflow
+* add link to github for each recipe
+* add caption for for index.html, app.js, etc.
