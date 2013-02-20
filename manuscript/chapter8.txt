@@ -307,10 +307,283 @@ The `nextPageDisabledClass` checks if there is more data available by calculatin
 
 ## Displaying a Flash Notice/Failure Message
 
+### Problem
+You want to display a flash confirmation message after a user submitted a form successfully.
 
+### Solution
+In a web framework like Rails the form submit will lead to a redirect with the flash confirmation message, relying on the browser session. For our client-side approach we bind to route changes and manage a queue of flash messages.
+
+In our example we use a home page with a form and on form submit we navigate to another page and show the flash message. We use the `ng-view` Directive and define the two pages as script tags here.
+
+      <body ng-app="MyApp" ng-controller="MyCtrl">
+
+        <ul class="nav nav-pills">
+          <li><a href="#/">Home</a></li>
+          <li><a href="#/page">Next Page</a></li>
+        </ul>
+
+        <div class="alert" ng-show="flash.getMessage()">
+          <b>Alert!</b>
+          <p>{{flash.getMessage()}}</p>
+        </div>
+
+        <ng-view></ng-view>
+
+        <script type="text/ng-template" id="home.html">
+          <h3>Home</h3>
+
+          <form ng-submit="submit(message)" class="form-inline">
+            <input type="text" ng-model="message" autofocus>
+            <button class="btn">Submit</button>
+          </form>
+
+        </script>
+
+        <script type="text/ng-template" id="page.html">
+          <h3>Next Page</h3>
+
+        </script>
+
+      </body>
+
+Note, that the flash message just like the navigation is always shown but conditionally hidden depending on if there is a flash message available.
+
+The route definition defines the pages, nothing new here for us:
+
+    var app = angular.module("MyApp", []);
+
+    app.config(function($routeProvider) {
+      $routeProvider.
+        when("/home", { templateUrl: "home.html" }).
+        when("/page", { templateUrl: "page.html" }).
+        otherwise({ redirectTo: "/home" });
+    });
+
+The interesting part is the `flash` Service which handles a queue of messages and listens for route changes to provide a message from the queue to the current page.
+
+    app.factory("flash", function($rootScope) {
+      var queue = [];
+      var currentMessage = "";
+
+      $rootScope.$on("$routeChangeSuccess", function() {
+        currentMessage = queue.shift() || "";
+      });
+
+      return {
+        setMessage: function(message) {
+          queue.push(message);
+        },
+        getMessage: function() {
+          return currentMessage;
+        }
+      };
+    });
+
+The controller handles the form submit and navigates to the other page.
+
+    app.controller("MyCtrl", function($scope, $location, flash) {
+      $scope.flash = flash;
+      $scope.message = "Hello World";
+
+      $scope.submit = function(message) {
+        flash.setMessage(message);
+        $location.path("/page");
+      }
+    });
+
+The flash Service is dependency injected into the controller and made available to the scope since we want to use it in our template.
+
+### Discussion
+When you press the submit button you will be navigated to the other page and see the flash message. Note, that using the navigation to go back and forth between pages doesn't show the flash message.
+
+The controller uses the `setMessage` function of the `flash` Service and the service stores the message in an array called `queue`. When the controller then uses `$location` service to navigate the service `routeChangeSuccess` listener will be called and retrieves the message from the queue.
+
+In the template we use `ng-show` to hide the div element with the flash messaging using `flash.getMessage()`.
+
+Since this is a service it can be used anywhere in your code and it will show a flash message on the next route change.
 
 ## Editing Text In-Place using HTML5 ContentEditable
 
+### Problem
+You want to make a div element editable in place using the HTML5 contenteditable attribute.
+
+### Solution
+Implement a Directive for the contenteditable attribute and use `ng-model` for data binding.
+
+In the example we use a div and a paragraph to render the content.
+
+    <div contenteditable ng-model="text"></div>
+    <p>{{text}}</p>
+
+The Directive is especially interesting since it uses `ng-model` instead of custom attributes.
+
+    app.directive("contenteditable", function() {
+      return {
+        restrict: "A",
+        require: "ngModel",
+        link: function(scope, element, attrs, ngModel) {
+
+          function read() {
+            ngModel.$setViewValue(element.html());
+          };
+
+          ngModel.$render = function() {
+            element.html(ngModel.$viewValue || "");
+          };
+
+          element.bind("blur keyup change", function() {
+            scope.$apply(read);
+          });
+
+          read();
+        }
+      };
+    });
+
+### Discussion
+The Directive is restricted for usage as an HTML attribute since we want to use the HTML5 contenteditable attribute as is instead of defining a new HTML element.
+
+It requires the `ngModel` controller for data binding in conjunction with the link function. The implementation binds an event listener which executes the `read` function with [apply](http://docs.angularjs.org/api/ng.$rootScope.Scope). This ensures that even though we call the `read` function from within a DOM event handler we notify Angular about it.
+
+The `read` function updates the model based on the view's user input. And the `$render` function is the doing the same in the other direction, updating the view for us whenever the model changes.
+
+The Directive is surprisingly simple leaving the `ng-model` aside. But, without the `ng-model` support we would have to come up with our own model-attribute handling which would be not consistent with other Directives.
+
 ## Displaying a Modal Dialog
 
+### Question
+You want to use a Modal Dialog using the Twitter Bootstrap Framework. A dialog is called modal when it is blocking the rest of your web app until it is closed.
+
+### Solution
+Use the `angular-ui` module's nice `modal` plugin which directly supports Twitter Bootstrap.
+
+The template defines a button to open the modal and the modal code itself.
+
+    <body ng-app="MyApp" ng-controller="MyCtrl">
+
+      <button class="btn" ng-click="open()">Open Modal</button>
+
+      <div modal="showModal" close="cancel()">
+        <div class="modal-header">
+            <h4>Modal Dialog</h4>
+        </div>
+        <div class="modal-body">
+            <p>Example paragraph with some text.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" ng-click="ok()">Okay</button>
+          <button class="btn" ng-click="cancel()">Cancel</button>
+        </div>
+      </div>
+
+    </body>
+
+Note, that even though we don't specify it explicitly the modal dialog is hidden initially via the `modal` attribute. The controller only handles the button click and the `showModal` value used by the `modal` attribute.
+
+    var app = angular.module("MyApp", ["ui.bootstrap.modal"]);
+
+    $scope.open = function() {
+      $scope.showModal = true;
+    };
+
+    $scope.ok = function() {
+      $scope.showModal = false;
+    };
+
+    $scope.cancel = function() {
+      $scope.showModal = false;
+    };
+
+
+Do not forget to download and include the angular-ui code!
+
+### Discussion
+The modal as defined in the template is straight from the Twitter bootstrap [documentation](http://twitter.github.com/bootstrap/javascript.html#modals). We can control the visibility with the `modal` attribute. Additionally, the `close` attribute defines a `close` function which is called whenever the dialog is closed. Note, that this could happen when the user presses the `escape` key or clicking outside the modal.
+
+Our own cancel button uses the same function to close the modal manually, whereas the okay button uses the `ok` function. This makes it easy for us to distinguish if a user simply cancelled the modal or actually pressed the okay button.
+
 ## Displaying a Loading Spinner
+
+### Problem
+You want to display a loading spinner while waiting for an AJAX request to be finished.
+
+### Solution
+We use the Twitter search API for our example to render a list of search results. When pressing the button the AJAX request is run and the spinner image should be shown until the request is done.
+
+    <body ng-app="MyApp" ng-controller="MyCtrl">
+
+      <div>
+        <button class="btn" ng-click="load()">Load Tweets</button>
+        <img id="spinner" ng-src="img/spinner.gif" style="display:none;">
+      </div>
+
+      <div>
+        <ul ng-repeat="tweet in tweets">
+          <li>
+            <img ng-src="{{tweet.profile_image_url}}" alt=""> &nbsp; {{tweet.from_user}}
+            {{tweet.text}}
+          </li>
+        </ul>
+      </div>
+
+    </body>
+
+
+An Angular.js interceptor for all AJAX calls is used which allows to execute code before the actual request is started and when it is finished.
+
+    var app = angular.module("MyApp", ["ngResource"]);
+
+    app.config(function ($httpProvider) {
+      $httpProvider.responseInterceptors.push('myHttpInterceptor');
+
+      var spinnerFunction = function spinnerFunction(data, headersGetter) {
+        $("#spinner").show();
+        return data;
+      };
+
+      $httpProvider.defaults.transformRequest.push(spinnerFunction);
+    });
+
+    app.factory('myHttpInterceptor', function ($q, $window) {
+      return function (promise) {
+        return promise.then(function (response) {
+          $("#spinner").hide();
+          return response;
+        }, function (response) {
+          $("#spinner").hide();
+          return $q.reject(response);
+        });
+      };
+    });
+
+Note, that we use jQuery to show the spinner in the configuration step and hide the spinner in the interceptor
+
+Additionally we use a controller to handle the button click and executing the search request.
+
+    app.controller("MyCtrl", function($scope, $resource, $rootScope) {
+
+      $scope.resultsPerPage = 5;
+      $scope.page = 1;
+      $scope.searchTerm = "angularjs";
+
+      $scope.twitter = $resource('http://search.twitter.com/search.json',
+        { callback:'JSON_CALLBACK', page: $scope.page, rpp: $scope.resultsPerPage, q: $scope.searchTerm },
+        { get: { method:'JSONP' } });
+
+      $scope.load = function() {
+        $scope.twitter.get(function(data) {
+          $scope.tweets = data.results;
+        });
+      };
+    });
+
+Don't forget that add `ngResource` to the module and load it via script tag.
+
+### Discussion
+The template is the easy part of this recipe since it renders a list of tweets using the `ng-repeat` directive. Let us jump straight to the interceptor code.
+
+The interceptor is implemented using the factory method and attaches itself to the promise function of the AJAX response to hide the spinner on success or failure. Note, that on failure we use the `reject` function of the [q](http://docs.angularjs.org/api/ng.$q) promise/deferred implementation.
+
+Now, in the `config` method we add our inceptor to the list of responseInterceptors of `$httpProvider` to register it properly. In a similar manner we add the `spinnerFunction` to the default `transformRequest` list in order to call it before each AJAX request.
+
+The controller is responsible for using a `$resource` object and handling the button click with the `load` function. We are using JSONP here to allow this code to be executed locally even though it is served by a different domain.
