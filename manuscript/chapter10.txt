@@ -1,7 +1,4 @@
-# Debugging and Tooling
+# Backend Integration with Node Express
 
-## Inspecting the Scope Using the Chrome Console
-
-## Debugging and Profiling with the Batarang Chrome Extension
-
-## Enhancing Developer Workflow with Yeoman
+## Consuming REST APIs
+## Implementing Client-Side Routing

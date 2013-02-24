@@ -199,8 +199,3 @@ Let us have a look at an example JSON response in order to understand the `failu
 It is a hash with an entry for each attribute with validation errors. The value is an array of Strings since there might be multiple errors at the same time. In the failure function we iterate through these errors and set the dirty flag and the validity.
 
 Lastly, the `errorMessage` handling is of course pretty primitive. A user would expect a localized failure message instead of this technical presentation. The Rails [Internationalization Guide](http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models) describes how to translate validation error messages in Rails and might prove helpful to further use that in your client-side code.
-
-## Backend Integration with Node Express
-
-## Consuming REST APIs
-## Implementing Client-Side Routing
