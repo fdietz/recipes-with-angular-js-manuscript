@@ -74,14 +74,133 @@ There is a custom `$resource` implementation [angularjs-rails-resource](https://
 You want to use client-side routing in conjunction with a Ruby on Rails backend.
 
 ### Solution
-Use a catch all route to alwa
+Every request to the backend should initially render the complete layout in order to load our Angular app. Only then the client-side rendering will take over. Let us first have a look at the route definition for this "catch all" route.
+
+    Contacts::Application.routes.draw do
+      root :to => "layouts#index"
+      match "*path" => "layouts#index"
+    end
+
+It uses [Route Globbing](http://guides.rubyonrails.org/routing.html#route-globbing) to match all URLs and defines a root URL. Both will be handled by a layout controller with the sole purpose to render the initial layout.
+
+    class LayoutsController < ApplicationController
+      def index
+        render "layouts/application"
+      end
+    end
+
+The actual layout template defines our `ng-view` directive and resides in `app/views/layouts/application.html` - nothing new here. So, lets skip ahead to the Angular route definition in `app.js.erb`.
+
+    var app = angular.module("Contacts", ["ngResource"]);
+
+    app.config(function($routeProvider, $locationProvider) {
+      $locationProvider.html5Mode(true);
+      $routeProvider
+        .when("/contacts", { templateUrl: "<%= asset_path('contacts/index.html') %> ", controller: "ContactsIndexCtrl" })
+        .when("/contacts/new", { templateUrl: "<%= asset_path('contacts/edit.html') %> ", controller: "ContactsEditCtrl" })
+        .when("/contacts/:id", { templateUrl: "<%= asset_path('contacts/show.html') %> ", controller: "ContactsShowCtrl" })
+        .when("/contacts/:id/edit", { templateUrl: "<%= asset_path('contacts/edit.html') %> ", controller: "ContactsEditCtrl" })
+        .otherwise({ redirectTo: "/contacts" });
+    });
+
+We set the `$locationProvider` to use the HTML5 mode and define our client-side routes for listing, showing, editing and creating new contacts.
 
 ### Discussion
+Rails is quite a nice environment for your Angular.js app since it can serve the REST API and handle all the asset management easily while keeping best practices in mind.
 
-### Using Partials with the Asset Pipeline
+Let us have a look into the route definition again. First of all the filename ends with `erb`, since it uses ERB tags in the javascript file, courtesy of the Rails [Asset Pipeline](http://guides.rubyonrails.org/asset_pipeline.html). The  `asset_path` method is used to retrieve the URL to the HTML partials since it will change depending on the environment. On production the filename contains an MD5 checksum and the actual ERB output will change from `/assets/contacts/index.html` to `/assets/contacts/index-7ce113b9081a20d93a4a86
+e1aacce05f.html`. If your Rails app is configured to use an asset host the path will be in fact absolute.
 
-### Validating Forms Server-Side
+## Validating Forms Server-Side
+
+### Problem
+You want to validate forms using a server-side REST API provided by Rails.
+
+### Solution
+Rails already provides model validation support out of the box for us. Let us start with the Contact ActiveRecord model.
+
+    class Contact < ActiveRecord::Base
+      attr_accessible :age, :firstname, :lastname
+
+      validates :age, :numericality => { :only_integer => true, :less_than_or_equal_to => 50 }
+    end
+
+It defines a validation on the `age` attribute. It must be an integer and less or equal to 50 years.
+
+In the `ContactsController` we can use that to make sure the REST API returns proper error messages. As an example we look into the `create` action.
+
+    class ContactsController < ApplicationController
+      respond_to :json
+
+      def create
+        @contact = Contact.new(params[:contact])
+        if @contact.save
+          render json: @contact, status: :created, location: @contact
+        else
+          render json: @contact.errors, status: :unprocessable_entity
+        end
+      end
+
+    end
+
+On success it will render the contact model using a JSON presentation and on failure it will return all validation errors transformed to JSON.
+
+Our Angular.js contact `$resource` calls the create function and passes the failure callback function.
+
+    Contact.create($scope.contact, success, failure);
+
+    function failure(response) {
+      _.each(response.data, function(errors, key) {
+        _.each(errors, function(e) {
+          $scope.form[key].$dirty = true;
+          $scope.form[key].$setValidity(e, false);
+        });
+      });
+    }
+
+The `failure` function iterates through each validation entry and each error and uses `$setValidity` and `$dirty` to mark the form fields as invalid.
+
+Now we are ready to show some feedback to our users using the same approach discussed already in the forms chapter.
+
+    <div class="control-group" ng-class="errorClass('age')">
+      <label class="control-label" for="age">Age</label>
+      <div class="controls">
+        <input ng-model="contact.age" type="text" name="age" placeholder="Age" required>
+        <span class="help-block" ng-show="form.age.$invalid && form.age.$dirty">
+          {{errorMessage('age')}}
+        </span>
+      </div>
+    </div>
+
+The `errorClass` function adds the `error` CSS class if the form field is invalid and dirty. This will render the label, input field and the help block with a red color.
+
+    $scope.errorClass = function(name) {
+      var s = $scope.form[name];
+      return s.$invalid && s.$dirty ? "error" : "";
+    };
+
+The `errorMessage` will print a more detailed error message and is defined in the same controller.
+
+    $scope.errorMessage = function(name) {
+      result = [];
+      _.each($scope.form[name].$error, function(key, value) {
+        result.push(value);
+      });
+      return result.join(", ");
+    };
+
+It iterates over each error message and creates a comma separated String out of it.
+
+### Discussion
+Let us have a look at an example JSON response in order to understand the `failure` callback of the Contact model:
+
+    { "age": ["must be less than or equal to 50"] }
+
+It is a hash with an entry for each attribute with validation errors. The value is an array of Strings since there might be multiple errors at the same time. In the failure function we iterate through these errors and set the dirty flag and the validity.
+
+Lastly, the `errorMessage` handling is of course pretty primitive. A user would expect a localized failure message instead of this technical presentation. The Rails [Internationalization Guide](http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models) describes how to translate validation error messages in Rails and might prove helpful to further use that in your client-side code.
 
 ## Backend Integration with Node Express
 
-The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
+## Consuming REST APIs
+## Implementing Client-Side Routing
