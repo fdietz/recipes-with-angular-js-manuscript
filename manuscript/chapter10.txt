@@ -1,7 +1,7 @@
-# Backend Integration
+# Debugging and Tooling
 
-## Rails
+## Inspecting the Scope Using the Chrome Console
 
-## Node.js
+## Debugging and Profiling with the Batarang Chrome Extension
 
-The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
+## Enhancing Developer Workflow with Yeoman
