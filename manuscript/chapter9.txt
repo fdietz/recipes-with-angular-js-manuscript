@@ -1,7 +1,87 @@
-# Debugging and Tooling
+# Backend Integration with Ruby on Rails
+In this chapter we will have a look into solving common problems when combining Angular.js with the [Ruby on Rails](http://rubyonrails.org/) frameworks. The examples used in this chapter are based on a Contacts app to manage a list of contacts.
 
-## Inspecting the Scope Using the Chrome Console
+## Consuming REST APIs
 
-## Debugging and Profiling with the Batarang Chrome Extension
+### Problem
+You want to consume a JSON REST API in your Angular.js app.
 
-## Enhancing Developer Workflow with Yeoman
+### Solution
+Using the `$resource` service is a great start and can be tweaked to feel more natural to a Rails developer by configuring the methods in accordance to the Rails actions.
+
+    app.factory("Contact", function($resource) {
+      return $resource("/api/contacts/:id", { id: "@id" },
+        {
+          'create':  { method: 'POST' },
+          'index':   { method: 'GET', isArray: true },
+          'show':    { method: 'GET', isArray: false },
+          'update':  { method: 'PUT' },
+          'destroy': { method: 'DELETE' }
+        }
+      );
+    });
+
+We can now fetch a list of contacts using `Contact.index()` and a single contact with `Contact.show(id)`. These actions can be directly mapped to the `ContactsController` actions in the backend.
+
+    class ContactsController < ApplicationController
+      respond_to :json
+
+      def index
+        @contacts = Contact.all
+        respond_with @contacts
+      end
+
+      def show
+        @contact = Contact.find(params[:id])
+        respond_with @contact
+      end
+
+      ...
+    end
+
+The controller uses a `Contact` ActiveRecord model with the usual contact attributes like firstname, lastname, age, etc. By specifying `respond_to :json` the controller only responds to the JSON resource format and we can use `respond_with` to automatically transform the `Contact` model to a JSON response.
+
+The route definition uses the Rails default resource routing and uses an `api` scope to separate the API requests from everything else, for example `api/contacts` or `api/contacts/:id`.
+
+    Contacts::Application.routes.draw do
+      scope "api" do
+        resources :contacts
+      end
+    end
+
+#### Authenticity Token
+
+This works nicely until we use the HTTP methods `POST`, `PUT` and `DELETE` with the resource. As a security mechanism Rails expects an authenticity token to prevent a CSRF (Cross Site Request Forgery) attack. We need  to submit an additional HTTP header `X-CSRF-Token` with the token as defined via the HTML head meta tag `csrf-token`. Using jQuery we can fetch that meta tag definition and configure the `$httpProvider` appropriately.
+
+    var app = angular.module("Contacts", ["ngResource"]);
+    app.config(function($httpProvider) {
+      $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+    });
+
+#### JSON Root wrapping
+If you are using a Rails version prior 3.1 you'll notice that the JSON response will use a `contact` namespace for the model attributes which breaks your Angular.js code. To disable this behaviour you can configure your Rails app accordingly.
+
+    ActiveRecord::Base.include_root_in_json = false
+
+#### A Rails $Resource Factory
+There are still inconsistencies between the Ruby and Javascript world. For example in Ruby we use underscored attribute names (display_name) whereas in Javascript we use camelCase (displayName).
+
+There is a custom `$resource` implementation [angularjs-rails-resource](https://github.com/tpodom/angularjs-rails-resource) available to streamline consuming Rails resources. It uses transformers and inceptors to rename the attribute fields and handles the root wrapping behaviour for you.
+
+## Implementing Client-Side Routing
+
+### Problem
+You want to use client-side routing in conjunction with a Ruby on Rails backend.
+
+### Solution
+Use a catch all route to alwa
+
+### Discussion
+
+### Using Partials with the Asset Pipeline
+
+### Validating Forms Server-Side
+
+## Backend Integration with Node Express
+
+The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
