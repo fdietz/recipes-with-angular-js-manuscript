@@ -1,4 +1,133 @@
 # Backend Integration with Node Express
+In this chapter we will have a look into solving common problems when combining Angular.js with the Node.js [Express](http://expressjs.com/) framework. The examples used in this chapter are based on a Contacts app to manage a list of contacts. As an extra we use MongoDB as a backend for our contacts.
 
 ## Consuming REST APIs
+
+### Problem
+You want to consume a JSON REST API in your Angular.js app.
+
+### Solution
+Using the `$resource` service we first define our Contact model and all RESTful actions.
+
+    app.factory("Contact", function($resource) {
+      return $resource("/api/contacts/:id", { id: "@_id" },
+        {
+          'create':  { method: 'POST' },
+          'index':   { method: 'GET', isArray: true },
+          'show':    { method: 'GET', isArray: false },
+          'update':  { method: 'PUT' },
+          'destroy': { method: 'DELETE' }
+        }
+      );
+    });
+
+We can now fetch a list of contacts using `Contact.index()` and a single contact with `Contact.show(id)`. These actions can be directly mapped to the API routes defined in `app.js`.
+
+    var express = require('express'),
+            api = require('./routes/api');
+
+    var app = module.exports = express();
+
+    app.get('/api/contacts', api.contacts);
+    app.get('/api/contacts/:id', api.contact);
+    app.post('/api/contacts', api.createContact);
+    app.put('/api/contacts/:id', api.updateContact);
+    app.delete('/api/contacts/:id', api.destroyContact);
+
+I like to keep routes in a seperate file `routes/api.js` and just reference them in `app.js` in order to keep it small. The API implementation first initializes the [Mongoose](http://mongoosejs.com/) library and defines a schema for our Contact model.
+
+    var mongoose = require('mongoose');
+    mongoose.connect('mongodb://localhost/contacts_database');
+
+    var contactSchema = mongoose.Schema({ firstname: 'string', lastname: 'string', age: 'number' });
+    var Contact = mongoose.model('Contact', contactSchema);
+
+We can now use the `Contact` model to implement the API. Lets start with the index action:
+
+    exports.contacts = function(req, res) {
+      Contact.find({}, function(err, obj) {
+        res.json(obj)
+      });
+    };
+
+Skipping the error handling we retrieve all contacts with the `find` function provided by Mongoose and render the result in the JSON format. The show action is pretty similar except it uses `findOne` and the id from the URL param to retrieve a single contact.
+
+    exports.contact = function(req, res) {
+      Contact.findOne({ _id: req.params.id }, function(err, obj) {
+        res.json(obj);
+      });
+    };
+
+As a last example we create a new Contact instance passing in the request body and call the `save` method to persist it:
+
+    exports.createContact = function(req, res) {
+      var contact = new Contact(req.body);
+      contact.save();
+      res.json(req.body);
+    };
+
+### Discussion
+Let have a look again at the example for the contact function which retrieves a single Contact. It uses `_id` instead of `id` as the param for the `findOne` function. This underscore is intentional and used by MongoDB for its auto generated IDs. In order to automatically map from `id` to the `_id` param we used a nice trick of the `$resource` service. Take a look at the second param of the Contact `$resource` definition: `{ id: "@_id" }`. Using this param Angular will automatically set the URL param `id` based on the value of the model attribute `_id`.
+
 ## Implementing Client-Side Routing
+
+### Problem
+You want to use client-side routing in conjunction with an Express backend.
+
+### Solution
+Every request to the backend should initially render the complete layout in order to load our Angular app. Only then the client-side rendering will take over. Let us first have a look at the route definition for this "catch all" route in our `app.js`.
+
+    var express = require('express'),
+         routes = require('./routes');
+
+    app.get('/', routes.index);
+    app.get('*', routes.index);
+
+It uses the wildcard character to catch all requests in order to get processed with the `routes.index` module. Additionally, it defines the route to use the same module. The module again resides in `routes/index.js`.
+
+    exports.index = function(req, res){
+      res.render('layout');
+    };
+
+The implementation only renders the layout template. It uses the [Jade](http://jade-lang.com/) template engine.
+
+    !!!
+    html(ng-app="myApp")
+      head
+        meta(charset='utf8')
+        title Angular Express Seed App
+        link(rel='stylesheet', href='/css/bootstrap.css')
+      body
+        div
+          ng-view
+
+        script(src='js/lib/angular/angular.js')
+        script(src='js/lib/angular/angular-resource.js')
+        script(src='js/app.js')
+        script(src='js/services.js')
+        script(src='js/controllers.js')
+
+Now, that we can actually render the initial layout we can get started with the client-side routing definition in `app.js`
+
+    var app = angular.module('myApp', ["ngResource"]).
+      config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode(true);
+        $routeProvider
+          .when("/contacts", { templateUrl: "partials/index.jade", controller: "ContactsIndexCtrl" })
+          .when("/contacts/new", { templateUrl: "partials/edit.jade", controller: "ContactsEditCtrl" })
+          .when("/contacts/:id", { templateUrl: "partials/show.jade", controller: "ContactsShowCtrl" })
+          .when("/contacts/:id/edit", { templateUrl: "partials/edit.jade", controller: "ContactsEditCtrl" })
+          .otherwise({ redirectTo: "/contacts" });
+      }]);
+
+We define route definitions to list, show and edit contacts and use a set of partials and corresponding controllers. In order for the partials to get loaded correctly we need to add another express route in the backend which servers all these partials.
+
+    app.get('/partials/:name', function (req, res) {
+      var name = req.params.name;
+      res.render('partials/' + name);
+    });
+
+It uses the name of the partial as an URL param and renders the partial with the given name from the `partial` directory. Keep in mind to define that route before the catch all route, otherwise it will not work.
+
+### Discussion
+Compared to Rails the handling of partials is quite explicit by defining a route for partials.
