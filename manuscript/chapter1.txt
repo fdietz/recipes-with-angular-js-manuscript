@@ -93,8 +93,7 @@ Use the `ng-hide` directive in conjunction with a controller to change the visib
       <body ng-app>
         <div ng-controller="MyCtrl">
           <button ng-click="toggle()">Toggle</button>
-          <p ng-show="isVisible()">Hello World!</p>
-          <p>Debug Scope: visible = {{visible}}</p>
+          <p ng-show="visible">Hello World!</p>
         </div>
       </body>
     </html>
@@ -108,49 +107,53 @@ And the controller in `js/app.js`:
       $scope.toggle = function() {
         $scope.visible = !$scope.visible;
       };
-
-      $scope.isVisible = function() {
-        return $scope.visible === true;
-      };
     }
 
+When toggling the button the "Hello World" paragraph will change its visibility
+
 ### Discussion
-Using the `ng-controller` directive we bind the `div` element including its children to the context of the `MyCtrl` Controller. The `ng-click` directive will call the `toggle()` function of the Controller on button click. The Controller implementation defaults the `visible` attribute to true and toggles its boolean state in the `toggle` function. The `ng-show` directive calls the `isVisible()` function to retrieve the boolean state. Note, that you could also use the `visible` attribute directly if you don't need to encapsulate your business logic.
+Using the `ng-controller` directive we bind the `div` element including its children to the context of the `MyCtrl` Controller. The `ng-click` directive will call the `toggle()` function of our controller on button click. Note, that the `ng-show` directive is bound to the `visible` scope variable and will toggle the paragraph's visibility accordingly.
+
+The controller implementation defaults the `visible` attribute to true and toggles its boolean state in the `toggle` function. Both the `visible` variable and the `toggle` function are defined on the `$scope` service which is passed to all controller functions automatically via dependency injection.
+
+The next chapter will go into all the details of controllers in Angular. For now let us quickly discuss the MVVM (Model-View-ViewModel) pattern as used by Angular. In the MVVM pattern the model is plain javascript, the view is the HTML template and the ViewModel is the glue between the template and the model. The ViewModel makes Angular's two way binding possible where changes in the model or the template are in sync automatically.
+
+In our example the `visible` attribute is the model, but it could be of course much more complex as for example retrieving data from a backend service. The controller is used to define the scope which represents the ViewModel. It interacts with the HTML template by binding the scope variable `visible` and the function `toggle()` to it.
 
 ## Creating Custom HTML elements with Directives
 
 ### Problem
-You want to render an HTML snippet as a reusable custom HTML element.
+You want to render an HTML snippet but hide it conditionally.
 
 ### Solution
 Create a custom Directive which renders your Hello World snippet.
 
     <body ng-app="MyApp">
-      <hello-world/>
+      <label for="checkbox"><input id="checkbox" type="checkbox" ng-model="visible">Toggle me</label>
+      <div show="visible">
+        <p>Hello World</p>
+      </div>
     </body>
 
-The directive implementation:
+The `show` attribute is our directive, with the following implementation:
 
     var app = angular.module("MyApp", []);
 
-    app.directive("helloWorld", function() {
+    app.directive("show", function() {
       return {
-        restrict: "E",
-        template: '<span>Hello World</span>'
+        link: function(scope, element, attributes) {
+          scope.$watch(attributes.show, function(value){
+            element.css('display', value ? '' : 'none');
+          });
+        }
       };
     });
+
+The browser will only show the "Hello World" paragraph if the checkbox is checked and will hide it otherwise.
 
 ### Discussion
-We ignore the module creation for a later recipe for now. The browser will render the `span` element as defined in the directive. Note, that it does not replace the `hello-world` element, but instead inserts the `span` as a child. If you want to replace the content completely you need to return an additional attribute `replace` set to true:
+Let us ignore the `app` module creation for now to look further into in a later chapter. In our example it is just the means to create a directive. Note, that the `show` String is name of the directive which corresponds to the `show` HTML attribute used in the template.
 
-    app.directive("helloWorld", function() {
-      return {
-        restrict: "E",
-        replace: true,
-        template: '<span>Hello World</span>'
-      };
-    });
+The directive implementation returns a `link` function which defines the directive's behaviour. It gets passed the `scope`, the HTML `element` and the HTML `attributes`. Since we passed the `visible` variable as attribute to our `show` directive we can access it directly via `attributes.show`. But, since we want to respond to `visible` variable changes automatically we have to use the `$watch` service, which provides us a function callback whenever the value changes. In this callback we change the CSS `display` property to either blank or `none` to hide the HTML element.
 
-Now the `hello-world` element is not rendered at all and replaced with the `span` element.
-
-Also note the `restrict` attribute is set to `E` which means the directive can be used only as an HTML element. A full discussion will follow in a later chapter.
+This was just a small glimpse of what can be achieved with directives and there is a whole chapter dedicated to them which goes into much more detail.

@@ -41,7 +41,7 @@ We can now fetch a list of contacts using `Contact.index()` and a single contact
 
 The controller uses a `Contact` ActiveRecord model with the usual contact attributes like firstname, lastname, age, etc. By specifying `respond_to :json` the controller only responds to the JSON resource format and we can use `respond_with` to automatically transform the `Contact` model to a JSON response.
 
-The route definition uses the Rails default resource routing and uses an `api` scope to separate the API requests from everything else, for example `api/contacts` or `api/contacts/:id`.
+The route definition uses the Rails default resource routing and an `api` scope to separate the API requests from other requests.
 
     Contacts::Application.routes.draw do
       scope "api" do
@@ -49,21 +49,21 @@ The route definition uses the Rails default resource routing and uses an `api` s
       end
     end
 
-#### Authenticity Token
+This will generate paths as for example `api/contacts` and `api/contacts/:id` for the HTTP GET method.
 
-This works nicely until we use the HTTP methods `POST`, `PUT` and `DELETE` with the resource. As a security mechanism Rails expects an authenticity token to prevent a CSRF (Cross Site Request Forgery) attack. We need  to submit an additional HTTP header `X-CSRF-Token` with the token as defined via the HTML head meta tag `csrf-token`. Using jQuery we can fetch that meta tag definition and configure the `$httpProvider` appropriately.
+### Discussion
+
+This works nicely until we use the HTTP methods `POST`, `PUT` and `DELETE` with the resource. As a security mechanism Rails expects an authenticity token to prevent a CSRF (Cross Site Request Forgery) attack. We need  to submit an additional HTTP header `X-CSRF-Token` with the token as defined via the HTML `meta` tag `csrf-token`. Using jQuery we can fetch that meta tag definition and configure the `$httpProvider` appropriately.
 
     var app = angular.module("Contacts", ["ngResource"]);
     app.config(function($httpProvider) {
       $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
     });
 
-#### JSON Root wrapping
 If you are using a Rails version prior 3.1 you'll notice that the JSON response will use a `contact` namespace for the model attributes which breaks your Angular.js code. To disable this behaviour you can configure your Rails app accordingly.
 
     ActiveRecord::Base.include_root_in_json = false
 
-#### A Rails $Resource Factory
 There are still inconsistencies between the Ruby and Javascript world. For example in Ruby we use underscored attribute names (display_name) whereas in Javascript we use camelCase (displayName).
 
 There is a custom `$resource` implementation [angularjs-rails-resource](https://github.com/tpodom/angularjs-rails-resource) available to streamline consuming Rails resources. It uses transformers and inceptors to rename the attribute fields and handles the root wrapping behaviour for you.

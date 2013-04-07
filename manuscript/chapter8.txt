@@ -3,12 +3,10 @@
 ## Filtering and Sorting a List
 
 ### Problem
-You want to filter and sort a relatively small list of items all available on client-side.
+You want to filter and sort a relatively small list of items all available on the client.
 
 ### Solution
-Use the built-in `filter` and `orderBy` Filters.
-
-Using a simple text input for the filter query and the `ng-repeat` directive to render a list of friends:
+For this example we render a list of friends using the `ng-repeat` directive. Using the built-in `filter` and `orderBy` Filters we filter and sort the friends list client-side.
 
     <body ng-app="MyApp">
       <div ng-controller="MyCtrl">
@@ -20,6 +18,8 @@ Using a simple text input for the filter query and the `ng-repeat` directive to 
         </ul>
       </div>
     </body>
+
+A plain text input field is used to enter the filter query and bound to the `filter`. Any changes are therefore directly used to filter the list.
 
 The controller defines the default friends array:
 
@@ -37,13 +37,13 @@ The controller defines the default friends array:
 ### Discussion
 Chaining filters is a fantastic way to implement such a use case as long as you have all the data available on the client.
 
-The [filter](http://docs.angularjs.org/api/ng.filter:filter) Angular.js Filter works on an array and returns a subset of items as a new array. It supports a String, Object or Function param. In this example we only use the String param, but given that the `$scope.friends` is an array of objects we could think of more complex examples where we use the Object param, as for example:
+The [filter](http://docs.angularjs.org/api/ng.filter:filter) Angular.js Filter works on an array and returns a subset of items as a new array. It supports a String, Object or Function parameter. In this example we only use the String parameter, but given that the `$scope.friends` is an array of objects we could think of more complex examples where we use the Object param, as for example:
 
     <ul ng-repeat="friend in friends | filter: { name: query, age: '20' } | orderBy: 'name' ">
       <li>{{friend.name}} ({{friend.age}})</li>
     </ul>
 
-And lastly you could call a function defined in the controller which does the filtering for you:
+That way we can filter by name and age at the same time. And lastly you could call a function defined in the controller which does the filtering for you:
 
     <ul ng-repeat="friend in friends | filter: filterFunction | orderBy: 'name' ">
       <li>{{friend.name}} ({{friend.age}})</li>
@@ -53,13 +53,15 @@ And lastly you could call a function defined in the controller which does the fi
       return element.name.match(/^Ma/) ? true : false;
     };
 
+The `filterFunction` must returns either `true` or `false`. In this example we use a regular expression on the name starting with `Ma` to filter the list.
+
 ## Paginating Through Client-Side Data
 
 ### Problem
 You have a table of data completely client-side and want to paginate through the data.
 
 ### Solution
-Use a HTML table element with the `ng-repeat` Directive to render only the items for the current page. All the pagination logic should be handled in a custom filter and controller implementation.
+Use a HTML table element with the `ng-repeat` directive to render only the items for the current page. All the pagination logic should be handled in a custom filter and controller implementation.
 
 Let us start with the template using Twitter Bootstrap for the table and pagination elements:
 
@@ -177,7 +179,7 @@ The template has not changed much, only the `ng-repeat` directive looks simpler 
       <td>{{item.description}}</td>
     </tr>
 
-Now how to handle the server side data? We gonna fake a service in this example by providing an Angular service implementation for the items.
+In order to simplify the example ee fake a server-side service in this example by providing an Angular service implementation for the items.
 
     app.factory("Item", function() {
 
@@ -237,7 +239,7 @@ The controller uses dependency injection to access the `Item` service and contai
     });
 
 ### Discussion
-When you select the next/previous page you will change the `$scope.currentPage` value and the `$watch` function is triggered. It fetches fresh items for the current page and the total number of items. So, on the client side we only have 5 items available as defined in `itemsPerPage` and when paginating we throw away the items of the previous page and fetch the new items.
+When you select the next/previous page you will change the `$scope.currentPage` value and the `$watch` function is triggered. It fetches fresh items for the current page and the total number of items. So, on the client side we only have 5 items available as defined in `itemsPerPage` and when paginating we throw away the items of the previous page and fetch new items.
 
 If you want to try this with a real backend you only have to swap out the `Item` service implementation.
 
@@ -301,7 +303,7 @@ The controller uses the same `Item` Service as used for the previous recipe and 
 ### Discussion
 The solution is actually pretty similar to the previous recipe and uses a controller only again. The `$scope.pagedItems` is retrieved initially to render the first five items.
 
-When pressing the "Load More" button we fetch another set of items incrementing the `currentPage` to change the `offset of the `Item.get` function call. The new items will be concatenated with the existing items using the Array `concat` function. The changes to `pagedItems` will be automatically rendered by the `ng-repeat` directive.
+When pressing the "Load More" button we fetch another set of items incrementing the `currentPage` to change the `offset` of the `Item.get` function. The new items will be concatenated with the existing items using the Array `concat` function. The changes to `pagedItems` will be automatically rendered by the `ng-repeat` directive.
 
 The `nextPageDisabledClass` checks if there is more data available by calculating the total number of pages in `pageCount` and comparing that to the current page.
 
@@ -408,7 +410,7 @@ Since this is a service it can be used anywhere in your code and it will show a 
 You want to make a div element editable in place using the HTML5 contenteditable attribute.
 
 ### Solution
-Implement a Directive for the contenteditable attribute and use `ng-model` for data binding.
+Implement a directive for the `contenteditable` attribute and use `ng-model` for data binding.
 
 In the example we use a div and a paragraph to render the content.
 
@@ -445,9 +447,9 @@ The Directive is restricted for usage as an HTML attribute since we want to use 
 
 It requires the `ngModel` controller for data binding in conjunction with the link function. The implementation binds an event listener which executes the `read` function with [apply](http://docs.angularjs.org/api/ng.$rootScope.Scope). This ensures that even though we call the `read` function from within a DOM event handler we notify Angular about it.
 
-The `read` function updates the model based on the view's user input. And the `$render` function is the doing the same in the other direction, updating the view for us whenever the model changes.
+The `read` function updates the model based on the view's user input. And the `$render` function is doing the same in the other direction, updating the view for us whenever the model changes.
 
-The Directive is surprisingly simple leaving the `ng-model` aside. But, without the `ng-model` support we would have to come up with our own model-attribute handling which would be not consistent with other Directives.
+The directive is surprisingly simple leaving the `ng-model` aside. But, without the `ng-model` support we would have to come up with our own model-attribute handling which would be not consistent with other directives.
 
 ## Displaying a Modal Dialog
 
@@ -556,7 +558,7 @@ An Angular.js interceptor for all AJAX calls is used which allows to execute cod
       };
     });
 
-Note, that we use jQuery to show the spinner in the configuration step and hide the spinner in the interceptor
+Note, that we use jQuery to show the spinner in the configuration step and hide the spinner in the interceptor.
 
 Additionally we use a controller to handle the button click and executing the search request.
 
