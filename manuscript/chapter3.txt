@@ -391,7 +391,8 @@ The directive implementation is split into the tabs and the pane directive. Let 
         template:
           '<div class="tabbable">' +
             '<ul class="nav nav-tabs">' +
-              '<li ng-repeat="pane in panes" ng-class="{active:pane.selected}">'+
+              '<li ng-repeat="pane in panes"' +
+                  'ng-class="{active:pane.selected}">'+
                 '<a href="" ng-click="select(pane)">{{pane.title}}</a>' +
               '</li>' +
             '</ul>' +
@@ -416,7 +417,9 @@ The `pane` directive depends on the `tabs` directive to add itself to it.
         link: function(scope, element, attrs, tabsCtrl) {
           tabsCtrl.addPane(scope);
         },
-        template: '<div class="tab-pane" ng-class="{active: selected}" ng-transclude></div>',
+        template:
+          '<div class="tab-pane" ng-class="{active: selected}"' +
+            'ng-transclude></div>',
         replace: true
       };
     });

@@ -57,7 +57,8 @@ This works nicely until we use the HTTP methods `POST`, `PUT` and `DELETE` with 
 
     var app = angular.module("Contacts", ["ngResource"]);
     app.config(function($httpProvider) {
-      $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+      $httpProvider.defaults.headers.common['X-CSRF-Token'] =
+        $('meta[name=csrf-token]').attr('content');
     });
 
 If you are using a Rails version prior 3.1 you'll notice that the JSON response will use a `contact` namespace for the model attributes which breaks your Angular.js code. To disable this behaviour you can configure your Rails app accordingly.
@@ -96,10 +97,18 @@ The actual layout template defines our `ng-view` directive and resides in `app/v
     app.config(function($routeProvider, $locationProvider) {
       $locationProvider.html5Mode(true);
       $routeProvider
-        .when("/contacts", { templateUrl: "<%= asset_path('contacts/index.html') %> ", controller: "ContactsIndexCtrl" })
-        .when("/contacts/new", { templateUrl: "<%= asset_path('contacts/edit.html') %> ", controller: "ContactsEditCtrl" })
-        .when("/contacts/:id", { templateUrl: "<%= asset_path('contacts/show.html') %> ", controller: "ContactsShowCtrl" })
-        .when("/contacts/:id/edit", { templateUrl: "<%= asset_path('contacts/edit.html') %> ", controller: "ContactsEditCtrl" })
+        .when("/contacts",
+          { templateUrl: "<%= asset_path('contacts/index.html') %> ",
+            controller: "ContactsIndexCtrl" })
+        .when("/contacts/new",
+          { templateUrl: "<%= asset_path('contacts/edit.html') %> ",
+            controller: "ContactsEditCtrl" })
+        .when("/contacts/:id",
+          { templateUrl: "<%= asset_path('contacts/show.html') %> ",
+            controller: "ContactsShowCtrl" })
+        .when("/contacts/:id/edit",
+          { templateUrl: "<%= asset_path('contacts/edit.html') %> ",
+            controller: "ContactsEditCtrl" })
         .otherwise({ redirectTo: "/contacts" });
     });
 
@@ -122,7 +131,8 @@ Rails already provides model validation support out of the box for us. Let us st
     class Contact < ActiveRecord::Base
       attr_accessible :age, :firstname, :lastname
 
-      validates :age, :numericality => { :only_integer => true, :less_than_or_equal_to => 50 }
+      validates :age, :numericality => {
+        :only_integer => true, :less_than_or_equal_to => 50 }
     end
 
 It defines a validation on the `age` attribute. It must be an integer and less or equal to 50 years.
@@ -165,8 +175,10 @@ Now we are ready to show some feedback to our users using the same approach disc
     <div class="control-group" ng-class="errorClass('age')">
       <label class="control-label" for="age">Age</label>
       <div class="controls">
-        <input ng-model="contact.age" type="text" name="age" placeholder="Age" required>
-        <span class="help-block" ng-show="form.age.$invalid && form.age.$dirty">
+        <input ng-model="contact.age" type="text" name="age"
+          placeholder="Age" required>
+        <span class="help-block"
+          ng-show="form.age.$invalid && form.age.$dirty">
           {{errorMessage('age')}}
         </span>
       </div>

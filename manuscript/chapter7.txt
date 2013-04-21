@@ -105,7 +105,9 @@ And here is a small part of the form with an error message for the input field:
 
     <label>Firstname</label>
     <input name="firstname" type="text" ng-model="user.firstname" required/>
-    <p ng-show="form.firstname.$invalid && form.firstname.$dirty">Firstname is required</p>
+    <p ng-show="form.firstname.$invalid && form.firstname.$dirty">
+      Firstname is required
+    </p>
 
 ### Discussion
 The CSS classes ensure that we initially show the fresh form without any classes. When the user starts typing in some input for the first time, we change it to either green or red. That is a good example usage of the `ng-dirty` and `ng-invalid` CSS classes.
@@ -128,16 +130,24 @@ Let us start with the form:
         <div class="control-group" ng-class="error('firstname')">
           <label class="control-label" for="firstname">Firstname</label>
           <div class="controls">
-            <input id="firstname" name="firstname" type="text" ng-model="user.firstname" placeholder="Firstname" required/>
-            <span class="help-block" ng-show="form.firstname.$invalid && form.firstname.$dirty">Firstname is required</span>
+            <input id="firstname" name="firstname" type="text"
+              ng-model="user.firstname" placeholder="Firstname" required/>
+            <span class="help-block"
+              ng-show="form.firstname.$invalid && form.firstname.$dirty">
+              Firstname is required
+            </span>
           </div>
         </div>
 
         <div class="control-group" ng-class="error('lastname')">
           <label class="control-label" for="lastname">Lastname</label>
           <div class="controls">
-            <input id="lastname" name="lastname" type="text" ng-model="user.lastname" placeholder="Lastname" required/>
-            <span class="help-block" ng-show="form.lastname.$invalid && form.lastname.$dirty">Lastname is required</span>
+            <input id="lastname" name="lastname" type="text"
+              ng-model="user.lastname" placeholder="Lastname" required/>
+            <span class="help-block"
+              ng-show="form.lastname.$invalid && form.lastname.$dirty">
+              Lastname is required
+            </span>
           </div>
         </div>
 
@@ -189,9 +199,14 @@ The [angular-ui](http://angular-ui.github.com/) project offers a nice custom val
 
 Let us have a look at the template first with the usage of the `ui-validate` Directive:
 
-    <input name="firstname" type="text" ng-model="user.firstname" required ui-validate=" { blacklisted: 'notBlacklisted($value)' } "/>
+    <input name="firstname" type="text"
+      ng-model="user.firstname" required
+      ui-validate=" { blacklisted: 'notBlacklisted($value)' } "
+    />
 
-    <p ng-show='form.firstname.$error.blackListed'>This firstname is blacklisted.</p>
+    <p ng-show='form.firstname.$error.blackListed'>
+      This firstname is blacklisted.
+    </p>
 
 And the controller with the `notBlackListed` implementation:
 

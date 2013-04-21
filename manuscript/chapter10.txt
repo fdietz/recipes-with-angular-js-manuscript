@@ -39,7 +39,9 @@ I like to keep routes in a seperate file `routes/api.js` and just reference them
     var mongoose = require('mongoose');
     mongoose.connect('mongodb://localhost/contacts_database');
 
-    var contactSchema = mongoose.Schema({ firstname: 'string', lastname: 'string', age: 'number' });
+    var contactSchema = mongoose.Schema({
+      firstname: 'string', lastname: 'string', age: 'number'
+    });
     var Contact = mongoose.model('Contact', contactSchema);
 
 We can now use the `Contact` model to implement the API. Lets start with the index action:
@@ -110,15 +112,26 @@ The implementation only renders the layout template. It uses the [Jade](http://j
 Now, that we can actually render the initial layout we can get started with the client-side routing definition in `app.js`
 
     var app = angular.module('myApp', ["ngResource"]).
-      config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-        $locationProvider.html5Mode(true);
-        $routeProvider
-          .when("/contacts", { templateUrl: "partials/index.jade", controller: "ContactsIndexCtrl" })
-          .when("/contacts/new", { templateUrl: "partials/edit.jade", controller: "ContactsEditCtrl" })
-          .when("/contacts/:id", { templateUrl: "partials/show.jade", controller: "ContactsShowCtrl" })
-          .when("/contacts/:id/edit", { templateUrl: "partials/edit.jade", controller: "ContactsEditCtrl" })
-          .otherwise({ redirectTo: "/contacts" });
-      }]);
+      config(['$routeProvider', '$locationProvider',
+        function($routeProvider, $locationProvider) {
+          $locationProvider.html5Mode(true);
+          $routeProvider
+            .when("/contacts", {
+              templateUrl: "partials/index.jade",
+              controller: "ContactsIndexCtrl" })
+            .when("/contacts/new", {
+              templateUrl: "partials/edit.jade",
+              controller: "ContactsEditCtrl" })
+            .when("/contacts/:id", {
+              templateUrl: "partials/show.jade",
+              controller: "ContactsShowCtrl" })
+            .when("/contacts/:id/edit", {
+              templateUrl: "partials/edit.jade",
+              controller: "ContactsEditCtrl" })
+            .otherwise({ redirectTo: "/contacts" });
+        }
+      ]
+    );
 
 We define route definitions to list, show and edit contacts and use a set of partials and corresponding controllers. In order for the partials to get loaded correctly we need to add another express route in the backend which servers all these partials.
 

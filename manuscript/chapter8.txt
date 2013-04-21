@@ -11,7 +11,8 @@ For this example we render a list of friends using the `ng-repeat` directive. Us
     <body ng-app="MyApp">
       <div ng-controller="MyCtrl">
         <form class="form-inline">
-          <input ng-model="query" type="text" placeholder="Filter by" autofocus>
+          <input ng-model="query" type="text"
+            placeholder="Filter by" autofocus>
         </form>
         <ul ng-repeat="friend in friends | filter:query | orderBy: 'name' ">
           <li>{{friend.name}}</li>
@@ -39,13 +40,17 @@ Chaining filters is a fantastic way to implement such a use case as long as you 
 
 The [filter](http://docs.angularjs.org/api/ng.filter:filter) Angular.js Filter works on an array and returns a subset of items as a new array. It supports a String, Object or Function parameter. In this example we only use the String parameter, but given that the `$scope.friends` is an array of objects we could think of more complex examples where we use the Object param, as for example:
 
-    <ul ng-repeat="friend in friends | filter: { name: query, age: '20' } | orderBy: 'name' ">
+    <ul ng-repeat="friend in friends |
+      filter: { name: query, age: '20' } |
+      orderBy: 'name' ">
       <li>{{friend.name}} ({{friend.age}})</li>
     </ul>
 
 That way we can filter by name and age at the same time. And lastly you could call a function defined in the controller which does the filtering for you:
 
-    <ul ng-repeat="friend in friends | filter: filterFunction | orderBy: 'name' ">
+    <ul ng-repeat="friend in friends |
+      filter: filterFunction |
+      orderBy: 'name' ">
       <li>{{friend.name}} ({{friend.age}})</li>
     </ul>
 
@@ -75,7 +80,9 @@ Let us start with the template using Twitter Bootstrap for the table and paginat
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in items | offset: currentPage*itemsPerPage | limitTo: itemsPerPage">
+          <tr ng-repeat="item in items |
+            offset: currentPage*itemsPerPage |
+            limitTo: itemsPerPage">
             <td>{{item.id}}</td>
             <td>{{item.name}}</td>
             <td>{{item.description}}</td>
@@ -88,7 +95,8 @@ Let us start with the template using Twitter Bootstrap for the table and paginat
                 <li ng-class="prevPageDisabled()">
                   <a href ng-click="prevPage()">« Prev</a>
                 </li>
-                <li ng-repeat="n in range()" ng-class="{active: n == currentPage}" ng-click="setPage(n)">
+                <li ng-repeat="n in range()"
+                  ng-class="{active: n == currentPage}" ng-click="setPage(n)">
                   <a href="#">{{n+1}}</a>
                 </li>
                 <li ng-class="nextPageDisabled()">
@@ -119,7 +127,9 @@ The controller manages the actual `$scope.items` array and handles the logic for
       $scope.items = [];
 
       for (var i=0; i<50; i++) {
-        $scope.items.push({ id: i, name: "name "+ i, description: "description " + i });
+        $scope.items.push({
+          id: i, name: "name "+ i, description: "description " + i
+        });
       }
 
       $scope.prevPage = function() {
@@ -151,7 +161,9 @@ The controller manages the actual `$scope.items` array and handles the logic for
 ### Discussion
 The initial idea of this pagination solution can be best explained by looking into the usage of `ng-repeat` to render the table rows for each item:
 
-    <tr ng-repeat="item in items | offset: currentPage*itemsPerPage | limitTo: itemsPerPage">
+    <tr ng-repeat="item in items |
+      offset: currentPage*itemsPerPage |
+      limitTo: itemsPerPage">
       <td>{{item.id}}</td>
       <td>{{item.name}}</td>
       <td>{{item.description}}</td>
@@ -185,7 +197,9 @@ In order to simplify the example ee fake a server-side service in this example b
 
       var items = [];
       for (var i=0; i<50; i++) {
-        items.push({ id: i, name: "name "+ i, description: "description " + i });
+        items.push({
+          id: i, name: "name "+ i, description: "description " + i
+        });
       }
 
       return {
@@ -232,7 +246,8 @@ The controller uses dependency injection to access the `Item` service and contai
       };
 
       $scope.$watch("currentPage", function(newValue, oldValue) {
-        $scope.pagedItems = Item.get(newValue*$scope.itemsPerPage, $scope.itemsPerPage);
+        $scope.pagedItems =
+          Item.get(newValue*$scope.itemsPerPage, $scope.itemsPerPage);
         $scope.total = Item.total();
       });
 
@@ -269,7 +284,8 @@ Lets first look at how the item table is rendered with the `ng-repeat` Directive
         </tbody>
         <tfoot>
           <td colspan="3">
-            <button class="btn" href="#" ng-class="nextPageDisabledClass()" ng-click="loadMore()">Load More</button>
+            <button class="btn" href="#" ng-class="nextPageDisabledClass()"
+              ng-click="loadMore()">Load More</button>
           </td>
         </tfoot>
       </table>
@@ -282,11 +298,13 @@ The controller uses the same `Item` Service as used for the previous recipe and 
       $scope.itemsPerPage = 5;
       $scope.currentPage = 0;
       $scope.total = Item.total();
-      $scope.pagedItems = Item.get($scope.currentPage*$scope.itemsPerPage, $scope.itemsPerPage);
+      $scope.pagedItems = Item.get($scope.currentPage*$scope.itemsPerPage,
+        $scope.itemsPerPage);
 
       $scope.loadMore = function() {
         $scope.currentPage++;
-        var newItems = Item.get($scope.currentPage*$scope.itemsPerPage, $scope.itemsPerPage);
+        var newItems = Item.get($scope.currentPage*$scope.itemsPerPage,
+          $scope.itemsPerPage);
         $scope.pagedItems = $scope.pagedItems.concat(newItems);
       };
 
@@ -522,7 +540,8 @@ We use the Twitter search API for our example to render a list of search results
       <div>
         <ul ng-repeat="tweet in tweets">
           <li>
-            <img ng-src="{{tweet.profile_image_url}}" alt=""> &nbsp; {{tweet.from_user}}
+            <img ng-src="{{tweet.profile_image_url}}" alt="">
+            &nbsp; {{tweet.from_user}}
             {{tweet.text}}
           </li>
         </ul>
@@ -569,7 +588,10 @@ Additionally we use a controller to handle the button click and executing the se
       $scope.searchTerm = "angularjs";
 
       $scope.twitter = $resource('http://search.twitter.com/search.json',
-        { callback:'JSON_CALLBACK', page: $scope.page, rpp: $scope.resultsPerPage, q: $scope.searchTerm },
+        { callback:'JSON_CALLBACK',
+          page: $scope.page,
+          rpp: $scope.resultsPerPage,
+          q: $scope.searchTerm },
         { get: { method:'JSONP' } });
 
       $scope.load = function() {

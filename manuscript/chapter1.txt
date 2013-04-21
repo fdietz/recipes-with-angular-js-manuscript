@@ -10,7 +10,9 @@ In order to get your first Angular.js app up and running you need to include the
 
     <html>
       <head>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/
+          angularjs/1.0.4/angular.js">
+        </script>
       </head>
       <body ng-app>
         <p>This is your first angular expression: {{ 1 + 2 }}</p>
@@ -129,7 +131,9 @@ You want to render an HTML snippet but hide it conditionally.
 Create a custom Directive which renders your Hello World snippet.
 
     <body ng-app="MyApp">
-      <label for="checkbox"><input id="checkbox" type="checkbox" ng-model="visible">Toggle me</label>
+      <label for="checkbox">
+        <input id="checkbox" type="checkbox" ng-model="visible">Toggle me
+      </label>
       <div show="visible">
         <p>Hello World</p>
       </div>

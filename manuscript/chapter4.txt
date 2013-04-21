@@ -174,7 +174,8 @@ Use the angular-seed project as a bootstrap again.
       beforeEach(module('MyApp'));
 
       describe('checkmark', function() {
-         it('should convert boolean values to unicode checkmark or cross', inject(function(checkmarkFilter) {
+         it('should convert boolean values to unicode checkmark or cross',
+            inject(function(checkmarkFilter) {
            expect(checkmarkFilter(true)).toBe('\u2713');
            expect(checkmarkFilter(false)).toBe('\u2718');
          }));
