@@ -1,5 +1,5 @@
 # Directives
-Directives are one of the most powerful concepts in Angular since they let you invent new html syntax specific to your application. This allows you to create reusable components which encapsulate complex DOM structures, stylesheets and even behaviour.
+Directives are one of the most powerful concepts in Angular since they let you invent new html elements specific to your application. This allows you to create reusable components which encapsulate complex DOM structures, stylesheets and even behaviour.
 
 ## Enabling/Disabling DOM Elements Conditionally
 
@@ -27,7 +27,7 @@ In the next recipes we will focus on implementing directives.
 You want to change the CSS of an HTML element on a mouse click and encapsulate this behaviour in a reusable component.
 
 ### Solution
-Implement a directive which defines a link function.
+Implement a directive `my-widget` which contains an example paragraph of text we want to style.
 
     <body ng-app="MyApp">
       <my-widget>
@@ -35,6 +35,7 @@ Implement a directive which defines a link function.
       </my-widget>
     </body>
 
+We use a link function in our directive implementation to change the CSS of the paragraph.
 
     var app = angular.module("MyApp", []);
 
@@ -63,7 +64,13 @@ The restriction means that this directive can only be used as an HTML element an
       <p>Hello World</p>
     </div>
 
-Wether you use the attribute or element mechanism depends on your use case. Generally speaking one would use the element mechanism to define a custom reusable component. The attribute mechanism would be used whenever you want to "configure" some element or enhance it with more behaviour. Other options are using the directive as a class attribute or a comment.
+Wether you use the attribute or element mechanism depends on your use case. Generally speaking one would use the element mechanism to define a custom reusable component. The attribute mechanism would be used whenever you want to "configure" some element or enhance it with more behaviour. Other available options are using the directive as a class attribute or a comment.
+
+The `directive` method expects a function which can be used for initialization and injection of dependencies.
+
+    app.directive("myWidget", function factory(injectables) {
+      // ...
+    }
 
 The link function is much more interesting since it defines the actual behaviour. The scope, the actual HTML element `my-widget` and the html attributes are passed as params. Note, that this has nothing to do with Angulars dependency injection mechanism. Ordering of the parameters is important!
 
@@ -75,13 +82,7 @@ Following a slightly changed version of the code using jQuery only:
       $(this).css({ "background-color": "red" });
     });
 
-In this case `element` is alreay an jQuery element and we can directly use the on function.
-
-The `directive` method expects a function which can be used for initialization and injection of dependencies.
-
-    app.directive("myWidget", function factory(injectables) {
-      // ...
-    }
+In this case `element` is alreay an jQuery element and we can directly use the `on` function.
 
 ## Rendering an HTML Snippet in a Directive
 
@@ -89,7 +90,7 @@ The `directive` method expects a function which can be used for initialization a
 You want to render an HTML snippet as a reusable component.
 
 ### Solution
-Implement a directive and use the template attribute to define the HTML.
+Implement a directive and use the `template` attribute to define the HTML.
 
     <body ng-app="MyApp">
       <my-widget/>
@@ -105,7 +106,7 @@ Implement a directive and use the template attribute to define the HTML.
     });
 
 ### Discussion
-This will render the Hello World paragraph as a child node of your `my-widget` element. In case you want to replace the element entirely with the paragraph you have to additionally return the replace attribute:
+This will render the Hello World paragraph as a child node of your `my-widget` element. In case you want to replace the element entirely with the paragraph you have to additionally return the `replace` attribute:
 
     app.directive("myWidget", function() {
       return {
@@ -115,7 +116,7 @@ This will render the Hello World paragraph as a child node of your `my-widget` e
       };
     });
 
-Another option would be to use a file for the HTML snippet. In this case you need to use the templateUrl attribute, as for example:
+Another option would be to use a file for the HTML snippet. In this case you need to use the `templateUrl` attribute, as for example:
 
     app.directive("myWidget", function() {
       return {
@@ -180,6 +181,7 @@ Use the attribute based directive and pass an attribute value for the configurat
       };
     });
 
+This renders a paragraph with the text passed as the param.
 
 ### Discussion
 The link function has access to the element and its attributes. It is therefore straight forward to set the scope to the text passed as the attributes value and use this in the template evaluation.
@@ -209,7 +211,7 @@ Lets look into another way of passing params to the directive, this time we defi
       };
     });
 
-The scope definition using `@text` is binding the text model to the directive's attribute. Note, that any changes on the parent scope `text` will change the local scope `text`, but not the other way around
+The scope definition using `@text` is binding the text model to the directive's attribute. Note, that any changes on the parent scope `text` will change the local scope `text`, but not the other way around.
 
 If you want instead to have a bi-directional binding between the parent scope and the local scope, you should use the `=` equality character:
 
@@ -238,7 +240,7 @@ Another possibility would be to pass an expression as a function to the directiv
       };
     });
 
-We pass the attribute `fn` to the directive and since the local scope defines `fn` accordingly we can call the function in the linkFunction and pass in the expression arguments as a hash.
+We pass the attribute `fn` to the directive and since the local scope defines `fn` accordingly we can call the function in the `linkFunction` and pass in the expression arguments as a hash.
 
 ## Repeatedly Rendering Directive's DOM Node Children
 
@@ -272,7 +274,7 @@ This will render the header and paragraph 10 times.
 ### Discussion
 The directive repeats the child nodes as often as configured in the `repeat` attribute. It works similarly to the [ng-repeat](http://docs.angularjs.org/api/ng.directive:ngRepeat) directive. The implemention uses Angulars element methods to append the child nodes in a for loop.
 
-Note, that the compile method only has access to the templates element (tElement) and template attributes. It has no access to the scope and you therefore also can't use `$watch` to add behaviour. This is in comparison to the link function which has access to the DOM "instance" (after the compile phase) and has access to the scope to add behaviour.
+Note, that the compile method only has access to the templates element `tElement` and template attributes. It has no access to the scope and you therefore also can't use `$watch` to add behaviour. This is in comparison to the link function which has access to the DOM "instance" (after the compile phase) and has access to the scope to add behaviour.
 
 Use the compile function for template DOM manipulation only. Use the link function when you want to add behaviour.
 
@@ -291,6 +293,7 @@ Note, that you can use both compile and link function combined. In this case the
       };
     }
 
+Clicking the header will change the background color to red.
 
 ## Directive to Directive Communication
 
@@ -298,11 +301,14 @@ Note, that you can use both compile and link function combined. In this case the
 You want a directive to communicate with another directive and augment each other's behaviour using a well defined interface (API).
 
 ### Solution
-Implement a directive with a controller function and a second directive which "requires" this controller.
+We implement a directive `basket` with a controller function and two other directive `orange` and `apple` which "require" this controller. Our example starts with an `apple` and `orange` directive used as attributes.
 
     <body ng-app="MyApp">
       <basket apple orange>Roll over me and check the console!</basket>
     </body>
+
+
+The `basket` directive manages an array to which one can add apples and oranges!
 
     var app = angular.module("MyApp", []);
 
@@ -328,6 +334,8 @@ Implement a directive with a controller function and a second directive which "r
       };
     });
 
+And finally the apple and orange directives which add themselves to the basket using the basket's controller.
+
     app.directive("apple", function() {
       return {
         require: "basket",
@@ -349,7 +357,7 @@ Implement a directive with a controller function and a second directive which "r
 If you hover with the mouse over the rendered text the console should print and the basket's content.
 
 ### Discussion
-`Basket` is the example directive which demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `Basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The link function then gets `basketCtrl` injected.
+`Basket` is the example directive which demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The `link` function then gets `basketCtrl` injected.
 
 Note, how the `basket` directive is defined as an HTML element and the `apple` and `orange` directives are defined as HTML attributes (the default for directives). This demonstrates the typical use case of a reusable component augmented by other directives.
 

@@ -4,7 +4,7 @@ Angular Filters are typically used to format expressions in bindings in your tem
 ## Formatting a String With a Currency Filter
 
 ### Problem
-You want to format the amount with a localized currency label.
+You want to format the amount of currency with a localized currency label.
 
 ### Solution
 Use the built-in `currency` filter and make sure you load the corresponding locale file for the users language.
@@ -55,7 +55,7 @@ Implement a custom filter which reverses the input.
     });
 
 ### Discussion
-Angular's filter function expects a filter name and a function as params. The function must return the actual filter function, where you must implement your business logic. In this example it will only have an `input` param. The result will be returned after the for loop reversed the input completely.
+Angular's filter function expects a filter name and a function as params. The function must return the actual filter function, where you implement the business logic. In this example it will only have an `input` param. The result will be returned after the for loop reversed the input.
 
 ## Passing Configuration Params to Filters
 
@@ -90,12 +90,12 @@ Angular filters can be passed a hash of params which can be directly accessed in
     });
 
 ### Discussion
-The suffix `!` is passed as an option to the filter function and is appended to the output.
+The suffix `!` is passed as an option to the filter function and is appended to the output. Note, the we check if an actual input exists since we don't want to render the suffix without any input.
 
 ## Filtering a List of DOM Nodes
 
 ### Problem
-You want to filter a list of names.
+You want to filter a `ul` list of names.
 
 ### Solution
 Angular filters not only work with Strings as input but also with Arrays.
@@ -123,7 +123,7 @@ Angular filters not only work with Strings as input but also with Arrays.
       };
     });
 
-We pass `Peter` as the single param to the exclude filter.
+We pass `Peter` as the single param to the exclude filter which will render all names except `Peter`.
 
 ### Discussion
 The filter implemention loops through all names and creates a result array excluding 'Peter'. Note, that the actual syntax of the filter function didn't change at all from our previous example with the String input.
@@ -131,7 +131,7 @@ The filter implemention loops through all names and creates a result array exclu
 ## Chaining Filters together
 
 ### Problem
-You want to combine several filters to a single result
+You want to combine several filters to a single result.
 
 ### Solution
 Filters can be chained using the UNIX-like pipe syntax.
@@ -145,7 +145,9 @@ Filters can be chained using the UNIX-like pipe syntax.
     </body>
 
 ### Discussion
-The pipe symbol (`|`) is used to chain multiple filters together. I leave the implementation of the `sortAscending` filter as an exercise to the reader.
+The pipe symbol (`|`) is used to chain multiple filters together. First we start with the initial Array of names. After applying the `exclude` filter the Array contains only `['Anton', 'John']` and afterwards we sort the names in ascending order.
+
+I leave the implementation of the `sortAscending` filter as an exercise to the reader ;-)
 
 ## Testing Filters
 
@@ -155,8 +157,6 @@ You want to unit test your new filter. Let us start with an easy filter which re
     <body ng-init="data = true">
       <p>{{ data | checkmark}}</p>
       <p>{{ !data | checkmark}}</p>
-      <script src="lib/angular/angular.js"></script>
-      <script src="js/app.js"></script>
     </body>
 
     var app = angular.module("MyApp", []);
