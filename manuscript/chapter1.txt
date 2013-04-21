@@ -63,20 +63,6 @@ Consider how you would implement this traditionally using jQuery:
 
 On document ready we bind to the keypress event in the text input and replace the text in the paragraph in the callback function. Using jQuery you need to deal with document ready callbacks, element selection, event binding and the context of this. Quite a lot of concepts to swallow and lines of code to maintain!
 
-## Converting Expression Output with Filters
-
-### Problem
-When presenting data to the user, you might need to convert the data to a more user-friendly format. In our case we want to uppercase the `name` value from the previous recipe in the expression.
-
-### Solution
-Use the `uppercase` Angular filter.
-
-    Enter your name: <input type="text" ng-model="name"></input>
-    <p>Hello {{name | uppercase }}!</p>
-
-### Discussion
-Angular uses the `|` (pipe) character to combine filters with variables in expressions. When evaluating the expression, the name variable is passed to the uppercase filter. This is similar to working with the Unix bash pipe symbol where an input can be transformed by another program. Also try the `lowercase` filter!
-
 ## Responding to Click Events using Controllers
 
 ### Problem
@@ -121,6 +107,20 @@ The controller implementation defaults the `visible` attribute to true and toggl
 The next chapter will go into all the details of controllers in Angular. For now let us quickly discuss the MVVM (Model-View-ViewModel) pattern as used by Angular. In the MVVM pattern the model is plain javascript, the view is the HTML template and the ViewModel is the glue between the template and the model. The ViewModel makes Angular's two way binding possible where changes in the model or the template are in sync automatically.
 
 In our example the `visible` attribute is the model, but it could be of course much more complex as for example retrieving data from a backend service. The controller is used to define the scope which represents the ViewModel. It interacts with the HTML template by binding the scope variable `visible` and the function `toggle()` to it.
+
+## Converting Expression Output with Filters
+
+### Problem
+When presenting data to the user, you might need to convert the data to a more user-friendly format. In our case we want to uppercase the `name` value from the previous recipe in the expression.
+
+### Solution
+Use the `uppercase` Angular filter.
+
+    Enter your name: <input type="text" ng-model="name"></input>
+    <p>Hello {{name | uppercase }}!</p>
+
+### Discussion
+Angular uses the `|` (pipe) character to combine filters with variables in expressions. When evaluating the expression, the name variable is passed to the uppercase filter. This is similar to working with the Unix bash pipe symbol where an input can be transformed by another program. Also try the `lowercase` filter!
 
 ## Creating Custom HTML elements with Directives
 
