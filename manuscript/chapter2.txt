@@ -1,5 +1,7 @@
 # Controllers
-Controllers in Angular handle view behaviour, for example the user clicking a button or entering some text in a form. What should happen next is implemented in a Controller. As a general rule a Controller should not reference the DOM directly. This dramatically simplifies unit testing Controllers.
+Controllers in Angular provide the business logic to handle view behaviour, for example responding to a user clicking a button or entering some text in a form. Additionally controllers prepare the model for the view template.
+
+As a general rule a controller should not reference or manipulate the DOM directly. This has the benefit of simplifying unit testing controllers.
 
 ## Assigning a Default Value to a Model
 
@@ -7,39 +9,35 @@ Controllers in Angular handle view behaviour, for example the user clicking a bu
 You want to assign a default value to the scope in the controllers context.
 
 ### Solution
-Use the `ng-controller` Directive in your template:
+Use the `ng-controller` directive in your template:
 
     <div ng-controller="MyCtrl">
       <p>{{value}}</p>
     </div>
 
-And define the scope variable in your controller function:
+Next, define the scope variable in your controller function:
 
     var MyCtrl = function($scope) {
       $scope.value = "some value";
     };
 
 ### Discussion
-Depending on where you use the ng-controller directive, you define its assigned scope. The scope is hierachical and follows the DOM nodes hierarchy. In our example the value expression is correctly evaluated to `some value`, since value is set in the `MyCtrl` controller. Note, that this would not work if the value expression is moved outside the controllers scope:
+Depending on where you use the ng-controller directive, you define its assigned scope. The scope is hierachical and follows the DOM node hierarchy. In our example the value expression is correctly evaluated to `some value`, since value is set in the `MyCtrl` controller. Note, that this would not work if the value expression is moved outside the controllers scope:
 
     <p>{{value}}</p>
 
     <div ng-controller="MyCtrl">
     </div>
 
-In this case `{{value}}` will simply be not rendered at all.
+In this case `{{value}}` will simply be not rendered at all due to the fact that expression evaluation in Angular.js is forgiving for `undefined` and `null` values.
 
 ## Changing a Model Value with a Controller Function
 
 ### Problem
-You want to increment a model value by 1.
+You want to increment a model value by 1 using a controller function.
 
 ### Solution
 Implement an increment function which changes the scope.
-
-    <div ng-controller="MyCtrl">
-      <p ng-init="incrementValue(5)">{{value}}</p>
-    </div>
 
     function MyCtrl($scope) {
       $scope.value = 1;
@@ -49,20 +47,24 @@ Implement an increment function which changes the scope.
       };
     }
 
+This function can be directly called in an expression, in our example we use `ng-init`:
+
+    <div ng-controller="MyCtrl">
+      <p ng-init="incrementValue(5)">{{value}}</p>
+    </div>
+
 ### Discussion
-The `ng-init` directive is executed on page load and calls the function defined in `MyCtrl`.
+The `ng-init` directive is executed on page load and calls the function `incrementValue` defined in `MyCtrl`. Functions are defined on the scope very similar to values but must be called with the familiar parenthesis syntax.
+
+Of course, it would have been possible to increment the value right inside of the expression with `value = value +1` but imagine the function being much more complex! Moving this function into a controller separates our business logic from our declarative view template and we can easily write unit tests for it.
 
 ## Encapsulating a Model Value with a Controller Function
 
 ### Problem
-You want to retrieve a model via function (instead of directly accessing the scope from the template) which further changes the model value.
+You want to retrieve a model via function (instead of directly accessing the scope from the template) which encapsulates the model value.
 
 ### Solution
 Define a getter function which returns the model value.
-
-    <div ng-controller="MyCtrl">
-      <p>{{getIncrementedValue()}}</p>
-    </div>
 
     function MyCtrl($scope) {
       $scope.value = 1;
@@ -72,21 +74,22 @@ Define a getter function which returns the model value.
       };
     }
 
+Then in the template we use an expression to call it:
+
+    <div ng-controller="MyCtrl">
+      <p>{{getIncrementedValue()}}</p>
+    </div>
+
 ### Discussion
-`MyCtrl` defines the `getIncrementedValue` function which uses the current value and returns it incremented by one. One could argue that depending on the use case it would make more sense to use a filter. But, there are use cases specific to the controllers behaviour which you might not want to use a generic directive.
+`MyCtrl` defines the `getIncrementedValue` function which uses the current value and returns it incremented by one. One could argue that depending on the use case it would make more sense to use a filter. But, there are use cases specific to the controllers behaviour where you do not require a generic filter.
 
 ## Responding to Scope Changes
 
 ### Problem
-You want to react on a model change to trigger some further actions. In our example we simple want to set another model value depending on the value we are listing on.
+You want to react on a model change to trigger some further actions. In our example we simple want to set another model value depending on the value we are listening on.
 
 ### Solution
 Use the `$watch` function in your controller.
-
-    <div ng-controller="MyCtrl">
-      <input type="text" ng-model="name" placeholder="Enter your name">
-      <p>{{greeting}}</p>
-    </div>
 
     function MyCtrl($scope) {
       $scope.name = "";
@@ -98,10 +101,17 @@ Use the `$watch` function in your controller.
       });
     }
 
+In our example we use the text input value to print a friendly gretting.
+
+    <div ng-controller="MyCtrl">
+      <input type="text" ng-model="name" placeholder="Enter your name">
+      <p>{{greeting}}</p>
+    </div>
+
 The value `greeting` will be changed whenever there's a change on the `name` model and the value is not blank.
 
 ### Discussion
-The first argument `name` of the `$watch` function is actually an Angular expression, so you can use more complicated expressions (for example: `[value1, value2] | json`). Alternatively, you can also use a javascript function:
+The first argument `name` of the `$watch` function is actually an Angular expression, so you can use more complicated expressions (for example: `[value1, value2] | json`) or even a javascript function. In this case you need to return a String in the watcher function:
 
     $scope.$watch(function() {
       return $scope.name;
@@ -109,7 +119,7 @@ The first argument `name` of the `$watch` function is actually an Angular expres
       console.log("change detected: " + newValue)
     });
 
-Note, that you need to return a String in the watcher function. The second function will only be called if the returned String changed compared to the previous execution. Internally this uses `angular.equals` to determine equality.
+The second argument is a function which gets called whenever the expression evaluation returns a different value. The first parameter is the new value and the second parameter the old value. Internally this uses `angular.equals` to determine equality which means both objects or values pass the `===` comparison.
 
 ## Sharing Models Between Nested Controllers
 
@@ -119,7 +129,7 @@ You want to share a model between a nested hierarchy of controllers.
 ### Solution
 Use javascript objects instead of primitives or direct `$parent` scope references.
 
-The example template uses a controller `MyCtrl` and a nested controller `MyNestedCtrl`:
+Our example template uses a controller `MyCtrl` and a nested controller `MyNestedCtrl`:
 
     <body ng-app="MyApp">
       <div ng-controller="MyCtrl">
@@ -163,7 +173,9 @@ All the default values are defined in `MyCtrl` which is the parent of `MyNestedC
 
 The object based value behaves differently in this regard. Wether you change the nested or the `MyCtrl` scopes input fields, the changes will stay in sync. In Angular a scope prototypically inherits properties from a parent scope. Objects are therefore references and kept in sync. Whereas primitive types are only in sync as long they are not changed in the child scope.
 
-Generally I tend to not use `$parent.name` and instead always use objects to share model properties. Additionally, the `MyNestedCtrl` not only requires certain model attributes but also a correct scope hierachy to work with.
+Generally I tend to not use `$parent.name` and instead always use objects to share model properties. If you use `$parent.name` the `MyNestedCtrl` not only requires certain model attributes but also a correct scope hierachy to work with.
+
+T> Tip: The Chrome plugin [Batarang](https://github.com/angular/angularjs-batarang) simplifies debugging the scope hierarchy by showing you a tree of the nested scopes. It is awesome!
 
 ## Sharing Code Between Controllers using Services
 
@@ -210,7 +222,25 @@ The service and controller implementation in `app.js` implements a user service 
     });
 
 ### Discussion
-The `factory` method creates a singleton `UserService` which returns two functions for retrieving all users and the first user only. The controllers get the `UserService` injected by adding it to the function as params.
+The `factory` method creates a singleton `UserService` which returns two functions for retrieving all users and the first user only. The controllers get the `UserService` injected by adding it to the `controller` function as params.
+
+Using dependency injection here is quite nice for testing your controllers, since you can inject a `UserService` stub easily. The only downside is that you can't minify the code from above without breaking it, since the injection mechanism relies on the exact String representation of `UserService`. It is therefore recommended to define dependencies using inline annotations, which keeps working even when minified:
+
+    app.controller("AnotherCtrl", ["$scope", "UserService", function($scope, UserService) {
+      $scope.firstUser = UserService.first();
+    }]);
+
+The syntax looks a bit funny, but since Strings in Arrays are not changed during the minification it solves our problem. Note, that you could change the parameter names of the function, since the injection mechanism relies on the order of the Array definition only.
+
+Another way to achieve the same is using the `$inject` annotation:
+
+    var anotherCtrl = function($scope, UserService) {
+      $scope.firstUser = UserService.first();
+    };
+
+    anotherCtrl.$inject = ["$scope", "UserService"];
+
+This requires you to use a temporary variable to call the `$inject` service. Again, you could change the function parameter names. You will most probably see both versions applied in apps using Angular.
 
 ## Testing Controllers
 
@@ -239,7 +269,7 @@ Implement a unit test using [Jasmine](http://pivotal.github.com/jasmine/) and th
 ### Discussion
 Jasmine specs use `describe` and `it` functions to group specs and `beforeEach` and `afterEach` to setup and teardown code. The actual expectation compares the greeting from the scope with our expectation `Greetings Frederik`.
 
-The scope and controller initialization is a bit more involved. We use `inject` to initialize the scope and controller as closely as possible to how our code would behave at runtime too. We can't just initialize the scope as an javascript object `{}` since then we would not be able to call `$watch` on it.
+The scope and controller initialization is a bit more involved. We use `inject` to initialize the scope and controller as closely as possible to how our code would behave at runtime too. We can't just initialize the scope as an javascript object `{}` since then we would not be able to call `$watch` on it. Instead `$rootScope.$new()` will do the trick. Note, that the `$controller` service requires `MyCtrl` to be available and uses an object notation to pass in dependencies.
 
-The `$digest` call is required in order for another watch execution. We need to call `$digest` manually in our spec whereas at runtime Angular will do this for us automatically.
+The `$digest` call is required in order to trigger a watch execution after we changed the scope. We need to call `$digest` manually in our spec whereas at runtime Angular will do this for us automatically.
 
