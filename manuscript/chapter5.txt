@@ -1,13 +1,13 @@
 # Consuming Externals Services
-Angular has built-in support for doing AJAX requests with low- and high-level APIs.
+Angular has built-in support for communication with remote HTTP servers. The [$http](http://docs.angularjs.org/api/ng.$http) service handles low-level AJAX requests via the browser's [XMLHttpRequest](http://en.wikipedia.org/wiki/XMLHttpRequest) object or via [JSONP](http://en.wikipedia.org/wiki/JSONP). The [$resource](http://docs.angularjs.org/api/ngResource.$resource) service lets you interact with RESTful data sources and provides high-level behaviors which naturally maps to RESTful resources.
 
 ## Requesting JSON Data with AJAX
 
 ### Problem
-You want to do an AJAX request to fetch JSON data and render it.
+You want to fetch JSON data via AJAX request and render it.
 
 ### Solution
-Implement a controller using `$http` to fetch the data and store it in the scope.
+Implement a controller using the `$http` service to fetch the data and store it in the scope.
 
     <body ng-app="MyApp">
       <div ng-controller="PostsCtrl">
@@ -23,27 +23,36 @@ Implement a controller using `$http` to fetch the data and store it in the scope
       $http.get('data/posts.json').
         success(function(data, status, headers, config) {
           $scope.posts = data;
+        }).
+        error(function(data, status, headers, config) {
+          // log error
         });
     });
 
-### Discussion
-The controller defines a dependency to the `$scope` and the `$http` module. An HTTP get call to the `data/posts.json` URL is done and on success the JSON data is put in `$scope.posts`.
+The complete example uses the angular-seed project again.
 
-You can set custom HTTP headers by using the `$http.defaults` function:
+### Discussion
+The controller defines a dependency to the `$scope` and the `$http` module. An HTTP GET request to the `data/posts.json` endpoint is done with the `get` method. It returns a [$promise](http://docs.angularjs.org/api/ng.$q) object with a `success` and an `error` method. On success the JSON data is assigned to `$scope.posts` to make it available in the template.
+
+The `$http` service supports the HTTP verbs `get`, `head`, `post`, `put`, `delete` and `jsonp`. We are going to look into more examples in the following chapters.
+
+The `$http` service automatically adds certain HTTP headers as for example `X-Requested-With: XMLHttpRequest`. But, you can also set custom HTTP headers by yourself using the `$http.defaults` function:
 
     $http.defaults.headers.common["X-Custom-Header"] = "Angular.js"
 
-The complete example uses the angular-seed project again.
+Until now the `$http` service does not really look particularly special. But, when you look into the [documentation](http://docs.angularjs.org/api/ng.$http) you find a whole lot of nice features as for example request/response transformations, to automatically deserialize JSON for you, response caching, response interceptors to handle global error handling, authentication or other preprocessing tasks and of course promise support. We will look into the `$q` service, Angular's promise/deferred service in a later chapter.
 
 ## Consuming RESTful APIs
 
 ### Problem
-You want to consume a RESTful API.
+You want to consume a RESTful data source.
 
 ### Solution
-Use Angular's high-level `$resource` module to use RESTful APIs.
+Use Angular's high-level `$resource` service. Note, that the Angular `ngResource` module needs to be separately loaded since it is not included in the base angular.js file:
 
-Let us start with defining the application module and our `Post` model:
+    <script src="angular-resource.js">
+
+Let us now start with defining the application module and our `Post` model as an Angular service:
 
     var app = angular.module('myApp', ['ngResource']);
 
@@ -51,7 +60,7 @@ Let us start with defining the application module and our `Post` model:
       return $resource("/api/posts/:id");
     });
 
-Now we can use the `$resource$ to retrieve a list of posts:
+Now we can use our service to retrieve a list of posts inside of a controller (example: HTTP GET /api/posts):
 
     app.controller("PostIndexCtrl", function($scope, Post) {
       Post.query(function(data) {
@@ -59,7 +68,7 @@ Now we can use the `$resource$ to retrieve a list of posts:
       });
     });
 
-Or a specific post by `id`:
+Or a specific post by `id` (example: HTTP GET /api/posts/1):
 
     app.controller("PostShowCtrl", function($scope, Post) {
       Post.get({ id: 1 }, function(data) {
@@ -67,28 +76,39 @@ Or a specific post by `id`:
       });
     });
 
-And delete a specific post:
+We can create a new post using save (example: HTTP POST /api/posts):
 
-    app.controller("PostDestroyCtrl", function($scope, Post) {
-      $scope.destroy = function(id) {
-        Post.delete({ id: id });
-      }
-    });
+    Post.save(data);
 
-Note, that the Angular `ngResource` module needs to be separately loaded since it is not included in the base angular.js file:
+And we can delete a specific post by `id` (example: DELETE /api/posts/1):
 
-    <script src="angular-resource.js">
+    Post.delete({ id: id });
+
+The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
 
 ### Discussion
-Following some conventions simplifies our code quite a bit. We define the `$resource` by passing the URL schema only. This gives us a handful of nice methods including query, get, save and remove to work with our resource. In the example above we implement several controllers to cover the various typical use cases.
+Following some conventions simplifies our code quite a bit. We define the `$resource` by passing the URL schema only. This gives us a handful of nice methods including `query`, `get`, `save`, `remove` and `delete` to work with our resource. In the example above we implement several controllers to cover the typical use cases. The `get` and `query` methods expect three arguments, the request parameters, the success and the error callback. The `save` method expects four arguments, the request parameters, the POST data, the success and the error callback.
 
-It is generally a good practice to encapsulate your model and `$resource$` usage in an Angular `service` module and inject that in your controller.
+The `$resource` service currently does not support promises and has therefore a distinctly different interface than the `$http` service. But, we don't have to wait very long for it, since work has already started in the 1.1 development branch to introduce promise support for the `$resource` service!
+
+The returned object of a `$resource` query or get function is a `$resource` instance which provides `$save`, `$remove` and `$delete` methods. This allows you to easily fetch a resource and update it as in the following example:
+
+    var post = Post.get({ id: 1 }, function() {
+      post.title = "My new title";
+      post.$save();
+    });
+
+It is important to notice, that the `get` call immediately returns an empty reference - in our case the `post` variable. Once the data is returned from the server the existing reference is populated and we can change our post title and use the `$save` method conveniently.
+
+Note, that having an empty reference means that our post will not be rendered in the template. Once the data is returned though, the view automatically re-renders itself showing the new data.
+
+#### Configuration
 
 What if your response of posts is not an array but a more complex json? This typically results in the following error:
 
     TypeError: Object #<Resource> has no method 'push'
 
-Have a look at the following JSON example:
+Angular seems to expect your service to return a JSON array. Have a look at the following JSON example which wraps a `posts` array in a JSON object:
 
     {
       "posts": [
@@ -103,7 +123,7 @@ Have a look at the following JSON example:
       ]
     }
 
-In this case you have to change the `$resource$ definition accordingly.
+In this case you have to change the `$resource` definition accordingly.
 
     app.factory("Post", function($resource) {
       return $resource("/api/posts/:id", {}, {
@@ -117,9 +137,9 @@ In this case you have to change the `$resource$ definition accordingly.
       });
     });
 
-Note, that we only change the configuration of the `query` action to not expecting an array. Then in our controller we can directly access the `data.posts`.
+We only change the configuration of the `query` action to not expect an array by setting the `isArray` attribute to `false`. Then in our controller we can directly access `data.posts`.
 
-The complete example code is based on Brian Ford's [angular-express-seed](https://github.com/btford/angular-express-seed) and uses the [Express](http://expressjs.com/) framework.
+It is generally a good practice to encapsulate your model and `$resource` usage in an Angular service module and inject that in your controller. This way you can easily reuse the same model in different controllers and test it more easily.
 
 ## Consuming JSONP APIs
 
@@ -127,7 +147,9 @@ The complete example code is based on Brian Ford's [angular-express-seed](https:
 You want to call a JSONP API.
 
 ### Solution
-Use the `$resource` and configure it to use JSONP. As an example we will call the Twitter search API here.
+Use the `$resource` service and configure it to use JSONP. As an example we will call the Twitter search API here.
+
+The HTML template lets you enter a search term in an input field and will render the search result in a list.
 
     <body ng-app="MyApp">
       <div ng-controller="MyCtrl">
@@ -139,23 +161,99 @@ Use the `$resource` and configure it to use JSONP. As an example we will call th
       </div>
     </body>
 
+The `$resource` configuration can be done in a controller requesting the data:
+
     var app = angular.module("MyApp", ["ngResource"]);
 
     function MyCtrl($scope, $resource) {
-      $scope.twitterAPI = $resource("http://search.twitter.com/search.json",
+      var TwitterAPI = $resource("http://search.twitter.com/search.json",
         { callback: "JSON_CALLBACK" },
         { get: { method: "JSONP" }});
 
       $scope.search = function() {
-        $scope.searchResult = $scope.twitterAPI.get({ q: $scope.searchTerm });
+        $scope.searchResult = TwitterAPI.get({ q: $scope.searchTerm });
       };
     }
 
 ### Discussion
-The `$resource` definition sets the `callback` attribute to `JSON_CALLBACK`, a requirement from Angular. Additionally we overwrite the get method to use `JSONP`. Now, when calling the API we use the `q` param to pass the entered `searchTerm`.
+The Twitter search API supports a `callback` attribute for the JSON format as described in their [documentation](https://dev.twitter.com/docs/api/1/get/search). The `$resource` definition sets the `callback` attribute to `JSON_CALLBACK`, which is a convention from Angular when using [JSONP](http://en.wikipedia.org/wiki/JSONP). It is a placeholder which is replaced with the real callback function, generated by Angular. Additionally we configure the get method to use `JSONP`. Now, when calling the API we use the `q` URL parameter to pass the entered `searchTerm`.
 
 ## Deferred and Promise
-TODO: Write me!
+
+### Problem
+You want to synchronize multiple asynchronous functions and avoid Javascript callback hell.
+
+### Solution
+As an example we want to call three services in sequence and combine the result of them. Let us start with a nested approach:
+
+    tmp = [];
+
+    $http.get("/app/data/first.json").success(function(data) {
+      tmp.push(data);
+      $http.get("/app/data/second.json").success(function(data) {
+        tmp.push(data);
+        $http.get("/app/data/third.json").success(function(data) {
+          tmp.push(data);
+          $scope.combinedNestedResult = tmp.join(", ");
+        });
+      });
+    });
+
+We call the `get` function three times to retrieve three JSON documents each with an array of strings. We haven't even started adding error handling but already using nested callbacks the code becomes messy and can be simplified using the `$q` service:
+
+    var first  = $http.get("/app/data/first.json"),
+        second = $http.get("/app/data/second.json"),
+        third  = $http.get("/app/data/third.json");
+
+    $q.all([first, second, third]).then(function(result) {
+      var tmp = [];
+      angular.forEach(result, function(response) {
+        tmp.push(response.data);
+      });
+      return tmp;
+    }).then(function(tmpResult) {
+      $scope.combinedResult = tmpResult.join(", ");
+    });
+
+### Discussion
+The `all` function combines multiple promises into a single promise and solves our problem quite elegantly.
+
+Let's have a closer look at the `then` method. It is rather contrived but should give you an idea on how to use `then` to sequentially call functions and pass data along. Since the `all` function returns a promise again we can call `then` on it. By returning the `tmp` variable it will be passed along to the then function as `tmpResult` argument.
+
+Before finishing this recipe let us quickly discuss an example where we have to create our own deferred object:
+
+    function deferredTimer(success) {
+      var deferred = $q.defer();
+
+      $timeout(function() {
+        if (success) {
+          deferred.resolve({ message: "This is great!" });
+        } else {
+          deferred.reject({ message: "Really bad" });
+        }
+      }, 1000);
+
+      return deferred.promise;
+    }
+
+Using the `defer` method we create a deferred instance. As an example for an asynchronous operation we use the `$timeout` service which will either resolve or reject our operation depending on the boolean success parameter. The function will immediately return the `promise` and therefore not render any result in our HTML template. After 1 second the timer will execute and return our success or failure response.
+
+This `deferredTimer` can be triggered in our HTML template by wrapping it into a function defined on the scope:
+
+    $scope.startDeferredTimer = function(success) {
+      deferredTimer(success).then(
+        function(data) {
+          $scope.deferredTimerResult = "Successfully finished: " + data.message;
+        },
+        function(data) {
+          $scope.deferredTimerResult = "Failed: " + data.message;
+        }
+      );
+    };
+
+Our `startDeferredTimer` function will get a `success` parameter which it passes along to the `deferredTimer`. The `then` function expects a success and an error callback as arguments which we use to set a scope variable `deferredTimerResult` to show our result.
+
+This is just one of many example of how promises can simplify your code, but you can find many more examples when lookino into [Kris Kowal's Q implementation](https://github.com/kriskowal/q).
 
 ## Testing Services
 
