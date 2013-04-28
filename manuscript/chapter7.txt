@@ -1,4 +1,5 @@
 # Using Forms
+Every website eventually uses some kind of form for users to enter data. Angular makes it particularly easy to implement client-side form validations to give immediate feedback for an improved user experience.
 
 ## Implementing a Basic Form
 
@@ -22,7 +23,9 @@ Use the standard `form` tag and the `ng-model` Directive to implement a basic fo
       </div>
     </body>
 
-The `novalidate` attribute disables the HTML5 validation. So, only the Angluar.js validations are running. Next comes the controller to bind the form data to your user model:
+The `novalidate` attribute disables the HTML5 validations, which are client-side validations supports by modern browsers. In our example we only want the Angular.js validations running to have complete control over look and feel.
+
+The controller binds the form data to your user model and implements the `submit()` function:
 
     var app = angular.module("MyApp", []);
 
@@ -36,12 +39,14 @@ The `novalidate` attribute disables the HTML5 validation. So, only the Angluar.j
     });
 
 ### Discussion
-The initial idea when using forms would be to implement them the traditional way by serializing the form data and submit it to the server. Instead we use `ng-model` to bind the form to our model, something we have been doing a lot already in previous recipes. The submit button state is reflected in our `wasSubmitted` scope variable, but no submit to the server was actually done. The default behaviour in Angular.js forms is to prevent the default action since we do not want to reload the whole page. We want to handle the submission in an application specific way. In fact there is even more going on in the background and we are going to look into the behaviour of the `form` or `ng-form` Directive in the next recipe.
+The initial idea when using forms would be to implement them the traditional way by serializing the form data and submit it to the server. Instead we use `ng-model` to bind the form to our model, something we have been doing a lot already in previous recipes.
+
+The submit button state is reflected in our `wasSubmitted` scope variable, but no submit to the server was actually done. The default behaviour in Angular.js forms is to prevent the default action since we do not want to reload the whole page. We want to handle the submission in an application specific way. In fact there is even more going on in the background and we are going to look into the behaviour of the `form` or `ng-form` directive in the next recipe.
 
 ## Validating a Form Model Client-Side
 
 ### Problem
-You want to validate the form client-ide using HTML5 form attributes.
+You want to validate the form client-side using HTML5 form attributes.
 
 ### Solution
 Angular.js works in tandem with HTML5 form attributes. Let us start with the same form but let us add some HTML5 attributes to make the input required:
@@ -57,9 +62,9 @@ Angular.js works in tandem with HTML5 form attributes. Let us start with the sam
       <button class="btn">Submit</button>
     </form>
 
-It is still the same form but this time we defined the name attribute on the form and the input for the firstname.
+It is still the same form but this time we defined the `name` attribute on the form and made the input `required` for the firstname.
 
-Let us add some more debug output:
+Let us add some more debug output below the form:
 
     Firstname input valid: {{form.firstname.$valid}}
     <br>
@@ -76,9 +81,9 @@ In addition to these two css classes there are two more to look into. The `ng-va
 
 Since we defined the `name` attribute on the form HTML element we can now access Angular's form controller via scope variables. In the debug output we can check the validity and specific error for each named form input and the form itself. Note, that this only works on the level of the form's name attributes and not on the model scope. If you output the following expression `{{user.firstname.$error}}` it will not work.
 
-Angular's Form Controller exposes `$valid`, `$invalid`, `$error`, `$pristine` and `$dirty` variables.
+Angular's form controller exposes `$valid`, `$invalid`, `$error`, `$pristine` and `$dirty` variables.
 
-For validation Angular provides built-in Directives including `required`, `pattern`, `minlength`, `maxlength`, `min` and `max`.
+For validation Angular provides built-in directives including `required`, `pattern`, `minlength`, `maxlength`, `min` and `max`.
 
 Let us use Angular's form integration to actually show validation errors in the next recipe.
 
@@ -88,7 +93,7 @@ Let us use Angular's form integration to actually show validation errors in the 
 You want to show validation errors to the user by marking the input field red and displaying an error message.
 
 ### Solution
-We can use the `ng-show` Directive to show an error message if a form input is invalid and css classes to change the input background color depending on its state.
+We can use the `ng-show` directive to show an error message if a form input is invalid and CSS classes to change the input element's background color depending on its state.
 
 Let us start with the styling changes:
 
@@ -120,7 +125,7 @@ We use the same logic in the `ng-show` directive to only show the error message 
 You want to display form validation errors but the form is styled using [Twitter Bootstrap](http://twitter.github.com/bootstrap/index.html).
 
 ### Solution
-When using the `.horizontal-form` class Twitter Bootstrap uses `div` elements to structure label, input fields and help messages into groups. The group div has the class `control-group` and the actual controls are further nested in another `div` element with the css class `controls`. Twitter Bootstrap shows a nice validation status when adding the css class `error` on the div with the `control-group` class.
+When using the `.horizontal-form` class Twitter Bootstrap uses `div` elements to structure label, input fields and help messages into groups. The group div has the class `control-group` and the actual controls are further nested in another `div` element with the CSS class `controls`. Twitter Bootstrap shows a nice validation status when adding the CSS class `error` on the div with the `control-group` class.
 
 Let us start with the form:
 
@@ -180,7 +185,7 @@ Again we check both the invalid and dirty flags, because we only show the error 
 You want to disable the Submit button as long as the form contains invalid data.
 
 ### Solution
-Use the `$form.invalid` state in combination with a `ng-disabled` Directive.
+Use the `$form.invalid` state in combination with a `ng-disabled` directive.
 
 Here is the changed submit button:
 
@@ -188,6 +193,8 @@ Here is the changed submit button:
 
 ### Discussion
 The Form Controller attributes `form.$invalid` and friends are very useful to cover all kinds of use cases which focus on the form as a whole instead of individual fields.
+
+Note, that you have to assign a `name` attribute to the form element, otherwise `form.$invalid` won't be available.
 
 ## Implementing Custom Validations
 
@@ -220,11 +227,11 @@ And the controller with the `notBlackListed` implementation:
       };
     });
 
+### Discussion
 First we need to explicitly list our module dependency to the Angular UI directives module. Make sure you actually download the javascript file and load it via script tag.
 
 Our blacklist contains the words we do not want to accept as user input and the `notBlackListed` function checks if the user input matches any of the words defined in the blacklist.
 
-### Discussion
-The `ui-validate` Directive is pretty powerful since it lets you define your custom validations easily by just implementing the business logic in a controller function.
+The `ui-validate` directive is pretty powerful since it lets you define your custom validations easily by just implementing the business logic in a controller function.
 
 If you want to know even more, have a look at how to implement custom directives for yourself in Angular's excellent [guide](http://docs.angularjs.org/guide/forms).

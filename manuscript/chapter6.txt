@@ -6,10 +6,10 @@ Depending on the configuration the `$location` service behaves differently and h
 ## Client-Side Routing with Hashbang URLs
 
 ### Problem
-You want the browser address bar reflect your apps page flow consistently.
+You want the browser address bar reflect your applications page flow consistently.
 
 ### Solution
-Use the `$routeProvider` and `$locationProvider` services to define your routes and the `ng-view` Directive as the placeholder for the partials which should be shown for a particular route definition.
+Use the `$routeProvider` and `$locationProvider` services to define your routes and the `ng-view` directive as the placeholder for the partials which should be shown for a particular route definition.
 
 The main template uses the `ng-view` directive:
 
@@ -24,13 +24,13 @@ The route configuration is implemented in `app.js` using the `config` method:
       config(function($routeProvider, $locationProvider) {
         $locationProvider.hashPrefix('!');
         $routeProvider.
-          when("/persons", { templateUrl: "partials/index.html" }).
+          when("/persons", { templateUrl: "partials/person_list.html" }).
           when("/persons/:id",
-            { templateUrl: "partials/show.html", controller: "ShowCtrl" }).
+            { templateUrl: "partials/person_details.html", controller: "ShowCtrl" }).
           otherwise( { redirectTo: "/persons" });
     });
 
-The partial `index.html`:
+It is setup to render either the `person_list.html` or the `person_details.html` partial depending on the URL. The partial `person_list.html` renders a list of `persons`:
 
     <h3>Person List</h3>
     <div ng-controller="IndexCtrl">
@@ -50,7 +50,7 @@ The partial `index.html`:
       </table>
     </div>
 
-And the partial `show.html`;
+And the partial `person_details.html` shows more detailed information for a specific `person`;
 
     <h3>{{person.name}} Details</h3>
     <p>Name: {{person.name}}</p>
@@ -58,24 +58,24 @@ And the partial `show.html`;
 
     <a href="#!persons">Go back</a>
 
-Our app is configured to render either the `index.html` or the `show.html` partial depending on the URL. The `index.html` shows a list of `persons` and the `show.html` shows more detailed information for a specific `person`.
-
-This example is based on the Angular Seed Bootstrap again and will not work without starting the development server. The complete project is available on Github.
+This example is based on the Angular Seed Bootstrap again and will not work without starting the development server.
 
 ### Discussion
-Let's give our app a try and open the `index.html`. The `otherwise` defined route redirects us from `index.html` to `index.html#!/persons`. This is the fallback in case other `when` conditions don't apply. Note, how the hashbang (#!) separates the `index.html` from the dynamic client-side part `/persons`.
+Let's give our app a try and open the `index.html`. The `otherwise` defined route redirects us from `index.html` to `index.html#!/persons`. This is the default behavior in case other `when` conditions don't apply.
 
-The `/persons` route loads the `index.html` partial via HTTP Request (that is also the reason why it won't work without a development server). It shows a list of persons and therefore defines a `ng-controller` directive inside the template. Let us assume for now that the Controller implementation defines a `$scope.persons` somewhere. Now for each person we also render a link to show the details via `#!persons/{{person.id}}`.
+Take a closer look at the `index.html#!/persons` URL and note how the hashbang (#!) separates the `index.html` from the dynamic client-side part `/persons`. By default Angular would use the hash (#) character but we configured it to use the hashbang instead, following Google's [Making AJAX applications crawlable](https://developers.google.com/webmasters/ajax-crawling/) guide.
 
-The route definition for the person's details uses a placeholder `/persons/:id` which in our case resolves to for example `/persons/1`. The `show.html` partial and additionally a Controller are defined for this URL. The Controller will be scoped to the partial, which basically resembles our `index.html` template where we defined our own `ng-controller` Directive to achieve the same effect.
+The `/persons` route loads the `person_list.html` partial via HTTP Request (that is also the reason why it won't work without a development server). It shows a list of persons and therefore defines a `ng-controller` directive inside the template. Let us assume for now that the controller implementation defines a `$scope.persons` somewhere. Now for each person we also render a link to show the details via `#!persons/{{person.id}}`.
 
-The `show.html` has a back link to `#!persons` which leads back to the `index.html` page.
+The route definition for the person's details uses a placeholder `/persons/:id` which resolves to a specific person's details, for example `/persons/1`. The `person_details.html` partial and additionally a controller are defined for this URL. The controller will be scoped to the partial, which basically resembles our `index.html` template where we defined our own `ng-controller` directive to achieve the same effect.
+
+The `person_details.html` has a back link to `#!persons` which leads back to the `person_list.html` page.
 
 Let us come back to the `ng-view` directive. It is automatically bound to the router definition. Therefore you can currently use only a single `ng-view` on your page. For example, you cannot use nested `ng-view`s to achieve user interaction patterns with a first- and second level navigation.
 
 And lastly the HTTP request for the partials happens only once and is then cached via `$templateCache` service.
 
-The hashbang based routing is client-side only and doesn't require server-side configuration. Let us look into the HTML5 based approach next.
+Finally, the hashbang based routing is client-side only and doesn't require server-side configuration. Let us look into the HTML5 based approach next.
 
 ## Using Regular URLs with the HTML5 History API
 
@@ -102,7 +102,7 @@ Let us start with the route configuration:
 
 There are no changes except the `html5Mode` method which enables our new routing mechanism. The Controller implementation does not change at all.
 
-We have to take care of the partial loading. Our `Express` app will have to serve the partials for us. The initial typical boilerplate for an `Express` app loads the module and creates a server:
+We have to take care of the partial loading though. Our `Express` app will have to serve the partials for us. The initial typical boilerplate for an `Express` app loads the module and creates a server:
 
     var express = require('express');
     var app     = module.exports = express.createServer();
@@ -116,7 +116,7 @@ We skip the configuration here and jump directly to the server-side route defini
 
 The `Express` route definition loads the partial with given name from the `partials` directory and renders its content.
 
-When supporting HTML5 routing our server has to redirect all other URLs to the entry point of our application, the `index` page. First the rendering of the `index` page, which contains the `ng-view` Directive:
+When supporting HTML5 routing our server has to redirect all other URLs to the entry point of our application, the `index` page. First we define the rendering of the `index` page, which contains the `ng-view` directive:
 
     app.get('/', function(req, res) {
       res.render('index');
@@ -128,23 +128,23 @@ Then the catch all route which redirects to the same page:
       res.redirect('/');
     });
 
-Let us quickly check the partials again. Note, that they use the [Jade](http://jade-lang.com/) template engine, why relies on indentation to define the HTML document:
+Let us quickly check the partials again. Note, that they use the [Jade](http://jade-lang.com/) template engine, which relies on indentation to define the HTML document:
 
     p This is the index partial
     ul(ng-repeat="person in persons")
       li
         a(href="/persons/{{person.id}}"){{person.name}}
 
-The index page creates a list of persons and the show page some more details:
+The index page creates a list of persons and the show page shows some more details:
 
     h3 Person Details {{person.name}}
     p Age: {{person.age}}
     a(href="/persons") Back
 
 
-The person details link `/persons/{{person.id}}` and the back link `/persons` are both now much cleaner in my opinion.
+The person details link `/persons/{{person.id}}` and the back link `/persons` are both now much cleaner in my opinion compared to the hashbang URLs.
 
-Have a look at the complete example on Github and start the `Express` app with `node app.js`.
+Have a look at the complete [example on Github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter6/recipe2) and start the `Express` app with `node app.js`.
 
 ### Discussion
 If we wouldn't redirect all requests to the root, what would happen if you navigate to the persons list at `http://localhost:3000/persons`? The `Express` framework would show us an error because there is no route defined for `persons`, we only defined routes for our root URL (`/`) and the partials URL `/partials/:name`. The redirect ensures that we actually end up at our root URL which then kicks in our Angular app. When the client-side routing takes over we then redirect back to the `/persons` URL.
@@ -206,7 +206,6 @@ The most interesting part is the implementation of the route change listener:
           otherwise( { redirectTo: "/persons" });
       }).
       run(function($rootScope, $location) {
-
         $rootScope.$on( "$routeChangeStart", function(event, next, current) {
           if ($rootScope.loggedInUser == null) {
             // no logged user, redirect to /login
@@ -218,7 +217,7 @@ The most interesting part is the implementation of the route change listener:
         });
       });
 
-Next we need the login form:
+Next we define a login form to enter the username, skipping the password for the sake of simplicity:
 
     <form ng-submit="login()">
       <label>Username</label>
@@ -240,4 +239,4 @@ This is of course not a full fletched login system, so please don't use it in an
 
 The `run` method is defined in [Module](http://docs.angularjs.org/api/angular.Module) and is a good place for such a route change listener since it runs only once on initialization after the injector is done loading all the modules. We check the `loggedInUser` in the `$rootScope` and if it is not set we redirect the user to the login page. Note, that in order to skip this behaviour when already navigating to the login page, we have to explicitly check the next `templateUrl`.
 
-The login controller sets the `$rootScope` to the username and redirects. We can access the `$rootScope` in the controller by injecting it.
+The login controller sets the `$rootScope` to the username and redirects to `/persons`. Generally, I try to avoid using the `$rootScope` since it basically is a kind of global state but in our case it fits nicely since there should be a current user globally available.

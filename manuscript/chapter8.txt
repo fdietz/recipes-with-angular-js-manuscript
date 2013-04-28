@@ -173,7 +173,7 @@ The `offset` filter uses the `currentPage*itemsPerPage` to calculate the offset 
 
 The controller is responsible for supporting a `nextPage` and `prevPage` action and the accompanying functions to check the disabled state of these actions via `ng-class` directive: `nextPageDisabled` and `prevPageDisabled`. The `prevPage` function first checks if it has not reached the first page yet before decrementing the `currentPage` and the `nextPage` does the same for the last page and the same logic is applied for the disabled checks.
 
-This example is already quite involved and I intentionally left out to explain the rendering of links between the previous and next buttons. The full implementation is online though for you to investigate.
+This example is already quite involved and I intentionally left out to explain the rendering of links between the previous and next buttons. The [full implementation](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe2) is online though for you to investigate.
 
 ## Paginating Through Server-Side Data
 
@@ -181,7 +181,7 @@ This example is already quite involved and I intentionally left out to explain t
 You want to paginate through a large server-side result set.
 
 ### Solution
-You cannot use the previous method with a Filter since that would require for all data to be available on the client. Instead we use an implementation with a controller only instead.
+You cannot use the previous method with a filter since that would require for all data to be available on the client. Instead we use an implementation with a controller only instead.
 
 The template has not changed much, only the `ng-repeat` directive looks simpler now:
 
@@ -191,7 +191,7 @@ The template has not changed much, only the `ng-repeat` directive looks simpler 
       <td>{{item.description}}</td>
     </tr>
 
-In order to simplify the example ee fake a server-side service in this example by providing an Angular service implementation for the items.
+In order to simplify the example we fake a server-side service by providing an Angular service implementation for the items.
 
     app.factory("Item", function() {
 
@@ -379,7 +379,7 @@ The route definition defines the pages, nothing new here for us:
         otherwise({ redirectTo: "/home" });
     });
 
-The interesting part is the `flash` Service which handles a queue of messages and listens for route changes to provide a message from the queue to the current page.
+The interesting part is the `flash` service which handles a queue of messages and listens for route changes to provide a message from the queue to the current page.
 
     app.factory("flash", function($rootScope) {
       var queue = [];
@@ -411,12 +411,12 @@ The controller handles the form submit and navigates to the other page.
       }
     });
 
-The flash Service is dependency injected into the controller and made available to the scope since we want to use it in our template.
+The flash service is dependency injected into the controller and made available to the scope since we want to use it in our template.
 
-### Discussion
 When you press the submit button you will be navigated to the other page and see the flash message. Note, that using the navigation to go back and forth between pages doesn't show the flash message.
 
-The controller uses the `setMessage` function of the `flash` Service and the service stores the message in an array called `queue`. When the controller then uses `$location` service to navigate the service `routeChangeSuccess` listener will be called and retrieves the message from the queue.
+### Discussion
+The controller uses the `setMessage` function of the `flash` service and the service stores the message in an array called `queue`. When the controller then uses `$location` service to navigate the service `routeChangeSuccess` listener will be called and retrieves the message from the queue.
 
 In the template we use `ng-show` to hide the div element with the flash messaging using `flash.getMessage()`.
 
@@ -435,7 +435,7 @@ In the example we use a div and a paragraph to render the content.
     <div contenteditable ng-model="text"></div>
     <p>{{text}}</p>
 
-The Directive is especially interesting since it uses `ng-model` instead of custom attributes.
+The directive is especially interesting since it uses `ng-model` instead of custom attributes.
 
     app.directive("contenteditable", function() {
       return {
@@ -445,7 +445,7 @@ The Directive is especially interesting since it uses `ng-model` instead of cust
 
           function read() {
             ngModel.$setViewValue(element.html());
-          };
+          }
 
           ngModel.$render = function() {
             element.html(ngModel.$viewValue || "");
@@ -454,14 +454,12 @@ The Directive is especially interesting since it uses `ng-model` instead of cust
           element.bind("blur keyup change", function() {
             scope.$apply(read);
           });
-
-          read();
         }
       };
     });
 
 ### Discussion
-The Directive is restricted for usage as an HTML attribute since we want to use the HTML5 contenteditable attribute as is instead of defining a new HTML element.
+The directive is restricted for usage as an HTML attribute since we want to use the HTML5 contenteditable attribute as is instead of defining a new HTML element.
 
 It requires the `ngModel` controller for data binding in conjunction with the link function. The implementation binds an event listener which executes the `read` function with [apply](http://docs.angularjs.org/api/ng.$rootScope.Scope). This ensures that even though we call the `read` function from within a DOM event handler we notify Angular about it.
 
@@ -472,7 +470,7 @@ The directive is surprisingly simple leaving the `ng-model` aside. But, without 
 ## Displaying a Modal Dialog
 
 ### Question
-You want to use a Modal Dialog using the Twitter Bootstrap Framework. A dialog is called modal when it is blocking the rest of your web app until it is closed.
+You want to use a Modal Dialog using the Twitter Bootstrap Framework. A dialog is called modal when it is blocking the rest of your web application until it is closed.
 
 ### Solution
 Use the `angular-ui` module's nice `modal` plugin which directly supports Twitter Bootstrap.
@@ -515,7 +513,7 @@ Note, that even though we don't specify it explicitly the modal dialog is hidden
     };
 
 
-Do not forget to download and include the angular-ui code!
+Do not forget to download and include the angular-ui.js file in a script tag. The module dependency is defined directly to "ui.bootstrap.modal". The [full example](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe7) is available on Github including the angular-ui module.
 
 ### Discussion
 The modal as defined in the template is straight from the Twitter bootstrap [documentation](http://twitter.github.com/bootstrap/javascript.html#modals). We can control the visibility with the `modal` attribute. Additionally, the `close` attribute defines a `close` function which is called whenever the dialog is closed. Note, that this could happen when the user presses the `escape` key or clicking outside the modal.
@@ -606,7 +604,7 @@ Don't forget that add `ngResource` to the module and load it via script tag.
 ### Discussion
 The template is the easy part of this recipe since it renders a list of tweets using the `ng-repeat` directive. Let us jump straight to the interceptor code.
 
-The interceptor is implemented using the factory method and attaches itself to the promise function of the AJAX response to hide the spinner on success or failure. Note, that on failure we use the `reject` function of the [q](http://docs.angularjs.org/api/ng.$q) promise/deferred implementation.
+The interceptor is implemented using the factory method and attaches itself to the promise function of the AJAX response to hide the spinner on success or failure. Note, that on failure we use the `reject` function of the [$q](http://docs.angularjs.org/api/ng.$q) service, Angular's promise/deferred implementation.
 
 Now, in the `config` method we add our inceptor to the list of responseInterceptors of `$httpProvider` to register it properly. In a similar manner we add the `spinnerFunction` to the default `transformRequest` list in order to call it before each AJAX request.
 
