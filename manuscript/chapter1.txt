@@ -37,6 +37,8 @@ Use Angulars `ng-model` directive to bind the text input to the expression.
     Enter your name: <input type="text" ng-model="name"></input>
     <p>Hello {{name}}!</p>
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter1/recipe2).
+
 ### Discussion
 Assigning "name" to the `ng-model` attribute and using the name variable in an expression will keep both in sync automatically. Typing in the text input will automatically reflect these changes in the paragraph element below.
 
@@ -97,6 +99,8 @@ And the controller in `js/app.js`:
       };
     }
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter1/recipe3).
+
 When toggling the button the "Hello World" paragraph will change its visibility
 
 ### Discussion
@@ -118,6 +122,8 @@ Use the `uppercase` Angular filter.
 
     Enter your name: <input type="text" ng-model="name"></input>
     <p>Hello {{name | uppercase }}!</p>
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter1/recipe4).
 
 ### Discussion
 Angular uses the `|` (pipe) character to combine filters with variables in expressions. When evaluating the expression, the name variable is passed to the uppercase filter. This is similar to working with the Unix bash pipe symbol where an input can be transformed by another program. Also try the `lowercase` filter!
@@ -154,6 +160,8 @@ The `show` attribute is our directive, with the following implementation:
     });
 
 The browser will only show the "Hello World" paragraph if the checkbox is checked and will hide it otherwise.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter1/recipe5).
 
 ### Discussion
 Let us ignore the `app` module creation for now to look further into in a later chapter. In our example it is just the means to create a directive. Note, that the `show` String is name of the directive which corresponds to the `show` HTML attribute used in the template.

@@ -14,6 +14,8 @@ Use the `ng-disabled` directive and bind its condition to the checkbox state.
       <button ng-disabled="checked">Press me</button>
     </body>
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe1).
+
 ### Discussion
 The `ng-disabled` directive is a direct translation from the disabled HTML attribute, without you needing to worry about browser incompatibilities. It is bound to the `checked` model using an attribute value as is the checkbox using the `ng-model` directive. In fact the `checked` attribute value is again an Angular expression. You could for example invert the logic and use `!checked` instead.
 
@@ -54,6 +56,8 @@ We use a link function in our directive implementation to change the CSS of the 
     });
 
 When clicking on the paragraph the background color changes to red.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe2).
 
 ### Discussion
 In the HTML document we use the new directive as an HTML element `my-widget`, which can be found in the javascript code as `myWidget` again. The directive function returns a restriction and a link function.
@@ -105,6 +109,8 @@ Implement a directive and use the `template` attribute to define the HTML.
       };
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe3).
+
 ### Discussion
 This will render the Hello World paragraph as a child node of your `my-widget` element. In case you want to replace the element entirely with the paragraph you have to additionally return the `replace` attribute:
 
@@ -152,6 +158,8 @@ Use the `transclude` attribute together with the `ng-transclude` directive.
 
 This will render a `div` element containing a `h3` element and append the directives child node with the paragraph element below.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe4).
+
 ### Discussion
 In this context transclusion refers to the inclusion of a part of a document into another document by reference. The `ng-transclude` attribute should be placed depending on where you want your child nodes to be appended to.
 
@@ -182,6 +190,8 @@ Use the attribute based directive and pass an attribute value for the configurat
     });
 
 This renders a paragraph with the text passed as the param.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe5).
 
 ### Discussion
 The link function has access to the element and its attributes. It is therefore straight forward to set the scope to the text passed as the attributes value and use this in the template evaluation.
@@ -271,6 +281,8 @@ Implement a compile function in your directive.
 
 This will render the header and paragraph 10 times.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe6).
+
 ### Discussion
 The directive repeats the child nodes as often as configured in the `repeat` attribute. It works similarly to the [ng-repeat](http://docs.angularjs.org/api/ng.directive:ngRepeat) directive. The implemention uses Angulars element methods to append the child nodes in a for loop.
 
@@ -355,6 +367,8 @@ And finally the apple and orange directives which add themselves to the basket u
     });
 
 If you hover with the mouse over the rendered text the console should print and the basket's content.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe7).
 
 ### Discussion
 `Basket` is the example directive which demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The `link` function then gets `basketCtrl` injected.
@@ -487,6 +501,8 @@ Using the angular-seed in combination with jasmine and jasmine-jquery you can im
         expect(contents.eq(1)).toHaveClass('active');
       });
     });
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe8).
 
 ### Discussion
 Combining jasmine with jasmine-jquery gives you useful assertions like `toHaveClass` and actions like `click` which are used extensively in the example above.

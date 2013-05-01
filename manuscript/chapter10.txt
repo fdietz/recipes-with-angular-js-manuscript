@@ -1,10 +1,10 @@
 # Backend Integration with Node Express
-In this chapter we will have a look into solving common problems when combining Angular.js with the Node.js [Express](http://expressjs.com/) framework. The examples used in this chapter are based on a Contacts app to manage a list of contacts. As an extra we use MongoDB as a backend for our contacts.
+In this chapter we will have a look into solving common problems when combining Angular.js with the Node.js [Express](http://expressjs.com/) framework. The examples used in this chapter are based on a Contacts app to manage a list of contacts. As an extra we use MongoDB as a backend for our contacts since it requires further customization to make it work in conjunction with Angular's `$resource` service.
 
 ## Consuming REST APIs
 
 ### Problem
-You want to consume a JSON REST API in your Angular.js app.
+You want to consume a JSON REST API implemented in your Express application.
 
 ### Solution
 Using the `$resource` service we first define our Contact model and all RESTful actions.
@@ -52,7 +52,7 @@ We can now use the `Contact` model to implement the API. Lets start with the ind
       });
     };
 
-Skipping the error handling we retrieve all contacts with the `find` function provided by Mongoose and render the result in the JSON format. The show action is pretty similar except it uses `findOne` and the id from the URL param to retrieve a single contact.
+Skipping the error handling we retrieve all contacts with the `find` function provided by Mongoose and render the result in the JSON format. The show action is pretty similar except it uses `findOne` and the id from the URL parameter to retrieve a single contact.
 
     exports.contact = function(req, res) {
       Contact.findOne({ _id: req.params.id }, function(err, obj) {
@@ -68,8 +68,10 @@ As a last example we create a new Contact instance passing in the request body a
       res.json(req.body);
     };
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter10/recipe1).
+
 ### Discussion
-Let have a look again at the example for the contact function which retrieves a single Contact. It uses `_id` instead of `id` as the param for the `findOne` function. This underscore is intentional and used by MongoDB for its auto generated IDs. In order to automatically map from `id` to the `_id` param we used a nice trick of the `$resource` service. Take a look at the second param of the Contact `$resource` definition: `{ id: "@_id" }`. Using this param Angular will automatically set the URL param `id` based on the value of the model attribute `_id`.
+Let have a look again at the example for the contact function which retrieves a single Contact. It uses `_id` instead of `id` as the parameter for the `findOne` function. This underscore is intentional and used by MongoDB for its auto generated IDs. In order to automatically map from `id` to the `_id` parameter we used a nice trick of the `$resource` service. Take a look at the second parameter of the Contact `$resource` definition: `{ id: "@_id" }`. Using this parameter Angular will automatically set the URL parameter `id` based on the value of the model attribute `_id`.
 
 ## Implementing Client-Side Routing
 
@@ -142,5 +144,7 @@ We define route definitions to list, show and edit contacts and use a set of par
 
 It uses the name of the partial as an URL param and renders the partial with the given name from the `partial` directory. Keep in mind to define that route before the catch all route, otherwise it will not work.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter10/recipe1).
+
 ### Discussion
-Compared to Rails the handling of partials is quite explicit by defining a route for partials.
+Compared to Rails the handling of partials is quite explicit by defining a route for partials. On the other hand it is quite nice to being able to use jade templates for our partials too.

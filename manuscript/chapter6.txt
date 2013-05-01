@@ -60,6 +60,8 @@ And the partial `person_details.html` shows more detailed information for a spec
 
 This example is based on the Angular Seed Bootstrap again and will not work without starting the development server.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter6/recipe1).
+
 ### Discussion
 Let's give our app a try and open the `index.html`. The `otherwise` defined route redirects us from `index.html` to `index.html#!/persons`. This is the default behavior in case other `when` conditions don't apply.
 
@@ -146,6 +148,8 @@ The person details link `/persons/{{person.id}}` and the back link `/persons` ar
 
 Have a look at the complete [example on Github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter6/recipe2) and start the `Express` app with `node app.js`.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter6/recipe2).
+
 ### Discussion
 If we wouldn't redirect all requests to the root, what would happen if you navigate to the persons list at `http://localhost:3000/persons`? The `Express` framework would show us an error because there is no route defined for `persons`, we only defined routes for our root URL (`/`) and the partials URL `/partials/:name`. The redirect ensures that we actually end up at our root URL which then kicks in our Angular app. When the client-side routing takes over we then redirect back to the `/persons` URL.
 
@@ -179,6 +183,8 @@ The controller implements the `menuClass` function:
         return page === current ? "active" : "";
       };
     });
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter6/recipe3).
 
 ### Discussion
 When the user selects a menu item the client-side navigation will kick in as expected. The `menuClass` function is bound using the `ngClass` directive and updates the CSS class automatically for us depending on the current route.
@@ -233,6 +239,8 @@ and lastly the login controller which sets the logged in user and redirects to t
         $location.path("/persons");
       };
     });
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter6/recipe4).
 
 ### Discussion
 This is of course not a full fletched login system, so please don't use it in any production system. But, it exemplifies how to generally handle access to specific areas of your web app. When you open the app in your browser you will be redirected to the login app in all cases. Only after you entered a user you can access the other areas.

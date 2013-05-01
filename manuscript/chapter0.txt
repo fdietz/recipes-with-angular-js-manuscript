@@ -15,8 +15,8 @@ If you have questions or comments please get in touch with:
 Frederik Dietz (fdietz@gmail.com)
 
 ## Acknowledgements
-Thanks go to John Lindquist for his excellent [Angular.js screencasts](http://www.youtube.com/user/johnlindquist/videos?query=angular) and his project [Egghead IO](http://egghead.io/), Lukas Ruebbelke for his awesome [videos](http://www.youtube.com/user/simpulton/videos?flow=grid&view=0)
+Special thanks go to my english editor and friend Robert Smales!
 
-TODO: Thanks for reviewing the book!
+Thanks go to John Lindquist for his excellent screencast project [Egghead IO](http://egghead.io/), Lukas Ruebbelke for his awesome [videos](http://www.youtube.com/user/simpulton/videos?flow=grid&view=0), Matias Niemelä for his great [blog](http://www.yearofmoo.com/). And of course the whole development team behind Angular.js!
 
 {{mainmatter}}

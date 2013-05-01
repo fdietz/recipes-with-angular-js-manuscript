@@ -35,6 +35,8 @@ The controller defines the default friends array:
       ];
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe1).
+
 ### Discussion
 Chaining filters is a fantastic way to implement such a use case as long as you have all the data available on the client.
 
@@ -158,6 +160,8 @@ The controller manages the actual `$scope.items` array and handles the logic for
 
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe2).
+
 ### Discussion
 The initial idea of this pagination solution can be best explained by looking into the usage of `ng-repeat` to render the table rows for each item:
 
@@ -253,6 +257,8 @@ The controller uses dependency injection to access the `Item` service and contai
 
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe3).
+
 ### Discussion
 When you select the next/previous page you will change the `$scope.currentPage` value and the `$watch` function is triggered. It fetches fresh items for the current page and the total number of items. So, on the client side we only have 5 items available as defined in `itemsPerPage` and when paginating we throw away the items of the previous page and fetch new items.
 
@@ -317,6 +323,8 @@ The controller uses the same `Item` Service as used for the previous recipe and 
       };
 
     });
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe4).
 
 ### Discussion
 The solution is actually pretty similar to the previous recipe and uses a controller only again. The `$scope.pagedItems` is retrieved initially to render the first five items.
@@ -415,6 +423,8 @@ The flash service is dependency injected into the controller and made available 
 
 When you press the submit button you will be navigated to the other page and see the flash message. Note, that using the navigation to go back and forth between pages doesn't show the flash message.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe5).
+
 ### Discussion
 The controller uses the `setMessage` function of the `flash` service and the service stores the message in an array called `queue`. When the controller then uses `$location` service to navigate the service `routeChangeSuccess` listener will be called and retrieves the message from the queue.
 
@@ -457,6 +467,8 @@ The directive is especially interesting since it uses `ng-model` instead of cust
         }
       };
     });
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe6).
 
 ### Discussion
 The directive is restricted for usage as an HTML attribute since we want to use the HTML5 contenteditable attribute as is instead of defining a new HTML element.
@@ -514,6 +526,8 @@ Note, that even though we don't specify it explicitly the modal dialog is hidden
 
 
 Do not forget to download and include the angular-ui.js file in a script tag. The module dependency is defined directly to "ui.bootstrap.modal". The [full example](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe7) is available on Github including the angular-ui module.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe7).
 
 ### Discussion
 The modal as defined in the template is straight from the Twitter bootstrap [documentation](http://twitter.github.com/bootstrap/javascript.html#modals). We can control the visibility with the `modal` attribute. Additionally, the `close` attribute defines a `close` function which is called whenever the dialog is closed. Note, that this could happen when the user presses the `escape` key or clicking outside the modal.
@@ -600,6 +614,8 @@ Additionally we use a controller to handle the button click and executing the se
     });
 
 Don't forget that add `ngResource` to the module and load it via script tag.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe8).
 
 ### Discussion
 The template is the easy part of this recipe since it renders a list of tweets using the `ng-repeat` directive. Let us jump straight to the interceptor code.

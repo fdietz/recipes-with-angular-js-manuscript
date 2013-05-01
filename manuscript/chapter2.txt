@@ -21,6 +21,8 @@ Next, define the scope variable in your controller function:
       $scope.value = "some value";
     };
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe1).
+
 ### Discussion
 Depending on where you use the ng-controller directive, you define its assigned scope. The scope is hierachical and follows the DOM node hierarchy. In our example the value expression is correctly evaluated to `some value`, since value is set in the `MyCtrl` controller. Note, that this would not work if the value expression is moved outside the controllers scope:
 
@@ -53,6 +55,8 @@ This function can be directly called in an expression, in our example we use `ng
       <p ng-init="incrementValue(5)">{{value}}</p>
     </div>
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe2).
+
 ### Discussion
 The `ng-init` directive is executed on page load and calls the function `incrementValue` defined in `MyCtrl`. Functions are defined on the scope very similar to values but must be called with the familiar parenthesis syntax.
 
@@ -79,6 +83,8 @@ Then in the template we use an expression to call it:
     <div ng-controller="MyCtrl">
       <p>{{getIncrementedValue()}}</p>
     </div>
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe3).
 
 ### Discussion
 `MyCtrl` defines the `getIncrementedValue` function which uses the current value and returns it incremented by one. One could argue that depending on the use case it would make more sense to use a filter. But, there are use cases specific to the controllers behaviour where you do not require a generic filter.
@@ -109,6 +115,8 @@ In our example we use the text input value to print a friendly gretting.
     </div>
 
 The value `greeting` will be changed whenever there's a change on the `name` model and the value is not blank.
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe4).
 
 ### Discussion
 The first argument `name` of the `$watch` function is actually an Angular expression, so you can use more complicated expressions (for example: `[value1, value2] | json`) or even a javascript function. In this case you need to return a String in the watcher function:
@@ -168,6 +176,8 @@ The `app.js` file contains the controller definition and initializes the scope w
 
 Play around with the various input fields and check how changes affect each other.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe5).
+
 ### Discussion
 All the default values are defined in `MyCtrl` which is the parent of `MyNestedCtrl`. When doing changes in the first input field, the changes will be in sync with the other input fields bound to the `name` variable. They all share the same scope variable as long as they only read from the variable. If you change the nested value, a copy in the scope of the `MyNestedCtrl` will be created. From now on, changing the first input field will only change the nested input field which explicitly references the parent scope via `$parent.name` expression.
 
@@ -221,6 +231,8 @@ The service and controller implementation in `app.js` implements a user service 
       $scope.firstUser = UserService.first();
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe6).
+
 ### Discussion
 The `factory` method creates a singleton `UserService` which returns two functions for retrieving all users and the first user only. The controllers get the `UserService` injected by adding it to the `controller` function as params.
 
@@ -265,6 +277,7 @@ Implement a unit test using [Jasmine](http://pivotal.github.com/jasmine/) and th
       });
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe7).
 
 ### Discussion
 Jasmine specs use `describe` and `it` functions to group specs and `beforeEach` and `afterEach` to setup and teardown code. The actual expectation compares the greeting from the scope with our expectation `Greetings Frederik`.

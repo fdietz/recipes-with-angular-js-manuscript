@@ -38,6 +38,8 @@ The controller binds the form data to your user model and implements the `submit
       };
     });
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter7/recipe1).
+
 ### Discussion
 The initial idea when using forms would be to implement them the traditional way by serializing the form data and submit it to the server. Instead we use `ng-model` to bind the form to our model, something we have been doing a lot already in previous recipes.
 
@@ -73,6 +75,8 @@ Let us add some more debug output below the form:
     Form valid: {{form.$valid}}
     <br>
     Form validation error: {{form.$error}}
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter7/recipe2).
 
 ### Discussion
 When starting with a fresh empty form, you notice that Angular adds the css class `ng-pristine` and `ng-valid` to the form tag and each input tag. When editing the form the `ng-pristine` class will be removed from the changed input field and also from the form tag. Instead it will be replaced by the `ng-dirty` class. Very useful because you can easily add new features to your app depending on these states.
@@ -113,6 +117,8 @@ And here is a small part of the form with an error message for the input field:
     <p ng-show="form.firstname.$invalid && form.firstname.$dirty">
       Firstname is required
     </p>
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter7/recipe3).
 
 ### Discussion
 The CSS classes ensure that we initially show the fresh form without any classes. When the user starts typing in some input for the first time, we change it to either green or red. That is a good example usage of the `ng-dirty` and `ng-invalid` CSS classes.
@@ -176,6 +182,8 @@ Note, that we use the `ng-class` directive on the `control-group` div. So, lets 
 
 The error function gets the input name attribute passed as a string and checks for the `$invalid` and `$dirty` flags to return either the error class or a blank string.
 
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter7/recipe4).
+
 ### Discussion
 Again we check both the invalid and dirty flags, because we only show the error message in case the user actually changed the form. Note, that this `ng-class` function usage is pretty typical in Angular since expressions do not support ternary checks.
 
@@ -190,6 +198,8 @@ Use the `$form.invalid` state in combination with a `ng-disabled` directive.
 Here is the changed submit button:
 
     <button ng-disabled="form.$invalid" class="btn">Submit</button>
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter7/recipe5).
 
 ### Discussion
 The Form Controller attributes `form.$invalid` and friends are very useful to cover all kinds of use cases which focus on the form as a whole instead of individual fields.
@@ -226,6 +236,8 @@ And the controller with the `notBlackListed` implementation:
         return $scope.blacklist.indexOf(value) === -1;
       };
     });
+
+You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter7/recipe6).
 
 ### Discussion
 First we need to explicitly list our module dependency to the Angular UI directives module. Make sure you actually download the javascript file and load it via script tag.
