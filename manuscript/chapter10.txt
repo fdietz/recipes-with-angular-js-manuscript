@@ -4,10 +4,10 @@ In this chapter we will have a look into solving common problems when combining 
 ## Consuming REST APIs
 
 ### Problem
-You want to consume a JSON REST API implemented in your Express application.
+You wish to consume a JSON REST API implemented in your Express application.
 
 ### Solution
-Using the `$resource` service we first define our Contact model and all RESTful actions.
+Using the `$resource` service we will begin by defining our Contact model and all RESTful actions.
 
     app.factory("Contact", function($resource) {
       return $resource("/api/contacts/:id", { id: "@_id" },
@@ -34,7 +34,7 @@ We can now fetch a list of contacts using `Contact.index()` and a single contact
     app.put('/api/contacts/:id', api.updateContact);
     app.delete('/api/contacts/:id', api.destroyContact);
 
-I like to keep routes in a seperate file `routes/api.js` and just reference them in `app.js` in order to keep it small. The API implementation first initializes the [Mongoose](http://mongoosejs.com/) library and defines a schema for our Contact model.
+I like to keep routes in a separate file `routes/api.js` and just reference them in `app.js` in order to keep it small. The API implementation first initializes the [Mongoose](http://mongoosejs.com/) library and defines a schema for our Contact model.
 
     var mongoose = require('mongoose');
     mongoose.connect('mongodb://localhost/contacts_database');
@@ -60,7 +60,7 @@ Skipping the error handling we retrieve all contacts with the `find` function pr
       });
     };
 
-As a last example we create a new Contact instance passing in the request body and call the `save` method to persist it:
+As a final example we will create a new Contact instance passing in the request body and call the `save` method to persist it:
 
     exports.createContact = function(req, res) {
       var contact = new Contact(req.body);
@@ -71,15 +71,15 @@ As a last example we create a new Contact instance passing in the request body a
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter10/recipe1).
 
 ### Discussion
-Let have a look again at the example for the contact function which retrieves a single Contact. It uses `_id` instead of `id` as the parameter for the `findOne` function. This underscore is intentional and used by MongoDB for its auto generated IDs. In order to automatically map from `id` to the `_id` parameter we used a nice trick of the `$resource` service. Take a look at the second parameter of the Contact `$resource` definition: `{ id: "@_id" }`. Using this parameter Angular will automatically set the URL parameter `id` based on the value of the model attribute `_id`.
+Let have a look again at the example for the contact function, which retrieves a single Contact. It uses `_id` instead of `id` as the parameter for the `findOne` function. This underscore is intentional and used by MongoDB for its auto-generated IDs. In order to automatically map from `id` to the `_id` parameter we used a nice trick of the `$resource` service. Take a look at the second parameter of the Contact `$resource` definition: `{ id: "@_id" }`. Using this parameter Angular will automatically set the URL parameter `id` based on the value of the model attribute `_id`.
 
 ## Implementing Client-Side Routing
 
 ### Problem
-You want to use client-side routing in conjunction with an Express backend.
+You wish to use client-side routing in conjunction with an Express backend.
 
 ### Solution
-Every request to the backend should initially render the complete layout in order to load our Angular app. Only then the client-side rendering will take over. Let us first have a look at the route definition for this "catch all" route in our `app.js`.
+Every request to the backend should initially render the complete layout in order to load our Angular app. Only then will the client-side rendering take over. Let us first have a look at the route definition for this "catch all" route in our `app.js`.
 
     var express = require('express'),
          routes = require('./routes');
@@ -111,7 +111,7 @@ The implementation only renders the layout template. It uses the [Jade](http://j
         script(src='js/services.js')
         script(src='js/controllers.js')
 
-Now, that we can actually render the initial layout we can get started with the client-side routing definition in `app.js`
+Now that we can actually render the initial layout we can get started with the client-side routing definition in `app.js`
 
     var app = angular.module('myApp', ["ngResource"]).
       config(['$routeProvider', '$locationProvider',
@@ -135,14 +135,14 @@ Now, that we can actually render the initial layout we can get started with the 
       ]
     );
 
-We define route definitions to list, show and edit contacts and use a set of partials and corresponding controllers. In order for the partials to get loaded correctly we need to add another express route in the backend which servers all these partials.
+We define route definitions to list, show and edit contacts and use a set of partials and corresponding controllers. In order for the partials to get loaded correctly we need to add another express route in the backend which serves all these partials.
 
     app.get('/partials/:name', function (req, res) {
       var name = req.params.name;
       res.render('partials/' + name);
     });
 
-It uses the name of the partial as an URL param and renders the partial with the given name from the `partial` directory. Keep in mind to define that route before the catch all route, otherwise it will not work.
+It uses the name of the partial as an URL param and renders the partial with the given name from the `partial` directory. Keep in mind that you must define that route before the catch all route, otherwise it will not work.
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter10/recipe1).
 

@@ -3,10 +3,10 @@
 ## Filtering and Sorting a List
 
 ### Problem
-You want to filter and sort a relatively small list of items all available on the client.
+You wish to filter and sort a relatively small list of items all available on the client.
 
 ### Solution
-For this example we render a list of friends using the `ng-repeat` directive. Using the built-in `filter` and `orderBy` Filters we filter and sort the friends list client-side.
+For this example we will render a list of friends using the `ng-repeat` directive. Using the built-in `filter` and `orderBy` filters we will filter and sort the friends list client-side.
 
     <body ng-app="MyApp">
       <div ng-controller="MyCtrl">
@@ -38,7 +38,7 @@ The controller defines the default friends array:
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe1).
 
 ### Discussion
-Chaining filters is a fantastic way to implement such a use case as long as you have all the data available on the client.
+Chaining filters is a fantastic way of implementing such a use case as long as you have all the data available on the client.
 
 The [filter](http://docs.angularjs.org/api/ng.filter:filter) Angular.js Filter works on an array and returns a subset of items as a new array. It supports a String, Object or Function parameter. In this example we only use the String parameter, but given that the `$scope.friends` is an array of objects we could think of more complex examples where we use the Object param, as for example:
 
@@ -48,7 +48,7 @@ The [filter](http://docs.angularjs.org/api/ng.filter:filter) Angular.js Filter w
       <li>{{friend.name}} ({{friend.age}})</li>
     </ul>
 
-That way we can filter by name and age at the same time. And lastly you could call a function defined in the controller which does the filtering for you:
+That way we can filter by name and age at the same time. And lastly you could call a function defined in the controller, which does the filtering for you:
 
     <ul ng-repeat="friend in friends |
       filter: filterFunction |
@@ -60,7 +60,7 @@ That way we can filter by name and age at the same time. And lastly you could ca
       return element.name.match(/^Ma/) ? true : false;
     };
 
-The `filterFunction` must returns either `true` or `false`. In this example we use a regular expression on the name starting with `Ma` to filter the list.
+The `filterFunction` must return either `true` or `false`. In this example we use a regular expression on the name starting with `Ma` to filter the list.
 
 ## Paginating Through Client-Side Data
 
@@ -68,7 +68,7 @@ The `filterFunction` must returns either `true` or `false`. In this example we u
 You have a table of data completely client-side and want to paginate through the data.
 
 ### Solution
-Use a HTML table element with the `ng-repeat` directive to render only the items for the current page. All the pagination logic should be handled in a custom filter and controller implementation.
+Use an HTML table element with the `ng-repeat` directive to render only the items for the current page. All the pagination logic should be handled in a custom filter and controller implementation.
 
 Let us start with the template using Twitter Bootstrap for the table and pagination elements:
 
@@ -177,17 +177,17 @@ The `offset` filter uses the `currentPage*itemsPerPage` to calculate the offset 
 
 The controller is responsible for supporting a `nextPage` and `prevPage` action and the accompanying functions to check the disabled state of these actions via `ng-class` directive: `nextPageDisabled` and `prevPageDisabled`. The `prevPage` function first checks if it has not reached the first page yet before decrementing the `currentPage` and the `nextPage` does the same for the last page and the same logic is applied for the disabled checks.
 
-This example is already quite involved and I intentionally left out to explain the rendering of links between the previous and next buttons. The [full implementation](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe2) is online though for you to investigate.
+This example is already quite involved and I intentionally omitted an explanation of the rendering of links between the previous and next buttons. The [full implementation](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe2) is online though for you to investigate.
 
 ## Paginating Through Server-Side Data
 
 ### Problem
-You want to paginate through a large server-side result set.
+You wish to paginate through a large server-side result set.
 
 ### Solution
-You cannot use the previous method with a filter since that would require for all data to be available on the client. Instead we use an implementation with a controller only instead.
+You cannot use the previous method with a filter since that would require all data to be available on the client. Instead we use an implementation with a controller only instead.
 
-The template has not changed much, only the `ng-repeat` directive looks simpler now:
+The template has not changed much. Only the `ng-repeat` directive looks simpler now:
 
     <tr ng-repeat="item in pagedItems">
       <td>{{item.id}}</td>
@@ -195,7 +195,7 @@ The template has not changed much, only the `ng-repeat` directive looks simpler 
       <td>{{item.description}}</td>
     </tr>
 
-In order to simplify the example we fake a server-side service by providing an Angular service implementation for the items.
+In order to simplify the example we will fake a server-side service by providing an Angular service implementation for the items.
 
     app.factory("Item", function() {
 
@@ -260,17 +260,17 @@ The controller uses dependency injection to access the `Item` service and contai
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe3).
 
 ### Discussion
-When you select the next/previous page you will change the `$scope.currentPage` value and the `$watch` function is triggered. It fetches fresh items for the current page and the total number of items. So, on the client side we only have 5 items available as defined in `itemsPerPage` and when paginating we throw away the items of the previous page and fetch new items.
+When you select the next/previous page you will change the `$scope.currentPage` value and the `$watch` function is triggered. It fetches fresh items for the current page and the total number of items. So, on the client side we only have five items available as defined in `itemsPerPage` and when paginating we throw away the items of the previous page and fetch new items.
 
 If you want to try this with a real backend you only have to swap out the `Item` service implementation.
 
 ## Paginating Using Infinite Results
 
 ### Problem
-You want to paginate through server-side data with a "Load More" button which just keeps appending more data until no more data is available.
+You wish to paginate through server-side data with a "Load More" button, which just keeps appending more data until no more data is available.
 
 ### Solution
-Lets first look at how the item table is rendered with the `ng-repeat` Directive.
+Let's start by looking at how the item table is rendered with the `ng-repeat` Directive.
 
     <div ng-controller="PaginationCtrl">
       <table class="table table-striped">
@@ -331,15 +331,15 @@ The solution is actually pretty similar to the previous recipe and uses a contro
 
 When pressing the "Load More" button we fetch another set of items incrementing the `currentPage` to change the `offset` of the `Item.get` function. The new items will be concatenated with the existing items using the Array `concat` function. The changes to `pagedItems` will be automatically rendered by the `ng-repeat` directive.
 
-The `nextPageDisabledClass` checks if there is more data available by calculating the total number of pages in `pageCount` and comparing that to the current page.
+The `nextPageDisabledClass` checks whether there is more data available by calculating the total number of pages in `pageCount` and comparing that to the current page.
 
 ## Displaying a Flash Notice/Failure Message
 
 ### Problem
-You want to display a flash confirmation message after a user submitted a form successfully.
+You wish to display a flash confirmation message after a user submitted a form successfully.
 
 ### Solution
-In a web framework like Rails the form submit will lead to a redirect with the flash confirmation message, relying on the browser session. For our client-side approach we bind to route changes and manage a queue of flash messages.
+In a web framework like Ruby on Rails, the form submit will lead to a redirect with the flash confirmation message, relying on the browser session. For our client-side approach we bind to route changes and manage a queue of flash messages.
 
 In our example we use a home page with a form and on form submit we navigate to another page and show the flash message. We use the `ng-view` Directive and define the two pages as script tags here.
 
@@ -374,7 +374,7 @@ In our example we use a home page with a form and on form submit we navigate to 
 
       </body>
 
-Note, that the flash message just like the navigation is always shown but conditionally hidden depending on if there is a flash message available.
+Note that the flash message just like the navigation is always shown but conditionally hidden depending on whether there is a flash message available.
 
 The route definition defines the pages, nothing new here for us:
 
@@ -387,7 +387,7 @@ The route definition defines the pages, nothing new here for us:
         otherwise({ redirectTo: "/home" });
     });
 
-The interesting part is the `flash` service which handles a queue of messages and listens for route changes to provide a message from the queue to the current page.
+The interesting part is the `flash` service, which handles a queue of messages and listens for route changes to provide a message from the queue to the current page.
 
     app.factory("flash", function($rootScope) {
       var queue = [];
@@ -419,9 +419,9 @@ The controller handles the form submit and navigates to the other page.
       }
     });
 
-The flash service is dependency injected into the controller and made available to the scope since we want to use it in our template.
+The flash service is dependency-injected into the controller and made available to the scope since we want to use it in our template.
 
-When you press the submit button you will be navigated to the other page and see the flash message. Note, that using the navigation to go back and forth between pages doesn't show the flash message.
+When you press the submit button you will be navigated to the other page and see the flash message. Note that using the navigation to go back and forth between pages doesn't show the flash message.
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe5).
 
@@ -435,12 +435,12 @@ Since this is a service it can be used anywhere in your code and it will show a 
 ## Editing Text In-Place using HTML5 ContentEditable
 
 ### Problem
-You want to make a div element editable in place using the HTML5 contenteditable attribute.
+You wish to make a div element editable in place using the HTML5 contenteditable attribute.
 
 ### Solution
 Implement a directive for the `contenteditable` attribute and use `ng-model` for data binding.
 
-In the example we use a div and a paragraph to render the content.
+In this example we use a div and a paragraph to render the content.
 
     <div contenteditable ng-model="text"></div>
     <p>{{text}}</p>
@@ -471,21 +471,21 @@ The directive is especially interesting since it uses `ng-model` instead of cust
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe6).
 
 ### Discussion
-The directive is restricted for usage as an HTML attribute since we want to use the HTML5 contenteditable attribute as is instead of defining a new HTML element.
+The directive is restricted for usage as an HTML attribute since we want to use the HTML5 contenteditable attribute as it is instead of defining a new HTML element.
 
-It requires the `ngModel` controller for data binding in conjunction with the link function. The implementation binds an event listener which executes the `read` function with [apply](http://docs.angularjs.org/api/ng.$rootScope.Scope). This ensures that even though we call the `read` function from within a DOM event handler we notify Angular about it.
+It requires the `ngModel` controller for data binding in conjunction with the link function. The implementation binds an event listener, which executes the `read` function with [apply](http://docs.angularjs.org/api/ng.$rootScope.Scope). This ensures that even though we call the `read` function from within a DOM event handler we notify Angular about it.
 
 The `read` function updates the model based on the view's user input. And the `$render` function is doing the same in the other direction, updating the view for us whenever the model changes.
 
-The directive is surprisingly simple leaving the `ng-model` aside. But, without the `ng-model` support we would have to come up with our own model-attribute handling which would be not consistent with other directives.
+The directive is surprisingly simple, leaving the `ng-model` aside. But without the `ng-model` support we would have to come up with our own model-attribute handling which would not be consistent with other directives.
 
 ## Displaying a Modal Dialog
 
 ### Question
-You want to use a Modal Dialog using the Twitter Bootstrap Framework. A dialog is called modal when it is blocking the rest of your web application until it is closed.
+You wish to use a Modal Dialog using the Twitter Bootstrap Framework. A dialog is called modal when it is blocking the rest of your web application until it is closed.
 
 ### Solution
-Use the `angular-ui` module's nice `modal` plugin which directly supports Twitter Bootstrap.
+Use the `angular-ui` module's nice `modal` plugin, which directly supports Twitter Bootstrap.
 
 The template defines a button to open the modal and the modal code itself.
 
@@ -508,7 +508,7 @@ The template defines a button to open the modal and the modal code itself.
 
     </body>
 
-Note, that even though we don't specify it explicitly the modal dialog is hidden initially via the `modal` attribute. The controller only handles the button click and the `showModal` value used by the `modal` attribute.
+Note that even though we don't specify it explicitly the modal dialog is hidden initially via the `modal` attribute. The controller only handles the button click and the `showModal` value used by the `modal` attribute.
 
     var app = angular.module("MyApp", ["ui.bootstrap.modal"]);
 
@@ -530,17 +530,17 @@ Do not forget to download and include the angular-ui.js file in a script tag. Th
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe7).
 
 ### Discussion
-The modal as defined in the template is straight from the Twitter bootstrap [documentation](http://twitter.github.com/bootstrap/javascript.html#modals). We can control the visibility with the `modal` attribute. Additionally, the `close` attribute defines a `close` function which is called whenever the dialog is closed. Note, that this could happen when the user presses the `escape` key or clicking outside the modal.
+The modal as defined in the template is straight from the Twitter bootstrap [documentation](http://twitter.github.com/bootstrap/javascript.html#modals). We can control the visibility with the `modal` attribute. Additionally, the `close` attribute defines a `close` function which is called whenever the dialog is closed. Note that this could happen if the user presses the `escape` key or clicking outside the modal.
 
-Our own cancel button uses the same function to close the modal manually, whereas the okay button uses the `ok` function. This makes it easy for us to distinguish if a user simply cancelled the modal or actually pressed the okay button.
+Our own cancel button uses the same function to close the modal manually, whereas the okay button uses the `ok` function. This makes it easy for us to distinguish between a user who simply cancelled the modal or actually pressed the okay button.
 
 ## Displaying a Loading Spinner
 
 ### Problem
-You want to display a loading spinner while waiting for an AJAX request to be finished.
+You wish to display a loading spinner while waiting for an AJAX request to be finished.
 
 ### Solution
-We use the Twitter search API for our example to render a list of search results. When pressing the button the AJAX request is run and the spinner image should be shown until the request is done.
+We will use the Twitter search API for our example to render a list of search results. When pressing the button the AJAX request is run and the spinner image should be shown until the request is done.
 
     <body ng-app="MyApp" ng-controller="MyCtrl">
 
@@ -562,7 +562,7 @@ We use the Twitter search API for our example to render a list of search results
     </body>
 
 
-An Angular.js interceptor for all AJAX calls is used which allows to execute code before the actual request is started and when it is finished.
+An Angular.js interceptor for all AJAX calls is used, which allows you to execute code before the actual request is started and when it is finished.
 
     var app = angular.module("MyApp", ["ngResource"]);
 
@@ -589,9 +589,9 @@ An Angular.js interceptor for all AJAX calls is used which allows to execute cod
       };
     });
 
-Note, that we use jQuery to show the spinner in the configuration step and hide the spinner in the interceptor.
+Note that we use jQuery to show the spinner in the configuration step and hide the spinner in the interceptor.
 
-Additionally we use a controller to handle the button click and executing the search request.
+Additionally we use a controller to handle the button click and execute the search request.
 
     app.controller("MyCtrl", function($scope, $resource, $rootScope) {
 
@@ -613,14 +613,14 @@ Additionally we use a controller to handle the button click and executing the se
       };
     });
 
-Don't forget that add `ngResource` to the module and load it via script tag.
+Don't forget to add `ngResource` to the module and load it via script tag.
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter8/recipe8).
 
 ### Discussion
 The template is the easy part of this recipe since it renders a list of tweets using the `ng-repeat` directive. Let us jump straight to the interceptor code.
 
-The interceptor is implemented using the factory method and attaches itself to the promise function of the AJAX response to hide the spinner on success or failure. Note, that on failure we use the `reject` function of the [$q](http://docs.angularjs.org/api/ng.$q) service, Angular's promise/deferred implementation.
+The interceptor is implemented using the factory method and attaches itself to the promise function of the AJAX response to hide the spinner on success or failure. Note that on failure we use the `reject` function of the [$q](http://docs.angularjs.org/api/ng.$q) service, Angular's promise/deferred implementation.
 
 Now, in the `config` method we add our inceptor to the list of responseInterceptors of `$httpProvider` to register it properly. In a similar manner we add the `spinnerFunction` to the default `transformRequest` list in order to call it before each AJAX request.
 

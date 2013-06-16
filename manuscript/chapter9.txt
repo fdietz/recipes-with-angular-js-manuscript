@@ -4,10 +4,10 @@ In this chapter we will have a look into solving common problems when combining 
 ## Consuming REST APIs
 
 ### Problem
-You want to consume a JSON REST API implemented in your Rails application.
+You wish to consume a JSON REST API implemented in your Rails application.
 
 ### Solution
-Using the `$resource` service is a great start and can be tweaked to feel more natural to a Rails developer by configuring the methods in accordance to the Rails actions.
+Using the `$resource` service is a great start and can be tweaked to feel more natural to a Rails developer by configuring the methods in accordance with the Rails actions.
 
     app.factory("Contact", function($resource) {
       return $resource("/api/contacts/:id", { id: "@id" },
@@ -49,15 +49,15 @@ The route definition uses the Rails default resource routing and an `api` scope 
       end
     end
 
-This will generate paths as for example `api/contacts` and `api/contacts/:id` for the HTTP GET method.
+This will generate paths like for example `api/contacts` and `api/contacts/:id` for the HTTP GET method.
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter9/recipe1).
 
 ### Discussion
-If you want to get up to speed with Ruby on Rails, I suggest to look into the [Rails Guides](http://guides.rubyonrails.org/index.html) which help you understand how all the pieces fit together.
+If you want to get up to speed with Ruby on Rails, I suggest that you look into the [Rails Guides](http://guides.rubyonrails.org/index.html) which will help you understand how all the pieces fit together.
 
 #### Rails Security using Authenticity Token
-The example code above works nicely until we use the HTTP methods `POST`, `PUT` and `DELETE` with the resource. As a security mechanism Rails expects an authenticity token to prevent a CSRF ([Cross Site Request Forgery](http://guides.rubyonrails.org/security.html#cross-site-request-forgery-csrf)) attack. We need  to submit an additional HTTP header `X-CSRF-Token` with the token. It is conveniently rendered in the HTML `meta` tag `csrf-token` by Rails. Using jQuery we can fetch that meta tag definition and configure the `$httpProvider` appropriately.
+The example code above works nicely until we use the HTTP methods `POST`, `PUT` and `DELETE` with the resource. As a security mechanism, Rails expects an authenticity token to prevent a CSRF ([Cross Site Request Forgery](http://guides.rubyonrails.org/security.html#cross-site-request-forgery-csrf)) attack. We need  to submit an additional HTTP header `X-CSRF-Token` with the token. It is conveniently rendered in the HTML `meta` tag `csrf-token` by Rails. Using jQuery we can fetch that meta tag definition and configure the `$httpProvider` appropriately.
 
     var app = angular.module("Contacts", ["ngResource"]);
     app.config(function($httpProvider) {
@@ -66,28 +66,28 @@ The example code above works nicely until we use the HTTP methods `POST`, `PUT` 
     });
 
 #### Rails JSON response format
-If you are using a Rails version prior 3.1 you'll notice that the JSON response will use a `contact` namespace for the model attributes which breaks your Angular.js code. To disable this behaviour you can configure your Rails app accordingly.
+If you are using a Rails version prior 3.1, you'll notice that the JSON response will use a `contact` namespace for the model attributes which breaks your Angular.js code. To disable this behavior you can configure your Rails app accordingly.
 
     ActiveRecord::Base.include_root_in_json = false
 
-There are still inconsistencies between the Ruby and Javascript world. For example in Ruby we use underscored attribute names (display_name) whereas in Javascript we use camelCase (displayName).
+There are still inconsistencies between the Ruby and Javascript world. For example, in Ruby we use underscored attribute names (display_name) whereas in Javascript we use camelCase (displayName).
 
-There is a custom `$resource` implementation [angularjs-rails-resource](https://github.com/tpodom/angularjs-rails-resource) available to streamline consuming Rails resources. It uses transformers and inceptors to rename the attribute fields and handles the root wrapping behaviour for you.
+There is a custom `$resource` implementation [angularjs-rails-resource](https://github.com/tpodom/angularjs-rails-resource) available to streamline consuming Rails resources. It uses transformers and inceptors to rename the attribute fields and handles the root wrapping behavior for you.
 
 ## Implementing Client-Side Routing
 
 ### Problem
-You want to use client-side routing in conjunction with a Ruby on Rails backend.
+You wish to use client-side routing in conjunction with a Ruby on Rails backend.
 
 ### Solution
-Every request to the backend should initially render the complete page in order to load our Angular app. Only then the client-side rendering will take over. Let us first have a look at the route definition for this "catch all" route.
+Every request to the backend should initially render the complete page in order to load our Angular app. Only then will the client-side rendering take over. Let us first have a look at the route definition for this "catch all" route.
 
     Contacts::Application.routes.draw do
       root :to => "layouts#index"
       match "*path" => "layouts#index"
     end
 
-It uses [Route Globbing](http://guides.rubyonrails.org/routing.html#route-globbing) to match all URLs and defines a root URL. Both will be handled by a layout controller with the sole purpose to render the initial layout.
+It uses [Route Globbing](http://guides.rubyonrails.org/routing.html#route-globbing) to match all URLs and defines a root URL. Both will be handled by a layout controller with the sole purpose of rendering the initial layout.
 
     class LayoutsController < ApplicationController
       def index
@@ -95,7 +95,7 @@ It uses [Route Globbing](http://guides.rubyonrails.org/routing.html#route-globbi
       end
     end
 
-The actual layout template defines our `ng-view` directive and resides in `app/views/layouts/application.html` - nothing new here. So, lets skip ahead to the Angular route definition in `app.js.erb`.
+The actual layout template defines our `ng-view` directive and resides in `app/views/layouts/application.html` - nothing new here. So let's skip ahead to the Angular route definition in `app.js.erb`.
 
     var app = angular.module("Contacts", ["ngResource"]);
 
@@ -122,12 +122,12 @@ We set the `$locationProvider` to use the HTML5 mode and define our client-side 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter9/recipe1).
 
 ### Discussion
-Let us have a look into the route definition again. First of all the filename ends with `erb`, since it uses ERB tags in the javascript file, courtesy of the [Rails Asset Pipeline](http://guides.rubyonrails.org/asset_pipeline.html). The  `asset_path` method is used to retrieve the URL to the HTML partials since it will change depending on the environment. On production the filename contains an MD5 checksum and the actual ERB output will change from `/assets/contacts/index.html` to `/assets/contacts/index-7ce113b9081a20d93a4a86e1aacce05f.html`. If your Rails app is configured to use an asset host the path will be in fact absolute.
+Let us have a look into the route definition again. First of all the filename ends with `erb`, since it uses ERB tags in the javascript file, courtesy of the [Rails Asset Pipeline](http://guides.rubyonrails.org/asset_pipeline.html). The  `asset_path` method is used to retrieve the URL to the HTML partials since it will change depending on the environment. On production the filename contains an MD5 checksum and the actual ERB output will change from `/assets/contacts/index.html` to `/assets/contacts/index-7ce113b9081a20d93a4a86e1aacce05f.html`. If your Rails app is configured to use an asset host, the path will in fact be absolute.
 
 ## Validating Forms Server-Side
 
 ### Problem
-You want to validate forms using a server-side REST API provided by Rails.
+You wish to validate forms using a server-side REST API provided by Rails.
 
 ### Solution
 Rails already provides model validation support out of the box for us. Let us start with the Contact [ActiveRecord model](http://guides.rubyonrails.org/active_record_validations_callbacks.html).
@@ -141,7 +141,7 @@ Rails already provides model validation support out of the box for us. Let us st
 
 It defines a validation on the `age` attribute. It must be an integer and less or equal to 50 years.
 
-In the `ContactsController` we can use that to make sure the REST API returns proper error messages. As an example we look into the `create` action.
+In the `ContactsController` we can use that to make sure the REST API returns proper error messages. As an example let us look into the `create` action.
 
     class ContactsController < ApplicationController
       respond_to :json
@@ -176,7 +176,7 @@ Let us move on to the client-side of our application. The Angular.js contact `$r
       });
     }
 
-Note, that ActiveRecord attributes can have multiple validations defined. That is why the `failure` function iterates through each validation entry and each error and uses `$setValidity` and `$dirty` to mark the form fields as invalid.
+Note that ActiveRecord attributes can have multiple validations defined. That is why the `failure` function iterates through each validation entry and each error and uses `$setValidity` and `$dirty` to mark the form fields as invalid.
 
 Now we are ready to show some feedback to our users using the same approach discussed already in the forms chapter.
 
@@ -214,4 +214,4 @@ It iterates over each error message and creates a comma separated String out of 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter9/recipe1).
 
 ### Discussion
-Lastly, the `errorMessage` handling is of course pretty primitive. A user would expect a localized failure message instead of this technical presentation. The Rails [Internationalization Guide](http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models) describes how to translate validation error messages in Rails and might prove helpful to further use that in your client-side code.
+Finally, the `errorMessage` handling is of course pretty primitive. A user would expect a localized failure message instead of this technical presentation. The Rails [Internationalization Guide](http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models) describes how to translate validation error messages in Rails and might prove helpful to further use that in your client-side code.
