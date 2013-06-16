@@ -4,7 +4,7 @@ Every website eventually uses some kind of form for users to enter data. Angular
 ## Implementing a Basic Form
 
 ### Problem
-You want to create a form to enter user details and capture this information in an Angular.js scope.
+You wish to create a form to enter user details and capture this information in an Angular.js scope.
 
 ### Solution
 Use the standard `form` tag and the `ng-model` Directive to implement a basic form:

@@ -2,9 +2,9 @@
 # Preface
 
 ## Introduction
-Angular.js is an open-source Javascript MVC (Model-View-Controller) framework developed by Google. It gives Javascript developers a highly structured approach to developing rich browser-based applications which leads to very high productivity.
+Angular.js is an open-source Javascript MVC (Model-View-Controller) framework developed by Google. It gives Javascript developers a highly structured approach to developing rich browser-based applications which, leads to very high productivity.
 
-If you are using Angular.js, or considering it, this cookbook provides easy to follow recipes for issues you are likely to face. Each recipe solves a specific problem and provides a solution and in-depth discussion of it.
+If you are using Angular.js, or considering it, this cookbook provides easy-to-follow recipes for issues you are likely to face. Each recipe solves a specific problem and provides a solution and in-depth discussion of it.
 
 ## Code Examples
 All code examples in this book can be found on [Github](http://github.com/fdietz/recipes-with-angular-js-examples).
@@ -15,7 +15,7 @@ If you have questions or comments please get in touch with:
 Frederik Dietz (fdietz@gmail.com)
 
 ## Acknowledgements
-Special thanks go to my english editor and friend Robert Smales!
+Special thanks go to my english editor and friend Robert William Smales!
 
 Thanks go to John Lindquist for his excellent screencast project [Egghead IO](http://egghead.io/), Lukas Ruebbelke for his awesome [videos](http://www.youtube.com/user/simpulton/videos?flow=grid&view=0), Matias Niemelä for his great [blog](http://www.yearofmoo.com/). And of course the whole development team behind Angular.js!
 

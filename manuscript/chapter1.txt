@@ -1,9 +1,9 @@
 # An Introduction to Angular.js
 
-## Including the Angular.js library Code in an HTML page
+## Including the Angular.js Library Code in an HTML Page
 
 ### Problem
-You want to use Angular.js on a web page.
+You wish to use Angular.js on a web page.
 
 ### Solution
 In order to get your first Angular.js app up and running you need to include the Angular Javascript file via `script` tag and make use of the `ng-app` directive.
@@ -19,12 +19,12 @@ In order to get your first Angular.js app up and running you need to include the
       </body>
     </html>
 
-T> Tip: You can checkout a complete example on [github](http://github.com/fdietz/recipes-with-angular-js-examples/chapter1/recipe1).
+T> Tip: You can check out a complete example on [github](http://github.com/fdietz/recipes-with-angular-js-examples/chapter1/recipe1).
 
 ### Discussion
-Adding the `ng-app` directive tells Angular to kick in its magic. The expression `{{ 1 + 2 }}` is evaluated by Angular and the result `3` is rendered. Note, that removing `ng-app` will result in the browser to render the expression as is instead of evaluating it. Play around with the expression! You can for example concatenate Strings and invert or combine Boolean values.
+Adding the `ng-app` directive tells Angular to kick in its magic. The expression `{{ 1 + 2 }}` is evaluated by Angular and the result `3` is rendered. Note that removing `ng-app` will result in the browser rendering the expression as is instead of evaluating it. Play around with the expression! You can, for instance, concatenate Strings and invert or combine Boolean values.
 
-For Brevity reasons we skip the boilerplate code in the following recipes.
+For reasons of brevity we will skip the boilerplate code in the following recipes.
 
 ## Binding a Text Input to an Expression
 
@@ -68,7 +68,7 @@ On document ready we bind to the keypress event in the text input and replace th
 ## Responding to Click Events using Controllers
 
 ### Problem
-You want to hide an HTML element on button click.
+You wish to hide an HTML element on button click.
 
 ### Solution
 Use the `ng-hide` directive in conjunction with a controller to change the visibility status on button click.
@@ -101,16 +101,16 @@ And the controller in `js/app.js`:
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter1/recipe3).
 
-When toggling the button the "Hello World" paragraph will change its visibility
+When toggling the button the "Hello World" paragraph will change its visibility.
 
 ### Discussion
-Using the `ng-controller` directive we bind the `div` element including its children to the context of the `MyCtrl` Controller. The `ng-click` directive will call the `toggle()` function of our controller on button click. Note, that the `ng-show` directive is bound to the `visible` scope variable and will toggle the paragraph's visibility accordingly.
+Using the `ng-controller` directive, we bind the `div` element including its children to the context of the `MyCtrl` controller. The `ng-click` directive will call the `toggle()` function of our controller on button click. Note that the `ng-show` directive is bound to the `visible` scope variable and will toggle the paragraph's visibility accordingly.
 
-The controller implementation defaults the `visible` attribute to true and toggles its boolean state in the `toggle` function. Both the `visible` variable and the `toggle` function are defined on the `$scope` service which is passed to all controller functions automatically via dependency injection.
+The controller implementation defaults the `visible` attribute to true and toggles its Boolean state in the `toggle` function. Both the `visible` variable and the `toggle` function are defined on the `$scope` service which is passed to all controller functions automatically via dependency injection.
 
-The next chapter will go into all the details of controllers in Angular. For now let us quickly discuss the MVVM (Model-View-ViewModel) pattern as used by Angular. In the MVVM pattern the model is plain javascript, the view is the HTML template and the ViewModel is the glue between the template and the model. The ViewModel makes Angular's two way binding possible where changes in the model or the template are in sync automatically.
+The next chapter will go into all the details of controllers in Angular. For now let us quickly discuss the MVVM (Model-View-ViewModel) pattern as used by Angular. In the MVVM pattern the model is plain Javascript, the view is the HTML template and the ViewModel is the glue between the template and the model. The ViewModel makes Angular's two-way binding possible where changes in the model or the template are in sync automatically.
 
-In our example the `visible` attribute is the model, but it could be of course much more complex as for example retrieving data from a backend service. The controller is used to define the scope which represents the ViewModel. It interacts with the HTML template by binding the scope variable `visible` and the function `toggle()` to it.
+In our example, the `visible` attribute is the model, but it could of course be much more complex , when for example retrieving data from a backend service. The controller is used to define the scope which represents the ViewModel. It interacts with the HTML template by binding the scope variable `visible` and the function `toggle()` to it.
 
 ## Converting Expression Output with Filters
 
@@ -128,13 +128,13 @@ You can find the complete example on [github](https://github.com/fdietz/recipes-
 ### Discussion
 Angular uses the `|` (pipe) character to combine filters with variables in expressions. When evaluating the expression, the name variable is passed to the uppercase filter. This is similar to working with the Unix bash pipe symbol where an input can be transformed by another program. Also try the `lowercase` filter!
 
-## Creating Custom HTML elements with Directives
+## Creating Custom HTML Elements with Directives
 
 ### Problem
-You want to render an HTML snippet but hide it conditionally.
+You wish to render an HTML snippet but hide it conditionally.
 
 ### Solution
-Create a custom Directive which renders your Hello World snippet.
+Create a custom directive which renders your Hello World snippet.
 
     <body ng-app="MyApp">
       <label for="checkbox">
@@ -164,8 +164,8 @@ The browser will only show the "Hello World" paragraph if the checkbox is checke
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter1/recipe5).
 
 ### Discussion
-Let us ignore the `app` module creation for now to look further into in a later chapter. In our example it is just the means to create a directive. Note, that the `show` String is name of the directive which corresponds to the `show` HTML attribute used in the template.
+Let us ignore the `app` module creation for now and look into it in more depth in a later chapter. In our example it is just the means to create a directive. Note that the `show` String is name of the directive which corresponds to the `show` HTML attribute used in the template.
 
-The directive implementation returns a `link` function which defines the directive's behaviour. It gets passed the `scope`, the HTML `element` and the HTML `attributes`. Since we passed the `visible` variable as attribute to our `show` directive we can access it directly via `attributes.show`. But, since we want to respond to `visible` variable changes automatically we have to use the `$watch` service, which provides us a function callback whenever the value changes. In this callback we change the CSS `display` property to either blank or `none` to hide the HTML element.
+The directive implementation returns a `link` function which defines the directive's behavior. It gets passed the `scope`, the HTML `element` and the HTML `attributes`. Since we passed the `visible` variable as an attribute to our `show` directive, we can access it directly via `attributes.show`. But, since we want to respond to `visible` variable changes automatically we have to use the `$watch` service, which provides us with a function callback whenever the value changes. In this callback we change the CSS `display` property to either blank or `none` to hide the HTML element.
 
-This was just a small glimpse of what can be achieved with directives and there is a whole chapter dedicated to them which goes into much more detail.
+This was just a small glimpse of what can be achieved with directives and there is a whole chapter dedicated to them that goes into much more detail.

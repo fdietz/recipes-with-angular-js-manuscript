@@ -1,10 +1,10 @@
 # Directives
-Directives are one of the most powerful concepts in Angular since they let you invent new html elements specific to your application. This allows you to create reusable components which encapsulate complex DOM structures, stylesheets and even behaviour.
+Directives are one of the most powerful concepts in Angular since they let you invent new HTML elements specific to your application. This allows you to create reusable components which encapsulate complex DOM structures, stylesheets and even behavior.
 
 ## Enabling/Disabling DOM Elements Conditionally
 
 ### Problem
-You want to disable a button depending on a checkbox state.
+You wish to disable a button depending on a checkbox state.
 
 ### Solution
 Use the `ng-disabled` directive and bind its condition to the checkbox state.
@@ -19,17 +19,17 @@ You can find the complete example on [github](https://github.com/fdietz/recipes-
 ### Discussion
 The `ng-disabled` directive is a direct translation from the disabled HTML attribute, without you needing to worry about browser incompatibilities. It is bound to the `checked` model using an attribute value as is the checkbox using the `ng-model` directive. In fact the `checked` attribute value is again an Angular expression. You could for example invert the logic and use `!checked` instead.
 
-This is just one example of a directive shipped with Angular. There are many others as for example `ng-hide`, `ng-checked` or `ng-mouseenter` and I encourage you go through the [API Reference](http://docs.angularjs.org/api) and explore all the directives Angular has to offer.
+This is just one example of a directive shipped with Angular. There are many others like for example `ng-hide`, `ng-checked` or `ng-mouseenter` and I encourage you go through the [API Reference](http://docs.angularjs.org/api) and explore all the directives Angular has to offer.
 
 In the next recipes we will focus on implementing directives.
 
 ## Changing the DOM in Response to User Actions
 
 ### Problem
-You want to change the CSS of an HTML element on a mouse click and encapsulate this behaviour in a reusable component.
+You wish to change the CSS of an HTML element on a mouse click and encapsulate this behavior in a reusable component.
 
 ### Solution
-Implement a directive `my-widget` which contains an example paragraph of text we want to style.
+Implement a directive `my-widget` that contains an example paragraph of text we want to style.
 
     <body ng-app="MyApp">
       <my-widget>
@@ -60,7 +60,7 @@ When clicking on the paragraph the background color changes to red.
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe2).
 
 ### Discussion
-In the HTML document we use the new directive as an HTML element `my-widget`, which can be found in the javascript code as `myWidget` again. The directive function returns a restriction and a link function.
+In the HTML document we use the new directive as an HTML element `my-widget`, which can be found in the Javascript code as `myWidget` again. The directive function returns a restriction and a link function.
 
 The restriction means that this directive can only be used as an HTML element and not for example an HTML attribute. If you want to use it as an HTML attribute, change the `restrict` to return `A` instead. The usage would then have to be adapted to:
 
@@ -68,30 +68,30 @@ The restriction means that this directive can only be used as an HTML element an
       <p>Hello World</p>
     </div>
 
-Wether you use the attribute or element mechanism depends on your use case. Generally speaking one would use the element mechanism to define a custom reusable component. The attribute mechanism would be used whenever you want to "configure" some element or enhance it with more behaviour. Other available options are using the directive as a class attribute or a comment.
+Whether you use the attribute or element mechanism will depend on your use case. Generally speaking one would use the element mechanism to define a custom reusable component. The attribute mechanism would be used whenever you want to "configure" some element or enhance it with more behavior. Other available options are using the directive as a class attribute or a comment.
 
-The `directive` method expects a function which can be used for initialization and injection of dependencies.
+The `directive` method expects a function that can be used for initialization and injection of dependencies.
 
     app.directive("myWidget", function factory(injectables) {
       // ...
     }
 
-The link function is much more interesting since it defines the actual behaviour. The scope, the actual HTML element `my-widget` and the html attributes are passed as params. Note, that this has nothing to do with Angulars dependency injection mechanism. Ordering of the parameters is important!
+The link function is much more interesting since it defines the actual behavior. The scope, the actual HTML element `my-widget` and the HTML attributes are passed as params. Note that this has nothing to do with Angular's dependency injection mechanism. Ordering of the parameters is important!
 
-First we select the paragraph element, which is a child of the `my-widget` element using Angulars `children()` function as defined by element. In the second step we use jQuery to bind to the click event and modify the css property on click. This is of special interest since we have a mixture of Angular element functions and jQuery here. In fact under the hood Angular will use jQuery in the `children()` function if its defined and will fall back to jqLite (shipped with Angular) otherwise. You can find all supported methods in the [API Reference of element](http://docs.angularjs.org/api/angular.element).
+Firstly we select the paragraph element, which is a child of the `my-widget` element using Angular's `children()` function as defined by element. In the second step we use jQuery to bind to the click event and modify the css property on click. This is of particular interest since we have a mixture of Angular element functions and jQuery here. In fact under the hood Angular will use jQuery in the `children()` function if it is defined and will fall back to jqLite (shipped with Angular) otherwise. You can find all supported methods in the [API Reference of element](http://docs.angularjs.org/api/angular.element).
 
-Following a slightly changed version of the code using jQuery only:
+Following a slightly altered version of the code using jQuery only:
 
     element.on("click", function() {
       $(this).css({ "background-color": "red" });
     });
 
-In this case `element` is alreay an jQuery element and we can directly use the `on` function.
+In this case `element` is alreay a jQuery element and we can directly use the `on` function.
 
 ## Rendering an HTML Snippet in a Directive
 
 ### Problem
-You want to render an HTML snippet as a reusable component.
+You wish to render an HTML snippet as a reusable component.
 
 ### Solution
 Implement a directive and use the `template` attribute to define the HTML.
@@ -112,7 +112,7 @@ Implement a directive and use the `template` attribute to define the HTML.
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe3).
 
 ### Discussion
-This will render the Hello World paragraph as a child node of your `my-widget` element. In case you want to replace the element entirely with the paragraph you have to additionally return the `replace` attribute:
+This will render the Hello World paragraph as a child node of your `my-widget` element. If you want to replace the element entirely with the paragraph you will also have to return the `replace` attribute:
 
     app.directive("myWidget", function() {
       return {
@@ -122,7 +122,7 @@ This will render the Hello World paragraph as a child node of your `my-widget` e
       };
     });
 
-Another option would be to use a file for the HTML snippet. In this case you need to use the `templateUrl` attribute, as for example:
+Another option would be to use a file for the HTML snippet. In this case you will need to use the `templateUrl` attribute, for example as follows:
 
     app.directive("myWidget", function() {
       return {
@@ -156,20 +156,20 @@ Use the `transclude` attribute together with the `ng-transclude` directive.
       };
     });
 
-This will render a `div` element containing a `h3` element and append the directives child node with the paragraph element below.
+This will render a `div` element containing an `h3` element and append the directive's child node with the paragraph element below.
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe4).
 
 ### Discussion
-In this context transclusion refers to the inclusion of a part of a document into another document by reference. The `ng-transclude` attribute should be placed depending on where you want your child nodes to be appended to.
+In this context, transclusion refers to the inclusion of a part of a document into another document by reference. The `ng-transclude` attribute should be positioned depending on where you want your child nodes to be appended.
 
 ## Passing Configuration Params Using HTML Attributes
 
 ### Problem
-You want to pass a configuration param to change the rendered output.
+You wish to pass a configuration param to change the rendered output.
 
 ### Solution
-Use the attribute based directive and pass an attribute value for the configuration. The attribute is passed as a parameter to the link function.
+Use the attribute-based directive and pass an attribute value for the configuration. The attribute is passed as a parameter to the link function.
 
     <body ng-app="MyApp">
       <div my-widget="Hello World"></div>
@@ -194,9 +194,9 @@ This renders a paragraph with the text passed as the param.
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe5).
 
 ### Discussion
-The link function has access to the element and its attributes. It is therefore straight forward to set the scope to the text passed as the attributes value and use this in the template evaluation.
+The link function has access to the element and its attributes. It is therefore straightforward to set the scope to the text passed as the attributes value and use this in the template evaluation.
 
-The scope context is important though. The `text` model we changed might be already defined in the parent scope and used in another place of your app. In order to isolate the context and thereby using it only locally inside of your directive we have to return an additional scope attribute.
+The scope context is important though. The `text` model we changed might already be defined in the parent scope and used in another part of your app. In order to isolate the context and thereby use it only locally inside your directive, we have to return an additional scope attribute.
 
     return {
       restrict: "A",
@@ -207,7 +207,7 @@ The scope context is important though. The `text` model we changed might be alre
 
 In Angular this is called an isolate scope. It does not prototypically inherit from the parent scope and is especially useful when creating reusable components.
 
-Lets look into another way of passing params to the directive, this time we define an HTML element `my-widget`.
+Let's look into another way of passing params to the directive. This time we will define an HTML element `my-widget2`.
 
     <my-widget2 text="Hello World"></my-widget2>
 
@@ -221,7 +221,7 @@ Lets look into another way of passing params to the directive, this time we defi
       };
     });
 
-The scope definition using `@text` is binding the text model to the directive's attribute. Note, that any changes on the parent scope `text` will change the local scope `text`, but not the other way around.
+The scope definition using `@text` is binding the text model to the directive's attribute. Note that any changes to the parent scope `text` will change the local scope `text`, but not the other way around.
 
 If you want instead to have a bi-directional binding between the parent scope and the local scope, you should use the `=` equality character:
 
@@ -231,7 +231,7 @@ If you want instead to have a bi-directional binding between the parent scope an
 
 Changes to the local scope will also change the parent scope.
 
-Another possibility would be to pass an expression as a function to the directive using the `&` character.
+Another option would be to pass an expression as a function to the directive using the `&` character.
 
     <my-widget-expr fn="count = count + 1"></my-widget-expr>
 
@@ -255,7 +255,7 @@ We pass the attribute `fn` to the directive and since the local scope defines `f
 ## Repeatedly Rendering Directive's DOM Node Children
 
 ### Problem
-You want to render an html snippet repeatedly using the directives child nodes as the "stamp" content.
+You wish to render an HTML snippet repeatedly using the directive's child nodes as the "stamp" content.
 
 ### Solution
 Implement a compile function in your directive.
@@ -284,13 +284,13 @@ This will render the header and paragraph 10 times.
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe6).
 
 ### Discussion
-The directive repeats the child nodes as often as configured in the `repeat` attribute. It works similarly to the [ng-repeat](http://docs.angularjs.org/api/ng.directive:ngRepeat) directive. The implemention uses Angulars element methods to append the child nodes in a for loop.
+The directive repeats the child nodes as often as configured in the `repeat` attribute. It works similarly to the [ng-repeat](http://docs.angularjs.org/api/ng.directive:ngRepeat) directive. The implementation uses Angular's element methods to append the child nodes in a for loop.
 
-Note, that the compile method only has access to the templates element `tElement` and template attributes. It has no access to the scope and you therefore also can't use `$watch` to add behaviour. This is in comparison to the link function which has access to the DOM "instance" (after the compile phase) and has access to the scope to add behaviour.
+Note that the compile method only has access to the templates element `tElement` and template attributes. It has no access to the scope and you therefore can't use `$watch` to add behavior either. This is in comparison to the link function that has access to the DOM "instance" (after the compile phase) and has access to the scope to add behavior.
 
-Use the compile function for template DOM manipulation only. Use the link function when you want to add behaviour.
+Use the compile function for template DOM manipulation only. Use the link function whenever you want to add behavior.
 
-Note, that you can use both compile and link function combined. In this case the compile function must return the link function. As an example you want to react to a click on the header:
+Note that you can use both compile and link function combined. In this case the compile function must return the link function. As an example you want to react to a click on the header:
 
     compile: function(tElement, attrs) {
       var content = tElement.children();
@@ -307,10 +307,10 @@ Note, that you can use both compile and link function combined. In this case the
 
 Clicking the header will change the background color to red.
 
-## Directive to Directive Communication
+## Directive-to-Directive Communication
 
 ### Problem
-You want a directive to communicate with another directive and augment each other's behaviour using a well defined interface (API).
+You wish a directive to communicate with another directive and augment each other's behavior using a well-defined interface (API).
 
 ### Solution
 We implement a directive `basket` with a controller function and two other directive `orange` and `apple` which "require" this controller. Our example starts with an `apple` and `orange` directive used as attributes.
@@ -346,7 +346,7 @@ The `basket` directive manages an array to which one can add apples and oranges!
       };
     });
 
-And finally the apple and orange directives which add themselves to the basket using the basket's controller.
+And finally the apple and orange directives, which add themselves to the basket using the basket's controller.
 
     app.directive("apple", function() {
       return {
@@ -371,16 +371,16 @@ If you hover with the mouse over the rendered text the console should print and 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe7).
 
 ### Discussion
-`Basket` is the example directive which demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The `link` function then gets `basketCtrl` injected.
+`Basket` is the example directive that demonstrates an API using the controller function, whereas the `apple` and `orange` directives augment the `basket` directive. They both define a dependency to the `basket` controller with the `require` attribute. The `link` function then gets `basketCtrl` injected.
 
-Note, how the `basket` directive is defined as an HTML element and the `apple` and `orange` directives are defined as HTML attributes (the default for directives). This demonstrates the typical use case of a reusable component augmented by other directives.
+Note how the `basket` directive is defined as an HTML element and the `apple` and `orange` directives are defined as HTML attributes (the default for directives). This demonstrates the typical use case of a reusable component augmented by other directives.
 
 Now there might be other ways of passing data back and forth between directives - we have seen the different semantics of using the (isolated) context in directives in previous recipes - but what's especially great about the controller is the clear API contract it lets you define.
 
 ## Testing Directives
 
 ### Problem
-You want to test your directive with a unit test. As an example we use a tab component directive implementation which can be easily used in your HTML document.
+You wish to test your directive with a unit test. As an example we will use a tab component directive implementation, which can easily be used in your HTML document.
 
     <tabs>
       <pane title="First Tab">First pane.</pane>
@@ -447,7 +447,7 @@ The `pane` directive depends on the `tabs` directive to add itself to it.
     });
 
 ### Solution
-Using the angular-seed in combination with jasmine and jasmine-jquery you can implement a unit test.
+Using the angular-seed in combination with jasmine and jasmine-jquery, you can implement a unit test.
 
     describe('MyApp Tabs', function() {
       var elm, scope;
@@ -505,7 +505,7 @@ Using the angular-seed in combination with jasmine and jasmine-jquery you can im
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter3/recipe8).
 
 ### Discussion
-Combining jasmine with jasmine-jquery gives you useful assertions like `toHaveClass` and actions like `click` which are used extensively in the example above.
+Combining jasmine with jasmine-jquery gives you useful assertions like `toHaveClass` and actions like `click`, which are used extensively in the example above.
 
 To prepare the template we use `$compile` and `$digest` in the `beforeEach` function and then access the resulting Angular element in our tests.
 

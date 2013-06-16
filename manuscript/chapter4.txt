@@ -4,10 +4,10 @@ Angular Filters are typically used to format expressions in bindings in your tem
 ## Formatting a String With a Currency Filter
 
 ### Problem
-You want to format the amount of currency with a localized currency label.
+You wish to format the amount of currency with a localized currency label.
 
 ### Solution
-Use the built-in `currency` filter and make sure you load the corresponding locale file for the users language.
+Use the built-in `currency` filter and make sure you load the corresponding locale file for the user's language.
 
     <html>
       <head>
@@ -27,15 +27,15 @@ Enter an amount and it will be displayed using Angular's default locale.
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter4/recipe1).
 
 ### Discussion
-In our example we explicitly load the German locale settings and therefore the default formatting will be in German. The english locale is shipped by default, so there's no need to include the angular-locale_en.js file. If you remove the script tag, you will see the formatting change to English instead. This means in order for a localized application to work correctly you need to load the corresponding locale file. All available locale files can be seen on [github](https://github.com/angular/angular.js/tree/master/src/ngLocale).
+In our example we explicitly load the German locale settings and therefore the default formatting will be in German. The English locale is shipped by default, so there's no need to include the angular-locale_en.js file. If you remove the script tag, you will see the formatting change to English instead. This means in order for a localized application to work correctly you need to load the corresponding locale file. All available locale files can be seen on [github](https://github.com/angular/angular.js/tree/master/src/ngLocale).
 
 ## Implementing a Custom Filter to Reverse an Input String
 
 ### Problem
-You want to reverse users text input.
+You wish to reverse user's text input.
 
 ### Solution
-Implement a custom filter which reverses the input.
+Implement a custom filter, which reverses the input.
 
     <body ng-app="MyApp">
       <input type="text" ng-model="text" placeholder="Enter text"/>
@@ -59,12 +59,12 @@ Implement a custom filter which reverses the input.
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter4/recipe2).
 
 ### Discussion
-Angular's filter function expects a filter name and a function as params. The function must return the actual filter function, where you implement the business logic. In this example it will only have an `input` param. The result will be returned after the for loop reversed the input.
+Angular's filter function expects a filter name and a function as params. The function must return the actual filter function where you implement the business logic. In this example it will only have an `input` param. The result will be returned after the for loop has reversed the input.
 
 ## Passing Configuration Params to Filters
 
 ### Problem
-You want to make your filter customizable by introducing config params.
+You wish to make your filter customizable by introducing config params.
 
 ### Solution
 Angular filters can be passed a hash of params which can be directly accessed in the filter function.
@@ -96,15 +96,15 @@ Angular filters can be passed a hash of params which can be directly accessed in
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter4/recipe3).
 
 ### Discussion
-The suffix `!` is passed as an option to the filter function and is appended to the output. Note, the we check if an actual input exists since we don't want to render the suffix without any input.
+The suffix `!` is passed as an option to the filter function and is appended to the output. Note that we check if an actual input exists since we don't want to render the suffix without any input.
 
 ## Filtering a List of DOM Nodes
 
 ### Problem
-You want to filter a `ul` list of names.
+You wish to filter a `ul` list of names.
 
 ### Solution
-Angular filters not only work with Strings as input but also with Arrays.
+As well as with strings as input, Angular's filters also work with arrays.
 
     <body ng-app="MyApp">
       <ul ng-init="names = ['Peter', 'Anton', 'John']">
@@ -129,17 +129,17 @@ Angular filters not only work with Strings as input but also with Arrays.
       };
     });
 
-We pass `Peter` as the single param to the exclude filter which will render all names except `Peter`.
+We pass `Peter` as the single param to the exclude filter, which will render all names except `Peter`.
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter4/recipe4).
 
 ### Discussion
-The filter implemention loops through all names and creates a result array excluding 'Peter'. Note, that the actual syntax of the filter function didn't change at all from our previous example with the String input.
+The filter implementation loops through all names and creates a result array excluding 'Peter'. Note that the actual syntax of the filter function didn't change at all from our previous example with the String input.
 
 ## Chaining Filters together
 
 ### Problem
-You want to combine several filters to a single result.
+You wish to combine several filters to form a single result.
 
 ### Solution
 Filters can be chained using the UNIX-like pipe syntax.
@@ -153,14 +153,14 @@ Filters can be chained using the UNIX-like pipe syntax.
     </body>
 
 ### Discussion
-The pipe symbol (`|`) is used to chain multiple filters together. First we start with the initial Array of names. After applying the `exclude` filter the Array contains only `['Anton', 'John']` and afterwards we sort the names in ascending order.
+The pipe symbol (`|`) is used to chain multiple filters together. First we will start with the initial Array of names. After applying the `exclude` filter the Array contains only `['Anton', 'John']` and afterwards we will sort the names in ascending order.
 
 I leave the implementation of the `sortAscending` filter as an exercise to the reader ;-)
 
 ## Testing Filters
 
 ### Problem
-You want to unit test your new filter. Let us start with an easy filter which renders a checkmark depending on a boolean value.
+You wish to unit test your new filter. Let us start with an easy filter, which renders a checkmark depending on a boolean value.
 
     <body ng-init="data = true">
       <p>{{ data | checkmark}}</p>
@@ -191,4 +191,4 @@ Use the angular-seed project as a bootstrap again.
     });
 
 ### Discussion
-The `beforeEach` loads the module and the `it` methods injects the filter function for us. Note, that it has to be called `checkmarkFilter`, otherwise Angular can't inject our filter function correctly.
+The `beforeEach` loads the module and the `it` method injects the filter function for us. Note, that it has to be called `checkmarkFilter`, otherwise Angular can't inject our filter function correctly.
