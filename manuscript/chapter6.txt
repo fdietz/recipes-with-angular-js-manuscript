@@ -26,7 +26,8 @@ The route configuration is implemented in `app.js` using the `config` method:
         $routeProvider.
           when("/persons", { templateUrl: "partials/person_list.html" }).
           when("/persons/:id",
-            { templateUrl: "partials/person_details.html", controller: "ShowCtrl" }).
+            { templateUrl: "partials/person_details.html",
+              controller: "ShowCtrl" }).
           otherwise( { redirectTo: "/persons" });
     });
 

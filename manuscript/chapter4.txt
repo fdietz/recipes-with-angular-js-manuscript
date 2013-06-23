@@ -18,7 +18,7 @@ Use the built-in `currency` filter and make sure you load the corresponding loca
       <body ng-app>
         <input type="text" ng-model="amount" placeholder="Enter amount"/>
         <p>Default Currency: {{ amount | currency }}</p>
-        <p>Custom Currency: {{ amount | currency: "Euro €" }}</p>
+        <p>Custom Currency: {{ amount | currency: "Euro" }}</p>
       </body>
     </html>
 

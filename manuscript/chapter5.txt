@@ -249,7 +249,8 @@ This `deferredTimer` can be triggered in our HTML template by wrapping it into a
     $scope.startDeferredTimer = function(success) {
       deferredTimer(success).then(
         function(data) {
-          $scope.deferredTimerResult = "Successfully finished: " + data.message;
+          $scope.deferredTimerResult = "Successfully finished: " +
+            data.message;
         },
         function(data) {
           $scope.deferredTimerResult = "Failed: " + data.message;
