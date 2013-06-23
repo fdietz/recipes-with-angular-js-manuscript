@@ -44,15 +44,15 @@ Implement an increment function that changes the scope.
     function MyCtrl($scope) {
       $scope.value = 1;
 
-      $scope.incrementValue = function(value) {
-        $scope.value += 1;
+      $scope.incrementValue = function(increment) {
+        $scope.value += increment;
       };
     }
 
 This function can be directly called in an expression, in our example we use `ng-init`:
 
     <div ng-controller="MyCtrl">
-      <p ng-init="incrementValue(5)">{{value}}</p>
+      <p ng-init="incrementValue(1)">{{value}}</p>
     </div>
 
 You can find the complete example on [github](https://github.com/fdietz/recipes-with-angular-js-examples/tree/master/chapter2/recipe2).
