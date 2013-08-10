@@ -8,78 +8,238 @@
 <body>
 <div>
 <h1 id='toc'>Table of Contents</h1>
-<!-- Note: The space after toc even without has-parts is important. Without it, the toc is styled wrong on Kindles. -->
-<ul class="toc ">
- <li class="chapter"><a href="#preface">Preface</a></li>
-<li class="section"><a href="#introduction">Introduction</a></li>
-<li class="section"><a href="#code-examples">Code Examples</a></li>
-<li class="section"><a href="#how-to-contact-me">How to contact me</a></li>
-<li class="section"><a href="#acknowledgements">Acknowledgements</a></li>
-<li class="chapter"><a href="#an-introduction-to-angularjs">An Introduction to Angular.js</a></li>
-<li class="section"><a href="#including-the-angularjs-library-code-in-an-html-page">Including the Angular.js library Code in an HTML page</a></li>
-<li class="section"><a href="#binding-a-text-input-to-an-expression">Binding a Text Input to an Expression</a></li>
-<li class="section"><a href="#responding-to-click-events-using-controllers">Responding to Click Events using Controllers</a></li>
-<li class="section"><a href="#converting-expression-output-with-filters">Converting Expression Output with Filters</a></li>
-<li class="section"><a href="#creating-custom-html-elements-with-directives">Creating Custom HTML elements with Directives</a></li>
-<li class="chapter"><a href="#controllers">Controllers</a></li>
-<li class="section"><a href="#assigning-a-default-value-to-a-model">Assigning a Default Value to a Model</a></li>
-<li class="section"><a href="#changing-a-model-value-with-a-controller-function">Changing a Model Value with a Controller Function</a></li>
-<li class="section"><a href="#encapsulating-a-model-value-with-a-controller-function">Encapsulating a Model Value with a Controller Function</a></li>
-<li class="section"><a href="#responding-to-scope-changes">Responding to Scope Changes</a></li>
-<li class="section"><a href="#sharing-models-between-nested-controllers">Sharing Models Between Nested Controllers</a></li>
-<li class="section"><a href="#sharing-code-between-controllers-using-services">Sharing Code Between Controllers using Services</a></li>
-<li class="section"><a href="#testing-controllers">Testing Controllers</a></li>
-<li class="chapter"><a href="#directives">Directives</a></li>
-<li class="section"><a href="#enablingdisabling-dom-elements-conditionally">Enabling/Disabling DOM Elements Conditionally</a></li>
-<li class="section"><a href="#changing-the-dom-in-response-to-user-actions">Changing the DOM in Response to User Actions</a></li>
-<li class="section"><a href="#rendering-an-html-snippet-in-a-directive">Rendering an HTML Snippet in a Directive</a></li>
-<li class="section"><a href="#rendering-a-directives-dom-node-children">Rendering a Directive&#x2019;s DOM Node Children</a></li>
-<li class="section"><a href="#passing-configuration-params-using-html-attributes">Passing Configuration Params Using HTML Attributes</a></li>
-<li class="section"><a href="#repeatedly-rendering-directives-dom-node-children">Repeatedly Rendering Directive&#x2019;s DOM Node Children</a></li>
-<li class="section"><a href="#directive-to-directive-communication">Directive to Directive Communication</a></li>
-<li class="section"><a href="#testing-directives">Testing Directives</a></li>
-<li class="chapter"><a href="#filters">Filters</a></li>
-<li class="section"><a href="#formatting-a-string-with-a-currency-filter">Formatting a String With a Currency Filter</a></li>
-<li class="section"><a href="#implementing-a-custom-filter-to-reverse-an-input-string">Implementing a Custom Filter to Reverse an Input String</a></li>
-<li class="section"><a href="#passing-configuration-params-to-filters">Passing Configuration Params to Filters</a></li>
-<li class="section"><a href="#filtering-a-list-of-dom-nodes">Filtering a List of DOM Nodes</a></li>
-<li class="section"><a href="#chaining-filters-together">Chaining Filters together</a></li>
-<li class="section"><a href="#testing-filters">Testing Filters</a></li>
-<li class="chapter"><a href="#consuming-externals-services">Consuming Externals Services</a></li>
-<li class="section"><a href="#requesting-json-data-with-ajax">Requesting JSON Data with AJAX</a></li>
-<li class="section"><a href="#consuming-restful-apis">Consuming RESTful APIs</a></li>
-<li class="section"><a href="#consuming-jsonp-apis">Consuming JSONP APIs</a></li>
-<li class="section"><a href="#deferred-and-promise">Deferred and Promise</a></li>
-<li class="section"><a href="#testing-services">Testing Services</a></li>
-<li class="chapter"><a href="#urls-routing-and-partials">URLs, Routing and Partials</a></li>
-<li class="section"><a href="#client-side-routing-with-hashbang-urls">Client-Side Routing with Hashbang URLs</a></li>
-<li class="section"><a href="#using-regular-urls-with-the-html5-history-api">Using Regular URLs with the HTML5 History API</a></li>
-<li class="section"><a href="#using-route-location-to-implement-a-navigation-menu">Using Route Location to Implement a Navigation Menu</a></li>
-<li class="section"><a href="#listening-on-route-changes-to-implement-a-login-mechanism">Listening on Route Changes to Implement a Login Mechanism</a></li>
-<li class="chapter"><a href="#using-forms">Using Forms</a></li>
-<li class="section"><a href="#implementing-a-basic-form">Implementing a Basic Form</a></li>
-<li class="section"><a href="#validating-a-form-model-client-side">Validating a Form Model Client-Side</a></li>
-<li class="section"><a href="#displaying-form-validation-errors">Displaying Form Validation Errors</a></li>
-<li class="section"><a href="#displaying-form-validation-errors-with-the-twitter-bootstrap-framework">Displaying Form Validation Errors with the Twitter Bootstrap framework</a></li>
-<li class="section"><a href="#only-enabling-the-submit-button-if-the-form-is-valid">Only Enabling the Submit Button if the Form is Valid</a></li>
-<li class="section"><a href="#implementing-custom-validations">Implementing Custom Validations</a></li>
-<li class="chapter"><a href="#common-user-interface-patterns">Common User Interface Patterns</a></li>
-<li class="section"><a href="#filtering-and-sorting-a-list">Filtering and Sorting a List</a></li>
-<li class="section"><a href="#paginating-through-client-side-data">Paginating Through Client-Side Data</a></li>
-<li class="section"><a href="#paginating-through-server-side-data">Paginating Through Server-Side Data</a></li>
-<li class="section"><a href="#paginating-using-infinite-results">Paginating Using Infinite Results</a></li>
-<li class="section"><a href="#displaying-a-flash-noticefailure-message">Displaying a Flash Notice/Failure Message</a></li>
-<li class="section"><a href="#editing-text-in-place-using-html5-contenteditable">Editing Text In-Place using HTML5 ContentEditable</a></li>
-<li class="section"><a href="#displaying-a-modal-dialog">Displaying a Modal Dialog</a></li>
-<li class="section"><a href="#displaying-a-loading-spinner">Displaying a Loading Spinner</a></li>
-<li class="chapter"><a href="#backend-integration-with-ruby-on-rails">Backend Integration with Ruby on Rails</a></li>
-<li class="section"><a href="#consuming-rest-apis">Consuming REST APIs</a></li>
-<li class="section"><a href="#implementing-client-side-routing">Implementing Client-Side Routing</a></li>
-<li class="section"><a href="#validating-forms-server-side">Validating Forms Server-Side</a></li>
-<li class="chapter"><a href="#backend-integration-with-node-express">Backend Integration with Node Express</a></li>
-<li class="section"><a href="#consuming-rest-apis-1">Consuming REST APIs</a></li>
-<li class="section"><a href="#implementing-client-side-routing-1">Implementing Client-Side Routing</a></li>
+<ul class='toc no-parts'>
+  <li>
+    <a href='#preface'>Preface</a>
+    <ul>
+      <li>
+        <a href='#introduction'>Introduction</a>
+      </li>
+      <li>
+        <a href='#code-examples'>Code Examples</a>
+      </li>
+      <li>
+        <a href='#how-to-contact-me'>How to contact me</a>
+      </li>
+      <li>
+        <a href='#acknowledgements'>Acknowledgements</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#an-introduction-to-angularjs'>An Introduction to Angular.js</a>
+    <ul>
+      <li>
+        <a href='#including-the-angularjs-library-code-in-an-html-page'>Including the Angular.js Library Code in an HTML Page</a>
+      </li>
+      <li>
+        <a href='#binding-a-text-input-to-an-expression'>Binding a Text Input to an Expression</a>
+      </li>
+      <li>
+        <a href='#responding-to-click-events-using-controllers'>Responding to Click Events using Controllers</a>
+      </li>
+      <li>
+        <a href='#converting-expression-output-with-filters'>Converting Expression Output with Filters</a>
+      </li>
+      <li>
+        <a href='#creating-custom-html-elements-with-directives'>Creating Custom HTML Elements with Directives</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#controllers'>Controllers</a>
+    <ul>
+      <li>
+        <a href='#assigning-a-default-value-to-a-model'>Assigning a Default Value to a Model</a>
+      </li>
+      <li>
+        <a href='#changing-a-model-value-with-a-controller-function'>Changing a Model Value with a Controller Function</a>
+      </li>
+      <li>
+        <a href='#encapsulating-a-model-value-with-a-controller-function'>Encapsulating a Model Value with a Controller Function</a>
+      </li>
+      <li>
+        <a href='#responding-to-scope-changes'>Responding to Scope Changes</a>
+      </li>
+      <li>
+        <a href='#sharing-models-between-nested-controllers'>Sharing Models Between Nested Controllers</a>
+      </li>
+      <li>
+        <a href='#sharing-code-between-controllers-using-services'>Sharing Code Between Controllers using Services</a>
+      </li>
+      <li>
+        <a href='#testing-controllers'>Testing Controllers</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#directives'>Directives</a>
+    <ul>
+      <li>
+        <a href='#enablingdisabling-dom-elements-conditionally'>Enabling/Disabling DOM Elements Conditionally</a>
+      </li>
+      <li>
+        <a href='#changing-the-dom-in-response-to-user-actions'>Changing the DOM in Response to User Actions</a>
+      </li>
+      <li>
+        <a href='#rendering-an-html-snippet-in-a-directive'>Rendering an HTML Snippet in a Directive</a>
+      </li>
+      <li>
+        <a href='#rendering-a-directives-dom-node-children'>Rendering a Directive&#x2019;s DOM Node Children</a>
+      </li>
+      <li>
+        <a href='#passing-configuration-params-using-html-attributes'>Passing Configuration Params Using HTML Attributes</a>
+      </li>
+      <li>
+        <a href='#repeatedly-rendering-directives-dom-node-children'>Repeatedly Rendering Directive&#x2019;s DOM Node Children</a>
+      </li>
+      <li>
+        <a href='#directive-to-directive-communication'>Directive-to-Directive Communication</a>
+      </li>
+      <li>
+        <a href='#testing-directives'>Testing Directives</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#filters'>Filters</a>
+    <ul>
+      <li>
+        <a href='#formatting-a-string-with-a-currency-filter'>Formatting a String With a Currency Filter</a>
+      </li>
+      <li>
+        <a href='#implementing-a-custom-filter-to-reverse-an-input-string'>Implementing a Custom Filter to Reverse an Input String</a>
+      </li>
+      <li>
+        <a href='#passing-configuration-params-to-filters'>Passing Configuration Params to Filters</a>
+      </li>
+      <li>
+        <a href='#filtering-a-list-of-dom-nodes'>Filtering a List of DOM Nodes</a>
+      </li>
+      <li>
+        <a href='#chaining-filters-together'>Chaining Filters together</a>
+      </li>
+      <li>
+        <a href='#testing-filters'>Testing Filters</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#consuming-externals-services'>Consuming Externals Services</a>
+    <ul>
+      <li>
+        <a href='#requesting-json-data-with-ajax'>Requesting JSON Data with AJAX</a>
+      </li>
+      <li>
+        <a href='#consuming-restful-apis'>Consuming RESTful APIs</a>
+      </li>
+      <li>
+        <a href='#consuming-jsonp-apis'>Consuming JSONP APIs</a>
+      </li>
+      <li>
+        <a href='#deferred-and-promise'>Deferred and Promise</a>
+      </li>
+      <li>
+        <a href='#testing-services'>Testing Services</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#urls-routing-and-partials'>URLs, Routing and Partials</a>
+    <ul>
+      <li>
+        <a href='#client-side-routing-with-hashbang-urls'>Client-Side Routing with Hashbang URLs</a>
+      </li>
+      <li>
+        <a href='#using-regular-urls-with-the-html5-history-api'>Using Regular URLs with the HTML5 History API</a>
+      </li>
+      <li>
+        <a href='#using-route-location-to-implement-a-navigation-menu'>Using Route Location to Implement a Navigation Menu</a>
+      </li>
+      <li>
+        <a href='#listening-on-route-changes-to-implement-a-login-mechanism'>Listening on Route Changes to Implement a Login Mechanism</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#using-forms'>Using Forms</a>
+    <ul>
+      <li>
+        <a href='#implementing-a-basic-form'>Implementing a Basic Form</a>
+      </li>
+      <li>
+        <a href='#validating-a-form-model-client-side'>Validating a Form Model Client-Side</a>
+      </li>
+      <li>
+        <a href='#displaying-form-validation-errors'>Displaying Form Validation Errors</a>
+      </li>
+      <li>
+        <a href='#displaying-form-validation-errors-with-the-twitter-bootstrap-framework'>Displaying Form Validation Errors with the Twitter Bootstrap framework</a>
+      </li>
+      <li>
+        <a href='#only-enabling-the-submit-button-if-the-form-is-valid'>Only Enabling the Submit Button if the Form is Valid</a>
+      </li>
+      <li>
+        <a href='#implementing-custom-validations'>Implementing Custom Validations</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#common-user-interface-patterns'>Common User Interface Patterns</a>
+    <ul>
+      <li>
+        <a href='#filtering-and-sorting-a-list'>Filtering and Sorting a List</a>
+      </li>
+      <li>
+        <a href='#paginating-through-client-side-data'>Paginating Through Client-Side Data</a>
+      </li>
+      <li>
+        <a href='#paginating-through-server-side-data'>Paginating Through Server-Side Data</a>
+      </li>
+      <li>
+        <a href='#paginating-using-infinite-results'>Paginating Using Infinite Results</a>
+      </li>
+      <li>
+        <a href='#displaying-a-flash-noticefailure-message'>Displaying a Flash Notice/Failure Message</a>
+      </li>
+      <li>
+        <a href='#editing-text-in-place-using-html5-contenteditable'>Editing Text In-Place using HTML5 ContentEditable</a>
+      </li>
+      <li>
+        <a href='#displaying-a-modal-dialog'>Displaying a Modal Dialog</a>
+      </li>
+      <li>
+        <a href='#displaying-a-loading-spinner'>Displaying a Loading Spinner</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#backend-integration-with-ruby-on-rails'>Backend Integration with Ruby on Rails</a>
+    <ul>
+      <li>
+        <a href='#consuming-rest-apis'>Consuming REST APIs</a>
+      </li>
+      <li>
+        <a href='#implementing-client-side-routing'>Implementing Client-Side Routing</a>
+      </li>
+      <li>
+        <a href='#validating-forms-server-side'>Validating Forms Server-Side</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href='#backend-integration-with-node-express'>Backend Integration with Node Express</a>
+    <ul>
+      <li>
+        <a href='#consuming-rest-apis-1'>Consuming REST APIs</a>
+      </li>
+      <li>
+        <a href='#implementing-client-side-routing-1'>Implementing Client-Side Routing</a>
+      </li>
+    </ul>
+  </li>
 </ul>
+
 </div>
 </body>
 </html>
